@@ -1,3 +1,5 @@
+rm(list = ls())
+
 # Script to install and run tabulizer to extract tables from PDFs 
 
 # packages necessary to install and run tabulizer. I had to install a different version of Java, which you may have to do as well. 
