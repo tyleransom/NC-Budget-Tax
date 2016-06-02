@@ -26,6 +26,36 @@ for (i in 2:a) {
 	})
 }
 
-firstletter <- as.data.frame(substr(Genout1[,1],1,1))
-Genout1 <- as.data.frame(Genout1[!(firstletter == "-"), ])
 
+Genout1 <- as.data.frame(Genout1[!(as.data.frame(substr(Genout1[,1],1,1)) == "-"), ])
+
+Genout2=Genout1
+Gen2 <- as.data.frame(gsub("TOTAL", "00000 TOTAL", Genout2[,1]))
+Gen3 <- cbind(Gen2, Genout2[,2:3])
+
+Gen2 <- as.data.frame(gsub("NET", "00001 NET", Gen3[,1]))
+Gen3 <- cbind(Gen2, Gen3[,2:3])
+
+Gen2 <- as.data.frame(gsub("HIGHWAY", "00002 HIGHWAY", Gen3[,1]))
+Gen3 <- cbind(Gen2, Gen3[,2:3])
+
+Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,2)) == "42"), ])
+Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "APP"), ])
+Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "BUD"), ])
+Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "REQ"), ])
+Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "142"), ])
+Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "DES"), ])
+Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "EST"), ])
+Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "POS"), ])
+Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "SUM"), ])
+
+Gen4 <- as.data.frame(gsub(",","",Gen3[,2]))
+Gen42 <- as.data.frame(gsub(",","",Gen3[,3]))
+Gen4 <- cbind(Gen3[,1], Gen4, Gen42)
+Gen4 <- Gen4[!apply(Gen4 == "", 1, all),]
+Gen4 <- Gen4
+
+numbers <- as.data.frame(substr(Gen4[,1],1,5))
+letters <- as.data.frame(substr(Gen4[,1],6,100))
+
+Genfin <- cbind(numbers, letters, Gen4[,2:3])
