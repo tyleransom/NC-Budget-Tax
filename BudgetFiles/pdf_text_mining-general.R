@@ -1,4 +1,5 @@
 rm(list = ls())
+cat("\014") 
 
 # Script to install and run tabulizer to extract tables from PDFs 
 
