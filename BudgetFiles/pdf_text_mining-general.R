@@ -44,7 +44,10 @@ Gen3 <- cbind(Gen2, Gen3[,2:3])
 Gen2 <- as.data.frame(gsub("HIGHWAY", "00002 HIGHWAY", Gen3[,1]),stringsAsFactors=FALSE)
 Gen3 <- cbind(Gen2, Gen3[,2:3])
 
-Gen2 <- as.data.frame(gsub("CHANG", "00003 CHANG", Gen3[,1]),stringsAsFactors=FALSE)
+Gen2 <- as.data.frame(gsub("HIGHWAY TRUST FUND", "00003 HIGHWAY TRUST FUND", Gen3[,1]),stringsAsFactors=FALSE)
+Gen3 <- cbind(Gen2, Gen3[,2:3])
+
+Gen2 <- as.data.frame(gsub("CHANG", "00004 CHANG", Gen3[,1]),stringsAsFactors=FALSE)
 Gen3 <- cbind(Gen2, Gen3[,2:3])
 
 # Remove unnecessary lines
