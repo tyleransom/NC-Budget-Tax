@@ -19,6 +19,7 @@ require(tabulizer)
 # tell it where the PDF is
 file <- "C:/Users/admin/Desktop/DUKE Data+/2003_5/vol6.pdf"
 
+generator <- function(file){
 a <- get_n_pages(file=file)
 # extract tables from the PDF
 Genout1 <- as.data.frame(extract_tables(file, pages = 1, guess = FALSE, method = "data.frame", columns = list(c(320, 420))),stringsAsFactors=FALSE)
@@ -47,30 +48,29 @@ Gen2 <- as.data.frame(gsub("CHANG", "00003 CHANG", Gen3[,1]),stringsAsFactors=FA
 Gen3 <- cbind(Gen2, Gen3[,2:3])
 
 # Remove unnecessary lines
-Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,2)) == "42" ), ],stringsAsFactors=FALSE)
-Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "APP"), ],stringsAsFactors=FALSE)
-Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "BUD"), ],stringsAsFactors=FALSE)
-Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "REQ"), ],stringsAsFactors=FALSE)
-Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "142"), ],stringsAsFactors=FALSE)
-Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "DES"), ],stringsAsFactors=FALSE)
-Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "EST"), ],stringsAsFactors=FALSE)
-Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "POS"), ],stringsAsFactors=FALSE)
-Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "SUM"), ],stringsAsFactors=FALSE)
+Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,3],1,4)) == " PAG"), ],stringsAsFactors=FALSE)
+Gen3 <- as.data.frame(Gen3[!(substr(Gen3[,1],1,3) %in% c("APP", "BUD", "REQ", "DES", "EST", "POS", "SUM")), ],stringsAsFactors=FALSE)
 
 # Remove commas from dollar amounts and any lines with "PAGE" in the final column
-Gen4 <- as.data.frame(gsub(",","",Gen3[,2]),stringsAsFactors=FALSE)
+Gen2 <- as.data.frame(gsub(",","",Gen3[,2]),stringsAsFactors=FALSE)
 Gen42 <- as.data.frame(gsub(",","",Gen3[,3]),stringsAsFactors=FALSE)
-Gen4 <- cbind(Gen3[,1], Gen4, Gen42)
-Gen4 <- Gen4[!apply(Gen4 == "", 1, all),]
-Gen4 <- Gen4[!grepl("PAGE",Gen4[,3]),]
-Gen4 <- Gen4
+Gen3 <- cbind(Gen3[,1], Gen2, Gen42)
+Gen3 <- Gen3[!apply(Gen3 == "", 1, all),]
+#Gen3 <- Gen3[!grepl("PAGE",Gen4[,3]),]
+Gen3 <- Gen3
 
 # Start concatenating the vector
-numbers <- as.data.frame(substr(Gen4[,1],1,5),stringsAsFactors=FALSE)
-letters <- as.data.frame(substr(Gen4[,1],6,100),stringsAsFactors=FALSE)
+numbers <- as.data.frame(substr(Gen3[,1],1,5),stringsAsFactors=FALSE)
+letters <- as.data.frame(substr(Gen3[,1],6,100),stringsAsFactors=FALSE)
 
 # Aggregate together, rename columns, and convert IDs to numeric
-Genfin <- cbind(numbers, letters, Gen4[,2:3])
+Genfin <- cbind(numbers, letters, Gen3[,2:3])
+return(Genfin)
+}
+#for now the function ends here
+vol12013 <-generator(file)
+
+
 colnames(Genfin) <- c("SubsecID","Description","y200304","y200405")
 Genfin$SubsecID  <- as.numeric(Genfin$SubsecID)
 Genfin$y200304   <-type.convert(Genfin$y200304, numerals="warn.loss");
