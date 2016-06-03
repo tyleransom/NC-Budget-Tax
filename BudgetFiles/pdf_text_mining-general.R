@@ -17,7 +17,7 @@ require(tabulizer)
 # elsewhere
 
 # tell it where the PDF is
-file <- "C:/Users/admin/Desktop/DUKE Data+/2003_5/vol6.pdf"
+#file <- "C:/Users/admin/Desktop/DUKE Data+/2003_5/vol6.pdf"
 
 generator <- function(file){
 a <- get_n_pages(file=file)
@@ -68,7 +68,7 @@ Genfin <- cbind(numbers, letters, Gen3[,2:3])
 return(Genfin)
 }
 #for now the function ends here
-vol12013 <-generator(file)
+vol62013 <-generator(("C:/Users/Tom/Desktop/Data+/2003_5/vol6.pdf"))
 
 
 colnames(Genfin) <- c("SubsecID","Description","y200304","y200405")
