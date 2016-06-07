@@ -187,3 +187,8 @@ for (i in 1:length(M)){
   O2[T[counter]]=vol[T[counter],1]
   counter=1+counter}
 }
+
+for (i in 1:length(N)){
+  O1[N[i]:n]=vol[N[i],1]
+}
+O1 <- O1[-which(is.na(vol[,3]))]
