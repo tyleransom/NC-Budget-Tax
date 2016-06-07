@@ -163,3 +163,27 @@ for (i in 1:2485)
   if ((as.numeric(Gen[i,3]) == 84290)){
     Gen[i,2] = 0}
 # Assigning Supercodes to SubSecID's in that page
+
+
+#values with 5 digit indeces
+vol[which(!substr(vol[,1],5,5) %in% ""),1]
+#indeces with 5 digit indeces
+N <- which(!substr(vol[,1],5,5) %in% "")
+M <- which(is.na(vol[,3]))
+
+#indeces for 2nd NA
+T <- which(is.na(vol[,3]))
+T <- T[!(T %in% c(which(!substr(vol[,1],5,5) %in% "")))]
+vol[T,1]
+
+#n <- length(vol[,1])-length(which(is.na(vol[,3])))
+n <- length(vol[,1])
+O1 <- rep(0,n)
+O2 <- rep(0,n)
+counter=1
+
+for (i in 1:length(M)){
+  if (M[i]==T[counter]& counter<=length(T)){
+  O2[T[counter]]=vol[T[counter],1]
+  counter=1+counter}
+}
