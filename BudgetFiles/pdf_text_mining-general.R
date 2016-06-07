@@ -122,3 +122,44 @@ Genfin$Category[1]<- Genfin$SubsecID[1]
 # look at next observation
 # if next observation is 0, replace it with current observation
 # otherwise continue to the next observation and repeat
+Gen$Supercode1 <- c(0)
+Gen$Supercode2 <- c(0)
+Gen <- Gen[c("Supercode1","Supercode2","SubsecID","Description","y200304","y200405")]
+# Add two columns with all zero entries to data set, and rearranging the columns using the column names
+for (i in 1:2485)
+  if (as.numeric(Gen[i,3]) == 14222){
+    Gen[i,1] = 14222} 
+for (i in 1:2485)
+  if (as.numeric(Gen[i,3]) == 84210){
+    Gen[i,1] = 84210}
+for (i in 1:2485)
+  if (as.numeric(Gen[i,3]) == 84290){
+    Gen[i,1] = 84290}
+for (i in 1:2485)
+  if (as.numeric(Gen[i,3]) == 14222 & is.na(Gen[i+1,5]) ){
+    Gen[i+1,2] = Gen[i+1,3]} 
+for (i in 1:2485)
+  if (as.numeric(Gen[i,3]) == 84210 & is.na(Gen[i+1,5]) ){
+    Gen[i+1,2] = Gen[i+1,3]}
+for (i in 1:2485)
+  if (as.numeric(Gen[i,1]) == 14222 & (as.numeric(Gen[i+1,1]) == 0)){
+    Gen[i+1,1] = 14222}
+for (i in 1:2485)
+  if (as.numeric(Gen[i,1]) == 84210 & (as.numeric(Gen[i+1,1]) == 0)){
+    Gen[i+1,1] = 84210}
+for (i in 1:2485)
+  if (as.numeric(Gen[i,1]) == 84290 & (as.numeric(Gen[i+1,1]) == 0)){
+    Gen[i+1,1] = 84290}
+for (i in 1:2485)
+  if ((as.numeric(Gen[i+1,2]) == 0) & !is.na(Gen[i+1,4])){
+    Gen[i+1,2] = Gen[i,2]}
+for (i in 1:2485)
+  if ((as.numeric(Gen[i,3]) == 14222)){
+    Gen[i,2] = 0}
+for (i in 1:2485)
+  if ((as.numeric(Gen[i,3]) == 84210)){
+    Gen[i,2] = 0}
+for (i in 1:2485)
+  if ((as.numeric(Gen[i,3]) == 84290)){
+    Gen[i,2] = 0}
+# Assigning Supercodes to SubSecID's in that page
