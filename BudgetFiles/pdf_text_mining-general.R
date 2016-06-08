@@ -35,19 +35,19 @@ Genout1 <- as.data.frame(Genout1[!(as.data.frame(substr(Genout1[,1],1,1)) == "-"
 
 # Fix columns that begin with strings that need to begin with numbers
 Genout2 <- Genout1
-Gen2 <- as.data.frame(gsub("TOTAL", "00000 TOTAL", Genout2[,1]),stringsAsFactors=FALSE)
+Gen2 <- as.data.frame(gsub("TOTAL", "00000 TOTAL", Genout2[,1]), stringsAsFactors=FALSE)
 Gen3 <- cbind(Gen2, Genout2[,2:3])
 
-Gen2 <- as.data.frame(gsub("NET", "00001 NET", Gen3[,1]),stringsAsFactors=FALSE)
+Gen2 <- as.data.frame(gsub("NET", "00001 NET", Gen3[,1]), stringsAsFactors=FALSE)
 Gen3 <- cbind(Gen2, Gen3[,2:3])
 
-Gen2 <- as.data.frame(gsub("HIGHWAY", "00002 HIGHWAY", Gen3[,1]),stringsAsFactors=FALSE)
+Gen2 <- as.data.frame(gsub("HIGHWAY FUND APPROPRIATION", "00002 HIGHWAY FUND APPROPRIATION", Gen3[,1]), stringsAsFactors=FALSE)
 Gen3 <- cbind(Gen2, Gen3[,2:3])
 
-Gen2 <- as.data.frame(gsub("HIGHWAY TRUST FUND", "00003 HIGHWAY TRUST FUND", Gen3[,1]),stringsAsFactors=FALSE)
+Gen2 <- as.data.frame(gsub("HIGHWAY TRUST FUND APPROPRTN", "00003 HIGHWAY TRUST FUND APPROPRTN", Gen3[,1]), stringsAsFactors=FALSE)
 Gen3 <- cbind(Gen2, Gen3[,2:3])
 
-Gen2 <- as.data.frame(gsub("CHANG", "00004 CHANG", Gen3[,1]),stringsAsFactors=FALSE)
+Gen2 <- as.data.frame(gsub("CHANGE IN FUND BALANCE", "00004 CHANGE IN FUND BALANCE", Gen3[,1]),stringsAsFactors=FALSE)
 Gen3 <- cbind(Gen2, Gen3[,2:3])
 
 # Remove unnecessary lines
@@ -68,16 +68,86 @@ letters <- as.data.frame(substr(Gen3[,1],6,100),stringsAsFactors=FALSE)
 
 # Aggregate together, rename columns, and convert IDs to numeric
 Genfin <- cbind(numbers, letters, Gen3[,2:3])
+
+# Operator to find numbers of unique digits in the years (to name columns) and find these names
+digits = floor(log10(as.numeric(substr(gsub("[^0-9]", "", file),3,4)))) + 1
+if (digits==1){
+  year1 <- paste(substr(gsub("[^0-9]", "", file),1,4), as.numeric(substr(gsub("[^0-9]", "", file),3,4))+1, sep = "0")
+  year1 <- paste("y",year1, sep = "")
+  year2 <- paste(substr(gsub("[^0-9]", "", file),1,3), as.numeric(substr(gsub("[^0-9]", "", file),3,4))+1, sep = "")
+  year2 <- paste(year2, as.numeric(substr(gsub("[^0-9]", "", file),3,4))+2, sep = "0")
+  year2 <- paste("y",year2, sep = "")
+} else {
+  year1 <- paste(substr(gsub("[^0-9]", "", file),1,4), as.numeric(substr(gsub("[^0-9]", "", file),3,4))+1, sep = "")
+  year1 <- paste("y",year1, sep = "")
+  year2 <- paste(substr(gsub("[^0-9]", "", file),1,2), as.numeric(substr(gsub("[^0-9]", "", file),3,4))+1, sep = "")
+  year2 <- paste(year2, as.numeric(substr(gsub("[^0-9]", "", file),3,4))+2, sep = "")
+  year2 <- paste("y",year2, sep = "")
+}
+
+# Naming columns and converting to numerics
+colnames(Genfin) <- c("SubsecID","Description",year1,year2)
+Genfin[which(substr(Genfin[,1],5,5) %in% " "),1]=substr(Genfin[which(substr(Genfin[,1],5,5) %in% " "),1],1,4)
+Genfin$SubsecID  <- as.numeric(Genfin$SubsecID)
+Genfin[,3]   <- type.convert(Genfin[,3], numerals="warn.loss");
+Genfin[,4]   <- type.convert(Genfin[,4], numerals="warn.loss");
+
+#Creating two zero vectors and then filling them with values corresponding NAs (with 5 and 4 digits resp.)
+
+#values with 5 digit indeces
+#vol[which(!substr(vol[,1],5,5) %in% ""),1]
+#indeces with 5 digit indeces
+N <- which(!substr(Genfin[,1],5,5) %in% "")
+M <- which(is.na(Genfin[,3]))
+
+#indeces for 2nd NA
+T <- which(is.na(Genfin[,3]))
+T <- T[!(T %in% c(which(!substr(Genfin[,1],5,5) %in% "")))]
+#vol[T,1]
+
+n <- length(Genfin[,1])
+O1 <- rep(0,n)
+O2 <- rep(0,n)
+O2 <- O2[-which(is.na(Genfin[,3]))]
+counter1=1
+counter2=0
+
+for (i in 1:n){
+  if (i==M[counter1]& counter1<=length(M)){
+    if(i==T[counter1-counter2]& (counter1-counter2)<=length(T)){
+      O2[i-counter1+1]=Genfin[T[counter1-counter2],1]
+    }
+    else{counter2=counter2+1}
+    counter1=1+counter1}
+}
+
+for (i in 1:length(N)){
+  O1[N[i]:n]=Genfin[N[i],1]
+}
+O1 <- O1[-which(is.na(Genfin[,3]))]
+
+O <- cbind(O1,O2)
+Genfin <- as.data.frame(Genfin[-(which(is.na(Genfin[,3]))), ])
+Genfin <- cbind(O,Genfin)
+
 return(Genfin)
 }
+
 #for now the function ends here
 vol62013 <-generator("C:/Users/Tom/Desktop/Data+/2003_5/vol6.pdf")
 
 
-colnames(Genfin) <- c("SubsecID","Description","y200304","y200405")
-Genfin$SubsecID  <- as.numeric(Genfin$SubsecID)
-Genfin$y200304   <-type.convert(Genfin$y200304, numerals="warn.loss");
-Genfin$y200405   <-type.convert(Genfin$y200405, numerals="warn.loss");
+
+
+
+
+
+
+
+
+
+
+
 
 # List all categories with given ID
 Genfin[Genfin$SubsecID==6990,]
