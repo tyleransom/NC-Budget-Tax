@@ -62,9 +62,37 @@ Gen3 <- Gen3[!apply(Gen3 == "", 1, all),]
 #Gen3 <- Gen3[!grepl("PAGE",Gen4[,3]),]
 Gen3 <- Gen3
 
+
+Gen3 <- cbind(as.data.frame(gsub("  "," ",Gen3[,1]), stringsAsFactors=FALSE),Gen3[,2:3])
+
+#is.letter <- function(x) grepl("[[:alpha:]]", x)
+is.number <- function(x) grepl("[[:digit:]]", x)
+
+#track the index of the last digit in first column before letters
+L=rep(0,length(Gen3[,1]))
+for (j in 1:8){
+  k <- as.data.frame(substr(Gen3[,1],j,j),stringsAsFactors=FALSE)
+  for (i in 1:length(k[,1])){
+    if(is.number(k[i,1])==TRUE){L[i]=j}
+  }}
+
+numbersnew=rep(0,length(L))
+lettersnew=c()
+
+#map the corresponding figures to a category
+for (i in 1:length(L)){
+  numbersnew[i]=as.data.frame(substr(Gen3[i,1],1,L[i]),stringsAsFactors=FALSE)
+ # numbersnew2 <- rbind(numbersnew2,numprel)
+ lettersnew[i] <- as.data.frame(substr(Gen3[i,1],L[i]+1,100),stringsAsFactors=FALSE)
+}
+
+w <- cbind(numbersnew,lettersnew)
+Genfin <- cbind(w, Gen3[,2:3])
+
+
 # Start concatenating the vector
-numbers <- as.data.frame(substr(Gen3[,1],1,5),stringsAsFactors=FALSE)
-letters <- as.data.frame(substr(Gen3[,1],6,100),stringsAsFactors=FALSE)
+#numbers <- as.data.frame(substr(Gen3[,1],1,5),stringsAsFactors=FALSE)
+#letters <- as.data.frame(substr(Gen3[,1],6,100),stringsAsFactors=FALSE)
 
 # Aggregate together, rename columns, and convert IDs to numeric
 Genfin <- cbind(numbers, letters, Gen3[,2:3])
