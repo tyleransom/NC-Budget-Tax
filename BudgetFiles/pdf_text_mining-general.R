@@ -122,13 +122,13 @@ Genfin[,4]   <- type.convert(Genfin[,4], numerals="warn.loss");
 
 #Creating two zero vectors and then filling them with values corresponding NAs (with 5 and 4 digits resp.)
 
-#values with 5 digit indeces
+#values with 5 digit indices
 #vol[which(!substr(vol[,1],5,5) %in% ""),1]
-#indeces with 5 digit indeces
+#indices with 5 digit indices
 N <- which(!substr(Genfin[,1],5,5) %in% "")
 M <- which(is.na(Genfin[,3]))
 
-#indeces for 2nd NA
+#indices for 2nd NA
 T <- which(is.na(Genfin[,3]))
 T <- T[!(T %in% c(which(!substr(Genfin[,1],5,5) %in% "")))]
 #vol[T,1]
