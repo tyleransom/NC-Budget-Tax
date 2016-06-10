@@ -26,6 +26,7 @@ Genout1 <- as.data.frame(extract_tables(file, pages = 1, guess = FALSE, method =
 for (i in 2:a) {
 	try({
 	Out <- as.data.frame(extract_tables(file, pages = i, guess = FALSE, method = "data.frame", columns = list(c(320, 420))),stringsAsFactors=FALSE)
+	names(Out) <- names(Genout1)
 	Genout1 <- rbind(Genout1,Out)
 	})
 }
