@@ -58,8 +58,8 @@ md "2009_11"
 "C:\Program Files (x86)\GnuWin32\bin\wget.exe" http://ncosbm.s3.amazonaws.com/s3fs-public/2aBD307_2009-11_Vol2.pdf -O "2009_11\vol2.pdf"
 "C:\Program Files (x86)\GnuWin32\bin\wget.exe" http://ncosbm.s3.amazonaws.com/s3fs-public/3aBD307_2009-11_Vol3.pdf -O "2009_11\vol3.pdf"
 "C:\Program Files (x86)\GnuWin32\bin\wget.exe" http://ncosbm.s3.amazonaws.com/s3fs-public/4aBD307_2009-11_Vol4.pdf -O "2009_11\vol4.pdf"
-"C:\Program Files (x86)\GnuWin32\bin\wget.exe" http://ncosbm.s3.amazonaws.com/s3fs-public/5aBD307_2009-11_Vol5.pdf -O "2009_11\vol5.pdf"
-"C:\Program Files (x86)\GnuWin32\bin\wget.exe" http://ncosbm.s3.amazonaws.com/s3fs-public/6aBD307_2009-11_Vol6.pdf -O "2009_11\vol6.pdf"
+"C:\Program Files (x86)\GnuWin32\bin\wget.exe" http://ncosbm.s3.amazonaws.com/s3fs-public/BD307_2009-11_Vol5.pdf -O "2009_11\vol5.pdf"
+"C:\Program Files (x86)\GnuWin32\bin\wget.exe" http://ncosbm.s3.amazonaws.com/s3fs-public/BD307_2009-11_Vol6.pdf -O "2009_11\vol6.pdf"
 
 cd/ & cd C:/Users/Tom/Desktop/Data+
 md "2010_11"
