@@ -114,8 +114,9 @@ if (digits==1){
 }
 
 # Naming columns and converting to numerics
+Y <- as.data.frame(gsub("[^0-9]", "", Genfin[,1]),stringsAsFactors=FALSE)
+Genfin <- cbind (Y, Genfin[,2:length(Genfin)])
 colnames(Genfin) <- c("SubsecID","Description",year1,year2)
-Genfin[which(substr(Genfin[,1],5,5) %in% " "),1]=substr(Genfin[which(substr(Genfin[,1],5,5) %in% " "),1],1,4)
 Genfin$SubsecID  <- as.numeric(Genfin$SubsecID)
 Genfin[,3]   <- type.convert(Genfin[,3], numerals="warn.loss");
 Genfin[,4]   <- type.convert(Genfin[,4], numerals="warn.loss");
@@ -125,13 +126,11 @@ Genfin[,4]   <- type.convert(Genfin[,4], numerals="warn.loss");
 #values with 5 digit indices
 #vol[which(!substr(vol[,1],5,5) %in% ""),1]
 #indices with 5 digit indices
-N <- which(!substr(Genfin[,1],5,5) %in% "")
 M <- which(is.na(Genfin[,3]))
+N <- intersect(which(!substr(Genfin[,1],5,5) %in% ""),M)
 
 #indices for 2nd NA
-T <- which(is.na(Genfin[,3]))
-T <- T[!(T %in% c(which(!substr(Genfin[,1],5,5) %in% "")))]
-#vol[T,1]
+T <- setdiff(M,N)
 
 n <- length(Genfin[,1])
 O1 <- rep(0,n)
