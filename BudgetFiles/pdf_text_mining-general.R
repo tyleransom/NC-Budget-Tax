@@ -118,6 +118,12 @@ if (digits==1){
 # Naming columns and converting to numerics
 Y <- as.data.frame(gsub("[^0-9]", "", Genfin[,1]),stringsAsFactors=FALSE)
 Genfin <- cbind (Y, Genfin[,2:length(Genfin)])
+R1 <- as.data.frame(gsub("[^0-9]", "", Genfin[,3]),stringsAsFactors=FALSE)
+R2 <- as.data.frame(gsub("[^0-9]", "", Genfin[,4]),stringsAsFactors=FALSE)
+Genfin <- cbind(Genfin[,1:2],R1,R2)
+J <- !((as.data.frame(substr(Genfin[,1],1,1)) == "") & (as.data.frame(substr(Genfin[,3],1,1) == "")))
+Genfin <- as.data.frame(Genfin[J, ], stringsAsFactors=FALSE)
+
 colnames(Genfin) <- c("SubsecID","Description",year1,year2)
 Genfin$SubsecID  <- as.numeric(Genfin$SubsecID)
 Genfin[,3]   <- type.convert(Genfin[,3], numerals="warn.loss");
