@@ -178,7 +178,44 @@ return(Genfin)
 }
 
 #for now the function ends here
-vol62013 <-generator("C:/Users/Tom/Desktop/Data+/2003_5/vol6.pdf")
+vol62003 <- generator("C:/Users/Tom/Desktop/Data+/2003_5/vol6.pdf")
+vol62005 <- generator("C:/Users/Tom/Desktop/Data+/2005_7/vol6.pdf")
+vol62007 <- generator("C:/Users/Tom/Desktop/Data+/2007_9/vol6.pdf")
+vol62009 <- generator("C:/Users/Tom/Desktop/Data+/2009_11/vol6.pdf")
+vol62011 <- generator("C:/Users/Tom/Desktop/Data+/2011_13/vol6.pdf")
+
+# matching function: give me supercode1 and some text from description column,
+# I give you matrices with encounters in all data frames
+matcher <- function(Supcode1,Desc){
+  matcher <- list()
+  for (t in seq(3,11,by = 2)){
+    index=(t+which(seq(3,11,by = 2)==t)-1)/3
+  if(t<10){
+  files <- get(paste("vol6200",t,sep = ""))
+  nam <- paste("J", t, sep = "")
+    assign(nam, files[files$Supercode1==Supcode1 & files$Description==Desc,])
+      matcher[[index]]=get(nam)}
+  else{files <- get(paste("vol620",t,sep = ""))
+  nam <- paste("J", t, sep = "")
+    assign(nam, files[files$Supercode1==Supcode1 & files$Description==Desc,])
+  matcher[[index]]=get(nam)}
+  }
+  return(matcher) }
+
+# example
+U <- matcher(84210,"STATE AID")
+I <- U[[1]] #these are encounters in vol6 2003
+
+
+
+
+
+
+
+
+
+
+
 
 
 
