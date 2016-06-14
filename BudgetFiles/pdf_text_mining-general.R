@@ -72,21 +72,30 @@ is.number <- function(x) grepl("[[:digit:]]", x)
 
 #track the index of the last digit in first column before letters
 L=rep(0,length(Gen3[,1]))
-for (j in 1:8){
+for (j in 1:12){
   k <- as.data.frame(substr(Gen3[,1],j,j),stringsAsFactors=FALSE)
   for (i in 1:length(k[,1])){
     if(is.number(k[i,1])==TRUE){L[i]=j}
   }}
 
+is.space <- function(x) grepl(" ", x)
 numbersnew=rep(0,length(L))
 lettersnew=c()
+h=matrix(0,length(L),3)
+#numbersnew2=as.data.frame(substr(Gen3[1,1],1,L[1]),stringsAsFactors=FALSE)
 
-#map the corresponding figures to a category
 for (i in 1:length(L)){
   numbersnew[i]=as.data.frame(substr(Gen3[i,1],1,L[i]),stringsAsFactors=FALSE)
  # numbersnew2 <- rbind(numbersnew2,numprel)
+ 
  lettersnew[i] <- as.data.frame(substr(Gen3[i,1],L[i]+1,100),stringsAsFactors=FALSE)
-}
+ for (j in 1:3){
+   if(is.space(substr(lettersnew[i],j,j))==TRUE){
+     h[i,j]=1
+   }
+ }
+ lettersnew[i] <- as.data.frame(substr(Gen3[i,1],L[i]+1+sum(h[i,]),100),stringsAsFactors=FALSE)
+   }
 
 w <- cbind(numbersnew,lettersnew)
 Genfin <- cbind(w, Gen3[,2:3])
