@@ -172,6 +172,7 @@ O1 <- O1[-which(is.na(Genfin[,3]))]
 
 O <- cbind(O1,O2)
 Genfin <- as.data.frame(Genfin[-(which(is.na(Genfin[,3]))), ])
+colnames(O) <- c("Supercode1","Supercode2")
 Genfin <- cbind(O,Genfin)
 
 return(Genfin)
