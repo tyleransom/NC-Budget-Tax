@@ -187,27 +187,97 @@ vol62011 <- generator("C:/Users/Tom/Desktop/Data+/2011_13/vol6.pdf")
 
 # matching function: give me supercode1 and some text from description column,
 # I give you matrices with encounters in all data frames
-matcher <- function(Supcode1,Desc){
+
+
+# Supcode1 is the only required variable to run the code (others are optional), need to specify at least 2 variables
+matcher <- function(Supcode1,Supcode2,SubsecID,Desc){
   matcher <- list()
-  for (t in seq(3,11,by = 2)){
+  #argList<-list()
+      for (t in seq(3,11,by = 2)){
     index=(t+which(seq(3,11,by = 2)==t)-1)/3
-  if(t<10){
+      if(t<10){
   files <- get(paste("vol6200",t,sep = ""))
   nam <- paste("J", t, sep = "")
-    assign(nam, files[files$Supercode1==Supcode1 & files$Description==Desc,])
-      matcher[[index]]=get(nam)}
+    #assign(nam, files[files$Supercode1==Supcode1 & grep(Desc,files$Description),])
+  if(is.null(Supcode2)|is.null(SubsecID)|is.null(Desc)|is.null(Supcode2) & is.null(SubsecID)|is.null(Supcode2) & is.null(Desc)|is.null(SubsecID) & is.null(Desc)){
+    if(is.null(Supcode2)){
+      if(is.null(SubsecID)){assign(nam, files[intersect(which(files$Supercode1==Supcode1), which(files$Description==Desc)),])
+      }
+      if(is.null(Desc)){assign(nam, files[intersect(which(files$Supercode1==Supcode1), grep(SubsecID,files$SubsecID)),])
+      }
+      else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), grep(SubsecID,files$SubsecID)), which(files$Description==Desc)),])
+      }
+    }
+    if(is.null(SubsecID)){
+      if(is.null(Desc)){assign(nam, files[intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)),])
+      }
+      if(is.null(Supcode2)){assign(nam, files[intersect(which(files$Supercode1==Supcode1), which(files$Description==Desc)),])
+      }
+      else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)), which(files$Description==Desc)),])
+      }
+    }
+    if(is.null(Desc)){
+      if(is.null(Supcode2)){assign(nam, files[intersect(which(files$Supercode1==Supcode1), grep(SubsecID,files$SubsecID)),])
+      }
+      if(is.null(SubsecID)){assign(nam, files[intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)),])
+      }
+      else{
+        assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)), grep(SubsecID,files$SubsecID)),])
+      }
+    }
+  }
+    else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)), intersect(grep(SubsecID,files$SubsecID), which(files$Description==Desc))),])
+    }
+      matcher[[index]]=get(nam)
+  }
   else{files <- get(paste("vol620",t,sep = ""))
   nam <- paste("J", t, sep = "")
-    assign(nam, files[files$Supercode1==Supcode1 & files$Description==Desc,])
-  matcher[[index]]=get(nam)}
+  #assign(nam, files[files$Supercode1==Supcode1 & grep(Desc,files$Description),])
+  if(is.null(Supcode2)|is.null(SubsecID)|is.null(Desc)|is.null(Supcode2) & is.null(SubsecID)|is.null(Supcode2) & is.null(Desc)|is.null(SubsecID) & is.null(Desc)){
+    if(is.null(Supcode2)){
+      if(is.null(Supcode2) & is.null(SubsecID)|is.null(Supcode2) & is.null(Desc)){
+      if(is.null(SubsecID)){assign(nam, files[intersect(which(files$Supercode1==Supcode1), which(files$Description==Desc)),])
+      }
+      if(is.null(Desc)){assign(nam, files[intersect(which(files$Supercode1==Supcode1), grep(SubsecID,files$SubsecID)),])
+      }
+      }
+      else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), grep(SubsecID,files$SubsecID)), which(files$Description==Desc)),])
+      }
+    }
+    if(is.null(SubsecID)){
+      if(is.null(Desc)){assign(nam, files[intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)),])
+      }
+      if(is.null(Supcode2)){assign(nam, files[intersect(which(files$Supercode1==Supcode1), which(files$Description==Desc)),])
+      }
+      else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)), which(files$Description==Desc)),])
+      }
+    }
+    if(is.null(Desc)){
+      if(is.null(Supcode2)){assign(nam, files[intersect(which(files$Supercode1==Supcode1), grep(SubsecID,files$SubsecID)),])
+      }
+      if(is.null(SubsecID)){assign(nam, files[intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)),])
+      }
+      else{
+      assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)), grep(SubsecID,files$SubsecID)),])
+      }
+    }
   }
-  return(matcher) }
+  else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)), intersect(grep(SubsecID,files$SubsecID), which(files$Description==Desc))),])
+  }
+    matcher[[index]]=get(nam)
+  }
+  }
+    return(matcher)
+      }
+
 
 # example
 U <- matcher(84210,"STATE AID")
 I <- U[[1]] #these are encounters in vol6 2003
 
-
+#example with optional variables
+U2 <- matcher(84210,7828,SubsecID=NULL,Desc=NULL)
+I2 <- U2[[1]]
 
 
 
