@@ -291,8 +291,65 @@ I <- U[[1]] #these are encounters in vol6 2003
 #example with optional variables
 U2 <- matcher(84210,7828,SubsecID=NULL,Desc=NULL)
 I2 <- U2[[1]]
+###############################################################################################################################
+###CODE 2 for same function###
 
+matcher2.0 <- function(Supcode1,ID=NULL,Desc=NULL){
+  matcher2.0 <- list()
+  for (t in seq(3,11,by = 2)){
+    index=(t+which(seq(3,11,by = 2)==t)-1)/3
+    if(t<10){
+      if(is.null(ID)){
+        files <- get(paste("vol6200",t,sep = ""))
+        nam <- paste("J", t, sep = "")
+        assign(nam, files[files$Supercode1==Supcode1 & files$Description==Desc,])
+        matcher2.0[[index]]=get(nam)}
+      if(is.null(Desc)){
+        files <- get(paste("vol6200",t,sep = ""))
+        nam <- paste("J", t, sep = "")
+        assign(nam, files[files$Supercode1==Supcode1 & files$SubsecID==ID,])
+        matcher2.0[[index]]=get(nam)}
+      if(is.null(ID) & is.null(Desc)){
+        files <- get(paste("vol6200",t,sep = ""))
+        nam <- paste("J", t, sep = "")
+        assign(nam, files[files$Supercode1==Supcode1,])
+        matcher2.0[[index]]=get(nam)}
+      if(!is.null(ID) & !is.null(Desc)){
+        files <- get(paste("vol6200",t,sep = ""))
+        nam <- paste("J", t, sep = "")
+        assign(nam, files[files$SubsecID==ID & files$Description==Desc & files$Supercode1 == Supcode1,])
+        matcher2.0[[index]]=get(nam)}}
+    if (t>10){
+      if(is.null(ID)){
+        files <- get(paste("vol620",t,sep = ""))
+        nam <- paste("J", t, sep = "")
+        assign(nam, files[files$Supercode1==Supcode1 & files$Description==Desc,])
+        matcher2.0[[index]]=get(nam)}
+      if (is.null(Desc)){
+        files <- get(paste("vol620",t,sep = ""))
+        nam <- paste("J", t, sep = "")
+        assign(nam, files[files$Supercode1==Supcode1 & files$SubsecID==ID,])
+        matcher2.0[[index]]=get(nam)}
+      if(is.null(ID) & is.null(Desc)){
+        files <- get(paste("vol620",t,sep = ""))
+        nam <- paste("J", t, sep = "")
+        assign(nam, files[files$Supercode1==Supcode1,])
+        matcher2.0[[index]]=get(nam)}
+      if(!is.null(ID) & !is.null(Desc)){
+        files <- get(paste("vol620",t,sep = ""))
+        nam <- paste("J", t, sep = "")
+        assign(nam, files[files$SubsecID==ID & files$Description==Desc & files$Supercode1 == Supcode1,])
+        matcher2.0[[index]]=get(nam)}
+      }
+    }
+return(matcher2.0)}
 
+#is.null(ID) & !is.null(Desc
+# example
+U2 <- matcher2.0(84210)
+I2 <- U2[[1]] #these are encounters in vol6 2003
+
+###################################################################################################################################
 
 
 
