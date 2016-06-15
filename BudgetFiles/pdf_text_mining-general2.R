@@ -178,35 +178,39 @@ generator <- function(file){
 }
 
 #Change path according to the files on your PC
+
 vol62004 <- generator("C:/Users/admin/Desktop/DUKE Data+/2004_5/vol6.pdf")
 vol62006 <- generator("C:/Users/admin/Desktop/DUKE Data+/2006_7/vol6.pdf")
 vol62008 <- generator("C:/Users/admin/Desktop/DUKE Data+/2008_9/vol6.pdf")
 vol62010 <- generator("C:/Users/admin/Desktop/DUKE Data+/2010_11/vol6.pdf")
+vol62012 <- generator("C:/Users/admin/Desktop/DUKE Data+/2011_13/vol6.pdf")
 
 vol52004 <- generator("C:/Users/admin/Desktop/DUKE Data+/2004_5/vol5.pdf")
 vol52006 <- generator("C:/Users/admin/Desktop/DUKE Data+/2006_7/vol5.pdf")
 vol52008 <- generator("C:/Users/admin/Desktop/DUKE Data+/2008_9/vol5.pdf")
 vol52010 <- generator("C:/Users/admin/Desktop/DUKE Data+/2010_11/vol5.pdf")
+vol52012 <- generator("C:/Users/admin/Desktop/DUKE Data+/2011_13/vol5.pdf")
 
 vol42004 <- generator("C:/Users/admin/Desktop/DUKE Data+/2004_5/vol4.pdf")
 vol42006 <- generator("C:/Users/admin/Desktop/DUKE Data+/2006_7/vol4.pdf")
 vol42008 <- generator("C:/Users/admin/Desktop/DUKE Data+/2008_9/vol4.pdf")
 vol42010 <- generator("C:/Users/admin/Desktop/DUKE Data+/2010_11/vol4.pdf")
-
+vol42012 <- generator("C:/Users/admin/Desktop/DUKE Data+/2011_13/vol4.pdf")
 
 vol32004 <- generator("C:/Users/admin/Desktop/DUKE Data+/2004_5/vol3.pdf")
 vol32006 <- generator("C:/Users/admin/Desktop/DUKE Data+/2006_7/vol3.pdf")
 vol32008 <- generator("C:/Users/admin/Desktop/DUKE Data+/2008_9/vol3.pdf")
 vol32010 <- generator("C:/Users/admin/Desktop/DUKE Data+/2010_11/vol3.pdf")
-
+vol32012 <- generator("C:/Users/admin/Desktop/DUKE Data+/2011_13/vol3.pdf")
 
 vol22004 <- generator("C:/Users/admin/Desktop/DUKE Data+/2004_5/vol2.pdf")
 vol22006 <- generator("C:/Users/admin/Desktop/DUKE Data+/2006_7/vol2.pdf")
 vol22008 <- generator("C:/Users/admin/Desktop/DUKE Data+/2008_9/vol2.pdf")
 vol22010 <- generator("C:/Users/admin/Desktop/DUKE Data+/2010_11/vol2.pdf")
-
+vol22012 <- generator("C:/Users/admin/Desktop/DUKE Data+/2011_13/vol2.pdf")
 
 vol12004 <- generator("C:/Users/admin/Desktop/DUKE Data+/2004_5/vol1.pdf")
 vol12006 <- generator("C:/Users/admin/Desktop/DUKE Data+/2006_7/vol1.pdf")
 vol12008 <- generator("C:/Users/admin/Desktop/DUKE Data+/2008_9/vol1.pdf")
 vol12010 <- generator("C:/Users/admin/Desktop/DUKE Data+/2010_11/vol1.pdf")
+vol12012 <- generator("C:/Users/admin/Desktop/DUKE Data+/2011_13/vol1.pdf")
