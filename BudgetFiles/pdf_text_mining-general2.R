@@ -177,6 +177,7 @@ generator <- function(file){
   return(Genfin)
 }
 
+#Change path according to the files on your PC
 vol62004 <- generator("C:/Users/admin/Desktop/DUKE Data+/2004_5/vol6.pdf")
 vol62006 <- generator("C:/Users/admin/Desktop/DUKE Data+/2006_7/vol6.pdf")
 vol62008 <- generator("C:/Users/admin/Desktop/DUKE Data+/2008_9/vol6.pdf")
