@@ -190,7 +190,7 @@ vol62011 <- generator("C:/Users/Tom/Desktop/Data+/2011_13/vol6.pdf")
 
 
 # Supcode1 is the only required variable to run the code (others are optional), need to specify at least 2 variables
-function(Supcode1,Supcode2,SubsecID,Desc){
+matcher(Supcode1,Supcode2,SubsecID,Desc){
   matcher <- list()
   argList<-list(Supcode1,Supcode2,SubsecID,Desc)
   for (t in seq(3,11,by = 2)){
