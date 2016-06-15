@@ -152,23 +152,28 @@ T <- setdiff(M,N)
 n <- length(Genfin[,1])
 O1 <- rep(0,n)
 O2 <- rep(0,n)
-O2 <- O2[-which(is.na(Genfin[,3]))]
-counter1=1
-counter2=0
+#O2 <- O2[-which(is.na(Genfin[,3]))]
+#counter1=1
+#counter2=0
 
-for (i in 1:n){
-  if (i==M[counter1]& counter1<=length(M)){
-    if(i==T[counter1-counter2]& (counter1-counter2)<=length(T)){
-      O2[i-counter1+1]=Genfin[T[counter1-counter2],1]
-    }
-    else{counter2=counter2+1}
-    counter1=1+counter1}
-}
+#for (i in 1:n){
+#  if (i==M[counter1]& counter1<=length(M)){
+#    if(i==T[counter1-counter2]& (counter1-counter2)<=length(T)){
+ #     O2[i-counter1+1]=Genfin[T[counter1-counter2],1]
+ #   }
+ #   else{counter2=counter2+1}
+ #   counter1=1+counter1}
+#}
 
 for (i in 1:length(N)){
   O1[N[i]:n]=Genfin[N[i],1]
 }
 O1 <- O1[-which(is.na(Genfin[,3]))]
+
+for (i in 1:length(T)){
+  O2[T[i]:n]=Genfin[T[i],1]
+}
+O2 <- O2[-which(is.na(Genfin[,3]))]
 
 O <- cbind(O1,O2)
 Genfin <- as.data.frame(Genfin[-(which(is.na(Genfin[,3]))), ])
@@ -283,7 +288,7 @@ matcher(Supcode1,Supcode2,SubsecID,Desc){
   return(matcher)
 }
 
-
+#------------------------------------------------
 # example
 U <- matcher(84210,"STATE AID")
 I <- U[[1]] #these are encounters in vol6 2003
@@ -291,6 +296,49 @@ I <- U[[1]] #these are encounters in vol6 2003
 #example with optional variables
 U2 <- matcher(84210,7828,SubsecID=NULL,Desc=NULL)
 I2 <- U2[[1]]
+#------------------------------------------------
+
+Match <- matcher(14222, Supcode2=NULL, SubsecID=NULL, "STATE AID")
+
+# conveniently store output from matcher in dataframes
+for (t in seq(3,11,by = 2)){
+  index=(t+which(seq(3,11,by = 2)==t)-1)/3
+  if(t<10){nam <- paste("Match", t, sep = "0")
+  assign(nam, Match[[index]])}
+  else{nam <- paste("Match", t, sep = "")
+  assign(nam, Match[[index]])}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ###############################################################################################################################
 ###CODE 2 for same function###
 
