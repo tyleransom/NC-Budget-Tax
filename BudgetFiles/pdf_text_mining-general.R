@@ -434,6 +434,24 @@ for (t in seq(3,11,by = 2)){
 }
 
 
+# delete duplicates (approach for now, will make it better perhaps with use of my matcher function)
+dvol62003 <- vol62003[!duplicated(vol62003),]
+dvol62005 <- vol62005[!duplicated(vol62005),]
+dvol62007 <- vol62007[!duplicated(vol62007),]
+dvol62009 <- vol62009[!duplicated(vol62009),]
+dvol62011 <- vol62011[!duplicated(vol62011),]
+
+# merge this stuff
+test <- dvol62003
+for (t in seq(5,11,by = 2)){
+  #index=(t+which(seq(3,11,by = 2)==t)-1)/3
+  if(t<10){nam <- paste("dvol620", t, sep = "0")}
+  #assign(nam, (Match[[index]])[,5:length(Match[[index]])])}
+  else{nam <- paste("dvol620", t, sep = "")}
+  #assign(nam, (Match[[index]])[,5:length(Match[[index]])])}
+  test3 <- get(nam)
+  test <- merge(test,test3,by=c("Supercode1", "Supercode2", "Description"))
+}
 
 
 
