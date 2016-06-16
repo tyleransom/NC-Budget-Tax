@@ -51,21 +51,22 @@ generator <- function(file){
   
   Genout1 <- as.data.frame(Genout1[!(as.data.frame(substr(Genout1[,1],1,1)) == "-"), ], stringsAsFactors=FALSE)
   
-  Genout2=Genout1
-  Gen2 <- as.data.frame(gsub("TOTAL", "00000 TOTAL", Genout2[,1]), stringsAsFactors=FALSE)
-  Gen3 <- cbind(Gen2, Genout2[,2:4])
-  
-  Gen2 <- as.data.frame(gsub("NET", "00001 NET", Gen3[,1]), stringsAsFactors=FALSE)
-  Gen3 <- cbind(Gen2, Gen3[,2:4])
-  
-  Gen2 <- as.data.frame(gsub("HIGHWAY FUND APPROPRIATION", "00002 HIGHWAY FUND APPROPRIATION", Gen3[,1]), stringsAsFactors=FALSE)
-  Gen3 <- cbind(Gen2, Gen3[,2:4])
-  
-  Gen2 <- as.data.frame(gsub("HIGHWAY TRUST FUND APPROPRTN", "00003 HIGHWAY TRUST FUND APPROPRTN", Gen3[,1]), stringsAsFactors=FALSE)
-  Gen3 <- cbind(Gen2, Gen3[,2:4])
-  
-  Gen2 <- as.data.frame(gsub("CHANGE IN FUND BALANCE", "00004 CHANGE IN FUND BALANCE", Gen3[,1]),stringsAsFactors=FALSE)
-  Gen3 <- cbind(Gen2, Gen3[,2:4])
+Genout2=Genout1
+    Gen2 <- as.data.frame(gsub("TOTAL", "00001 TOTAL", Genout2[,1]), stringsAsFactors=FALSE)
+    Gen3 <- cbind(Gen2, Genout2[,2:4])
+    
+    Gen2 <- as.data.frame(gsub("NET", "00002 NET", Gen3[,1]), stringsAsFactors=FALSE)
+    Gen3 <- cbind(Gen2, Gen3[,2:4])
+    
+    Gen2 <- as.data.frame(gsub("HIGHWAY FUND APPROPRIATION", "00003 HIGHWAY FUND APPROPRIATION", Gen3[,1]), stringsAsFactors=FALSE)
+    Gen3 <- cbind(Gen2, Gen3[,2:4])
+    
+    Gen2 <- as.data.frame(gsub("HIGHWAY TRUST FUND APPROPRTN", "00004 HIGHWAY TRUST FUND APPROPRTN", Gen3[,1]), stringsAsFactors=FALSE)
+    Gen3 <- cbind(Gen2, Gen3[,2:4])
+    
+    Gen2 <- as.data.frame(gsub("CHANGE IN FUND BALANCE", "00005 CHANGE IN FUND BALANCE", Gen3[,1]),stringsAsFactors=FALSE)
+    Gen3 <- cbind(Gen2, Gen3[,2:4])
+    
   
   #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,2)) == "42"), ])
   #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,4)) == "4200"), ])
@@ -165,20 +166,20 @@ generator <- function(file){
     
     Genout1 <- as.data.frame(Genout1[!(as.data.frame(substr(Genout1[,1],1,1)) == "-"), ], stringsAsFactors=FALSE)
     
-    Genout2=Genout1
-    Gen2 <- as.data.frame(gsub("TOTAL", "00000 TOTAL", Genout2[,1]), stringsAsFactors=FALSE)
+      Genout2=Genout1
+    Gen2 <- as.data.frame(gsub("TOTAL", "00001 TOTAL", Genout2[,1]), stringsAsFactors=FALSE)
     Gen3 <- cbind(Gen2, Genout2[,2:3])
     
-    Gen2 <- as.data.frame(gsub("NET", "00001 NET", Gen3[,1]), stringsAsFactors=FALSE)
+    Gen2 <- as.data.frame(gsub("NET", "00002 NET", Gen3[,1]), stringsAsFactors=FALSE)
     Gen3 <- cbind(Gen2, Gen3[,2:3])
     
-    Gen2 <- as.data.frame(gsub("HIGHWAY FUND APPROPRIATION", "00002 HIGHWAY FUND APPROPRIATION", Gen3[,1]), stringsAsFactors=FALSE)
+    Gen2 <- as.data.frame(gsub("HIGHWAY FUND APPROPRIATION", "00003 HIGHWAY FUND APPROPRIATION", Gen3[,1]), stringsAsFactors=FALSE)
     Gen3 <- cbind(Gen2, Gen3[,2:3])
     
-    Gen2 <- as.data.frame(gsub("HIGHWAY TRUST FUND APPROPRTN", "00003 HIGHWAY TRUST FUND APPROPRTN", Gen3[,1]), stringsAsFactors=FALSE)
+    Gen2 <- as.data.frame(gsub("HIGHWAY TRUST FUND APPROPRTN", "00004 HIGHWAY TRUST FUND APPROPRTN", Gen3[,1]), stringsAsFactors=FALSE)
     Gen3 <- cbind(Gen2, Gen3[,2:3])
     
-    Gen2 <- as.data.frame(gsub("CHANGE IN FUND BALANCE", "00004 CHANGE IN FUND BALANCE", Gen3[,1]),stringsAsFactors=FALSE)
+    Gen2 <- as.data.frame(gsub("CHANGE IN FUND BALANCE", "00005 CHANGE IN FUND BALANCE", Gen3[,1]),stringsAsFactors=FALSE)
     Gen3 <- cbind(Gen2, Gen3[,2:3])
     
     #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,2)) == "42"), ])
@@ -304,6 +305,22 @@ generator <- function(file){
   Genfin <- as.data.frame(Genfin[-(which(is.na(Genfin[,3]))), ])
   colnames(O) <- c("Supercode1","Supercode2")
   Genfin <- cbind(O,Genfin)
+  
+ tot1 <- which(substr(Genfin$Description,1,5) %in% "TOTAL")
+ net2 <- which(substr(Genfin$Description,1,3) %in% "NET")
+ hfa3 <- which(Genfin$Description=="HIGHWAY FUND APPROPRIATION")
+ htf4 <- which(Genfin$Description=="HIGHWAY TRUST FUND APPROPRTN")
+ cfb5 <- which(Genfin$Description=="CHANGE IN FUND BALANCE")
+
+ C3 <- Genfin$SubsecID
+ C3[tot1] <- paste(Genfin$Supercode1[tot1],Genfin$SubsecID[tot1],sep = "")
+ C3[net2] <- paste(Genfin$Supercode1[net2],Genfin$SubsecID[net2],sep = "")
+ C3[hfa3] <- paste(Genfin$Supercode1[hfa3],Genfin$SubsecID[hfa3],sep = "")
+ C3[htf4] <- paste(Genfin$Supercode1[htf4],Genfin$SubsecID[htf4],sep = "")
+ C3[cfb5] <- paste(Genfin$Supercode1[cfb5],Genfin$SubsecID[cfb5],sep = "")
+ 
+ Genfin$SubsecID <- C3
+
   return(Genfin)
 }
 
