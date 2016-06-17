@@ -451,6 +451,7 @@ for (t in seq(3,11,by = 2)){
 }
 
 
+#--------------------------------------------MERGING
 # delete duplicates (approach for now, will make it better perhaps with use of my matcher function)
 dvol62003 <- vol62003[!duplicated(vol62003),]
 dvol62005 <- vol62005[!duplicated(vol62005),]
@@ -471,11 +472,153 @@ for (t in seq(5,11,by = 2)){
 }
 
 
+#-------------------------------------------MAPPING
+
+test1 <- dvol62003
+test2 <- matrix(,nrow=length(test1[,1]),ncol=2*length(seq(3,11,by = 2)))
+test2 <- cbind(test1[,1:4],test2)
+
+#alternative matcher function for "duplicate-free" tables
+dmatcher <- function(Supcode1,Supcode2,SubsecID,Desc){
+  dmatcher <- list()
+  argList<-list(Supcode1,Supcode2,SubsecID,Desc)
+  for (t in seq(3,11,by = 2)){
+    index=(t+which(seq(3,11,by = 2)==t)-1)/3
+    if(t<10){
+      files <- get(paste("dvol6200",t,sep = ""))
+      nam <- paste("J", t, sep = "")
+      #assign(nam, files[files$Supercode1==Supcode1 & grep(Desc,files$Description),])
+      if(is.null(argList[[2]])==TRUE|is.null(argList[[3]])==TRUE|is.null(argList[[4]])==TRUE|is.null(argList[[2]])&is.null(argList[[3]])==TRUE|is.null(argList[[2]])&is.null(argList[[4]])==TRUE|is.null(argList[[3]])&is.null(argList[[4]])==TRUE){
+        if(is.null(argList[[2]])==TRUE){
+          if(is.null(argList[[3]])==TRUE|is.null(argList[[4]])==TRUE){
+            if(is.null(argList[[3]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), which(files$Description==Desc)),])
+            }
+            if(is.null(argList[[4]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), grep(SubsecID,files$SubsecID)),])
+            }
+          }
+          else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), grep(SubsecID,files$SubsecID)), which(files$Description==Desc)),])
+          }
+        }
+        if(is.null(argList[[3]])==TRUE){
+          if(is.null(argList[[2]])==TRUE|is.null(argList[[4]])==TRUE){
+            if(is.null(argList[[4]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)),])
+            }
+            if(is.null(argList[[2]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), which(files$Description==Desc)),])
+            }
+          }
+          else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)), which(files$Description==Desc)),])
+          }
+        }
+        if(is.null(argList[[4]])==TRUE){
+          if(is.null(argList[[3]])==TRUE|is.null(argList[[2]])==TRUE){
+            if(is.null(argList[[2]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), grep(SubsecID,files$SubsecID)),])
+            }
+            if(is.null(argList[[3]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)),])
+            }
+          }
+          else{
+            assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)), grep(SubsecID,files$SubsecID)),])
+          }
+        }
+      }
+      else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)), intersect(grep(SubsecID,files$SubsecID), which(files$Description==Desc))),])
+      }
+      
+      #if( union(!is.null(Supcode1),!is.null(SubsecID),!is.null(Desc))){assign(nam, files[intersect(which(files$Supercode1==Supcode1), grep(SubsecID,files$SubsecID),which(files$Description==Desc)),])
+      #}
+      dmatcher[[index]]=get(nam)
+    }
+    else{files <- get(paste("dvol620",t,sep = ""))
+    nam <- paste("J", t, sep = "")
+    #assign(nam, files[files$Supercode1==Supcode1 & grep(Desc,files$Description),])
+    if(is.null(argList[[2]])==TRUE|is.null(argList[[3]])==TRUE|is.null(argList[[4]])==TRUE|is.null(argList[[2]])&is.null(argList[[3]])==TRUE|is.null(argList[[2]])&is.null(argList[[4]])==TRUE|is.null(argList[[3]])&is.null(argList[[4]])==TRUE){
+      if(is.null(argList[[2]])==TRUE){
+        if(is.null(argList[[3]])==TRUE|is.null(argList[[4]])==TRUE){
+          if(is.null(argList[[3]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), which(files$Description==Desc)),])
+          }
+          if(is.null(argList[[4]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), grep(SubsecID,files$SubsecID)),])
+          }
+        }
+        else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), grep(SubsecID,files$SubsecID)), which(files$Description==Desc)),])
+        }
+      }
+      if(is.null(argList[[3]])==TRUE){
+        if(is.null(argList[[2]])==TRUE|is.null(argList[[4]])==TRUE){
+          if(is.null(argList[[4]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)),])
+          }
+          if(is.null(argList[[2]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), which(files$Description==Desc)),])
+          }
+        }
+        else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)), which(files$Description==Desc)),])
+        }
+      }
+      if(is.null(argList[[4]])==TRUE){
+        if(is.null(argList[[3]])==TRUE|is.null(argList[[2]])==TRUE){
+          if(is.null(argList[[2]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), grep(SubsecID,files$SubsecID)),])
+          }
+          if(is.null(argList[[3]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)),])
+          }
+        }
+        else{
+          assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)), grep(SubsecID,files$SubsecID)),])
+        }
+      }
+    }
+    else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)), intersect(grep(SubsecID,files$SubsecID), which(files$Description==Desc))),])
+    }
+    dmatcher[[index]]=get(nam)
+    }
+  }
+  return(dmatcher)
+}
 
 
+#mapping
+#is.empty <- function(x) grepl(numeric(0), x)
+weirdos <- matrix(0,length(test1[,1]),length(seq(3,11,by = 2)))
 
+for (i in 1:length(test1[,1])){
+DMatch <- dmatcher(dvol62003$Supercode1[i],dvol62003$Supercode2[i], dvol62003$SubsecID[i], dvol62003$Description[[i]])
+#o <- rep(0,1)
+#ow <- rep(0,1)
+for (t in seq(3,11,by = 2)){
+  index=(t+which(seq(3,11,by = 2)==t)-1)/3
+  l <- length((DMatch[[index]])[,5])
+  if (!(l == 0)){
+    if(l > 1){
+      weirdos[i,index] <- l 
+      counter <- l
+      repeat{ialt <- which(row.names(DMatch[[index]][counter,])==row.names(dvol62003))
+      if(t<10){nam1 <- paste("DMatch1", t, sep = "0")
+      assign(nam1, (DMatch[[index]])[counter,5:length(DMatch[[index]])])}
+      else{nam1 <- paste("DMatch1", t, sep = "")
+      assign(nam1, (DMatch[[index]])[counter,5:length(DMatch[[index]])])}
+      #ow <- cbind(ow,get(nam1))
+      counter=counter-1
+      #outputw <- ow[-1]
+      outputw <- get(nam1)
+      test2[ialt,(3+2*index):(3+2*index+length(outputw)-1)] <- outputw
+      if (counter==0) {break} }
+    }
+      else{
+  if(t<10){nam <- paste("DMatch", t, sep = "0")
+  assign(nam, (DMatch[[index]])[1,5:length(DMatch[[index]])])}
+  else{nam <- paste("DMatch", t, sep = "")
+  assign(nam, (DMatch[[index]])[1,5:length(DMatch[[index]])])}
+  #o <- cbind(o,get(nam))
+  output <- get(nam)
+  test2[i,(3+2*index):(3+2*index+length(output)-1)] <- output
+      }
+  }
+  }
+#output <- o
+#if (length(output)>2){
+#output <- output[-1]}
+#test2[i,5:(5+length(output)-1)] <- output
+}
 
-
+#result: test2 is a panel table featuring all corresponding to the first year articles figures from all years with minimal loss
+#and NAs if the these articles are absent
 
 
 
