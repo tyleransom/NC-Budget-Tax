@@ -472,13 +472,15 @@ for (t in seq(5,11,by = 2)){
 }
 
 
-#-------------------------------------------MAPPING
+#-------------------MAPPING
 
-test1 <- dvol62003
+
+#dvol62003un <- unname(dvol62003)
+mapping <- function(test1){
+#test1 <- rbind(dvol62003,dvol62005,dvol62007,dvol62009,dvol62011,setNames( rev(vol62003) , names( vol62003) ) )
 test2 <- matrix(,nrow=length(test1[,1]),ncol=2*length(seq(3,11,by = 2)))
 test2 <- cbind(test1[,1:4],test2)
 
-#alternative matcher function for "duplicate-free" tables
 dmatcher <- function(Supcode1,Supcode2,SubsecID,Desc){
   dmatcher <- list()
   argList<-list(Supcode1,Supcode2,SubsecID,Desc)
@@ -571,14 +573,11 @@ dmatcher <- function(Supcode1,Supcode2,SubsecID,Desc){
   }
   return(dmatcher)
 }
-
-
-#mapping
 #is.empty <- function(x) grepl(numeric(0), x)
 weirdos <- matrix(0,length(test1[,1]),length(seq(3,11,by = 2)))
 
 for (i in 1:length(test1[,1])){
-DMatch <- dmatcher(dvol62003$Supercode1[i],dvol62003$Supercode2[i], dvol62003$SubsecID[i], dvol62003$Description[[i]])
+DMatch <- dmatcher(test1$Supercode1[i],test1$Supercode2[i], SubsecID= NULL, test1$Description[[i]])
 #o <- rep(0,1)
 #ow <- rep(0,1)
 for (t in seq(3,11,by = 2)){
@@ -616,6 +615,20 @@ for (t in seq(3,11,by = 2)){
 #output <- output[-1]}
 #test2[i,5:(5+length(output)-1)] <- output
 }
+mapping <- test2
+return(mapping)
+}
+
+Map03 <- mapping(vol62003)
+Map05 <- mapping(vol62005)
+Map07 <- mapping(vol62007)
+Map09 <- mapping(vol62009)
+Map11 <- mapping(vol62011)
+
+Map <- rbind(Map03,Map05, Map07, Map09, Map11)
+Mapd <- Map[duplicated(Map),]
+
+
 
 #result: test2 is a panel table featuring all corresponding to the first year articles figures from all years with minimal loss
 #and NAs if the these articles are absent
