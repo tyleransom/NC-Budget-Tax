@@ -619,11 +619,11 @@ mapping <- test2
 return(mapping)
 }
 
-Map03 <- mapping(vol62003)
-Map05 <- mapping(vol62005)
-Map07 <- mapping(vol62007)
-Map09 <- mapping(vol62009)
-Map11 <- mapping(vol62011)
+Map03 <- mapping(dvol62003)
+Map05 <- mapping(dvol62005)
+Map07 <- mapping(dvol62007)
+Map09 <- mapping(dvol62009)
+Map11 <- mapping(dvol62011)
 
 Map <- rbind(Map03,Map05, Map07, Map09, Map11)
 Mapd <- Map[duplicated(Map),]
