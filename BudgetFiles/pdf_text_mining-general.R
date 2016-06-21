@@ -135,9 +135,32 @@ generator <- function(file){
     #Genfin[which(substr(Genfin[,1],5,5) %in% " "),1]=substr(Genfin[which(substr(Genfin[,1],5,5) %in% " "),1],1,4)
     Y <- as.data.frame(gsub("[^0-9]", "", Genfin[,1]),stringsAsFactors=FALSE)
     Genfin <- cbind (Y, Genfin[,2:length(Genfin)])
+    
+    M1 <- intersect(which(as.numeric(Genfin[,3])<0),which(!Genfin[,3]==""))
+    M2 <- intersect(which(as.numeric(Genfin[,4])<0),which(!Genfin[,4]==""))
+    M3 <- intersect(which(as.numeric(Genfin[,5])<0),which(!Genfin[,5]==""))
     R1 <- as.data.frame(gsub("[^0-9]", "", Genfin[,3]),stringsAsFactors=FALSE)
     R2 <- as.data.frame(gsub("[^0-9]", "", Genfin[,4]),stringsAsFactors=FALSE)
     R3 <- as.data.frame(gsub("[^0-9]", "", Genfin[,4]),stringsAsFactors=FALSE)
+    R1[M1,] <- paste("-",R1[M1,],sep = "")
+    R2[M2,] <- paste("-",R2[M2,],sep = "")
+    R3[M3,] <- paste("-",R3[M3],sep = "")
+    
+    for (i in 2:10){
+      D1=rep(0,length(Genfin[,3]))
+      D2=rep(0,length(Genfin[,3]))
+      D3=rep(0,length(Genfin[,3]))
+      D1 [which(substr(Genfin[,3],i,i)==".")] <- which(substr(Genfin[,3],i,i)==".")
+      D1 <- D1[!(D1==0)]
+      D2 [which(substr(Genfin[,4],i,i)==".")] <- which(substr(Genfin[,4],i,i)==".")
+      D2 <- D2[!(D2==0)]
+      D3 [which(substr(Genfin[,5],i,i)==".")] <- which(substr(Genfin[,5],i,i)==".")
+      D3 <- D3[!(D3==0)]
+      R1[D1,] <- paste(substr(R1[D1,],1,i-1),substr(R1[D1,],i,15),sep = ".")
+      R2[D2,] <- paste(substr(R2[D2,],1,i-1),substr(R2[D2,],i,15),sep = ".")
+      R3[D3,] <- paste(substr(R3[D3,],1,i-1),substr(R3[D3,],i,15),sep = ".")
+    }
+    
     Genfin <- cbind(Genfin[,1:2],R1,R2,R3)
     #Genfin1 <- Genfin
     J <- !((as.data.frame(substr(Genfin[,1],1,1)) == "") & (as.data.frame(substr(Genfin[,3],1,1) == "")))
@@ -248,8 +271,25 @@ generator <- function(file){
     #Genfin[which(substr(Genfin[,1],5,5) %in% " "),1]=substr(Genfin[which(substr(Genfin[,1],5,5) %in% " "),1],1,4)
     Y <- as.data.frame(gsub("[^0-9]", "", Genfin[,1]),stringsAsFactors=FALSE)
     Genfin <- cbind (Y, Genfin[,2:length(Genfin)])
+    
+    M1 <- intersect(which(as.numeric(Genfin[,3])<0),which(!Genfin[,3]==""))
+    M2 <- intersect(which(as.numeric(Genfin[,4])<0),which(!Genfin[,4]==""))
     R1 <- as.data.frame(gsub("[^0-9]", "", Genfin[,3]),stringsAsFactors=FALSE)
     R2 <- as.data.frame(gsub("[^0-9]", "", Genfin[,4]),stringsAsFactors=FALSE)
+    R1[M1,] <- paste("-",R1[M1,],sep = "")
+    R2[M2,] <- paste("-",R2[M2,],sep = "")
+   
+    for (i in 2:10){
+    D1=rep(0,length(Genfin[,3]))
+    D2=rep(0,length(Genfin[,3]))
+    D1 [which(substr(Genfin[,3],i,i)==".")] <- which(substr(Genfin[,3],i,i)==".")
+    D1 <- D1[!(D1==0)]
+    D2 [which(substr(Genfin[,4],i,i)==".")] <- which(substr(Genfin[,4],i,i)==".")
+    D2 <- D2[!(D2==0)]
+    R1[D1,] <- paste(substr(R1[D1,],1,i-1),substr(R1[D1,],i,15),sep = ".")
+    R2[D2,] <- paste(substr(R2[D2,],1,i-1),substr(R2[D2,],i,15),sep = ".")
+    }
+    
     Genfin <- cbind(Genfin[,1:2],R1,R2)
     #Genfin1 <- Genfin
     J <- !((as.data.frame(substr(Genfin[,1],1,1)) == "") & (as.data.frame(substr(Genfin[,3],1,1) == "")))
