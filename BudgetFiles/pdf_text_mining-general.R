@@ -39,19 +39,19 @@ generator <- function(file){
   
   #-----------------------------------EVEN
   if((as.numeric(substr(gsub("[^0-9]", "", file),3,4)) %% 2) == 0){
-  # extract tables from the PDF
-  Genout1 <- as.data.frame(extract_tables(file, pages = 1, guess = FALSE, method = "data.frame", columns = list(c(250, 355, 420)), stringsAsFactors=FALSE))
-  for (i in 2:a) {
-    try({
-      Out <- as.data.frame(extract_tables(file, pages = i, guess = FALSE, method = "data.frame", columns = list(c(250, 355, 420)), stringsAsFactors=FALSE))
-      names(Out) <- names(Genout1)
-      Genout1 <- rbind(Genout1,Out)
-    })
-  }
-  
-  Genout1 <- as.data.frame(Genout1[!(as.data.frame(substr(Genout1[,1],1,1)) == "-"), ], stringsAsFactors=FALSE)
-  
-Genout2=Genout1
+    # extract tables from the PDF
+    Genout1 <- as.data.frame(extract_tables(file, pages = 1, guess = FALSE, method = "data.frame", columns = list(c(250, 355, 420)), stringsAsFactors=FALSE))
+    for (i in 2:a) {
+      try({
+        Out <- as.data.frame(extract_tables(file, pages = i, guess = FALSE, method = "data.frame", columns = list(c(250, 355, 420)), stringsAsFactors=FALSE))
+        names(Out) <- names(Genout1)
+        Genout1 <- rbind(Genout1,Out)
+      })
+    }
+    
+    Genout1 <- as.data.frame(Genout1[!(as.data.frame(substr(Genout1[,1],1,1)) == "-"), ], stringsAsFactors=FALSE)
+    
+    Genout2=Genout1
     Gen2 <- as.data.frame(gsub("TOTAL", "00001 TOTAL", Genout2[,1]), stringsAsFactors=FALSE)
     Gen3 <- cbind(Gen2, Genout2[,2:4])
     
@@ -67,88 +67,87 @@ Genout2=Genout1
     Gen2 <- as.data.frame(gsub("CHANGE IN FUND BALANCE", "00005 CHANGE IN FUND BALANCE", Gen3[,1]),stringsAsFactors=FALSE)
     Gen3 <- cbind(Gen2, Gen3[,2:4])
     
-  
-  #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,2)) == "42"), ])
-  #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,4)) == "4200"), ])
-  #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,4)) == "4210"), ])
-  #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,4)) == "3510"), ])
-  #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,4)) == "6020"), ])
-  #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,4)) == "1000"), ])
-  #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,4)) == "3000"), ])
-  #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,4)) == "3005"), ])
-  Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,3],1,4)) == "PAGE"), ],stringsAsFactors=FALSE)
-  #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "APP"), ])
-  Gen3 <- as.data.frame(Gen3[!(substr(Gen3[,1],1,3) %in% c("APP", "BUD", "REQ", "DES", "EST", "POS", "SUM")), ],stringsAsFactors=FALSE)
-  Gen3 <- as.data.frame(Gen3[!(substr(Gen3[,3],1,3) %in% "AWG"), ],stringsAsFactors=FALSE)
-  #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "BUD"), ])
-  #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "REQ"), ])
-  #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "142"), ])
-  #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "DES"), ])
-  #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "EST"), ])
-  #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "POS"), ])
-  #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "SUM"), ])
-  
-  Gen2 <- as.data.frame(gsub(",","",Gen3[,2]),stringsAsFactors=FALSE)
-  Gen42 <- as.data.frame(gsub(",","",Gen3[,3]),stringsAsFactors=FALSE)
-  Gen43 <- as.data.frame(gsub(",","",Gen3[,4]),stringsAsFactors=FALSE)
-  Gen3 <- cbind(Gen3[,1], Gen2, Gen42, Gen43)
-  Gen3 <- Gen3[!apply(Gen3 == "", 1, all),]
-  Gen3 <- Gen3
-  
-  Gen3 <- cbind(as.data.frame(gsub("  "," ",Gen3[,1]), stringsAsFactors=FALSE),Gen3[,2:4])
-  
-  #is.letter <- function(x) grepl("[[:alpha:]]", x)
-  is.number <- function(x) grepl("[[:digit:]]", x)
-  
-  L=rep(0,length(Gen3[,1]))
-  for (j in 1:12){
-    k <- as.data.frame(substr(Gen3[,1],j,j),stringsAsFactors=FALSE)
-    for (i in 1:length(k[,1])){
-      if(is.number(k[i,1])==TRUE){L[i]=j}
-    }}
-  
-  is.space <- function(x) grepl(" ", x)
-  numbersnew=rep(0,length(L))
-  lettersnew=c()
-  h=matrix(0,length(L),3)
-  #numbersnew2=as.data.frame(substr(Gen3[1,1],1,L[1]),stringsAsFactors=FALSE)
-  
-  for (i in 1:length(L)){
-    numbersnew[i]=as.data.frame(substr(Gen3[i,1],1,L[i]),stringsAsFactors=FALSE)
-    # numbersnew2 <- rbind(numbersnew2,numprel)
+    #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,2)) == "42"), ])
+    #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,4)) == "4200"), ])
+    #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,4)) == "4210"), ])
+    #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,4)) == "3510"), ])
+    #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,4)) == "6020"), ])
+    #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,4)) == "1000"), ])
+    #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,4)) == "3000"), ])
+    #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,4)) == "3005"), ])
+    Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,3],1,4)) == "PAGE"), ],stringsAsFactors=FALSE)
+    #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "APP"), ])
+    Gen3 <- as.data.frame(Gen3[!(substr(Gen3[,1],1,3) %in% c("APP", "BUD", "REQ", "DES", "EST", "POS", "SUM")), ],stringsAsFactors=FALSE)
+    Gen3 <- as.data.frame(Gen3[!(substr(Gen3[,3],1,3) %in% "AWG"), ],stringsAsFactors=FALSE)
+    #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "BUD"), ])
+    #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "REQ"), ])
+    #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "142"), ])
+    #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "DES"), ])
+    #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "EST"), ])
+    #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "POS"), ])
+    #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "SUM"), ])
     
-    lettersnew[i] <- as.data.frame(substr(Gen3[i,1],L[i]+1,100),stringsAsFactors=FALSE)
-    for (j in 1:3){
-      if(is.space(substr(lettersnew[i],j,j))==TRUE){
-        h[i,j]=1
+    Gen2 <- as.data.frame(gsub(",","",Gen3[,2]),stringsAsFactors=FALSE)
+    Gen42 <- as.data.frame(gsub(",","",Gen3[,3]),stringsAsFactors=FALSE)
+    Gen43 <- as.data.frame(gsub(",","",Gen3[,4]),stringsAsFactors=FALSE)
+    Gen3 <- cbind(Gen3[,1], Gen2, Gen42, Gen43)
+    Gen3 <- Gen3[!apply(Gen3 == "", 1, all),]
+    Gen3 <- Gen3
+    
+    Gen3 <- cbind(as.data.frame(gsub("  "," ",Gen3[,1]), stringsAsFactors=FALSE),Gen3[,2:4])
+    
+    #is.letter <- function(x) grepl("[[:alpha:]]", x)
+    is.number <- function(x) grepl("[[:digit:]]", x)
+    
+    L=rep(0,length(Gen3[,1]))
+    for (j in 1:12){
+      k <- as.data.frame(substr(Gen3[,1],j,j),stringsAsFactors=FALSE)
+      for (i in 1:length(k[,1])){
+        if(is.number(k[i,1])==TRUE){L[i]=j}
+      }}
+    
+    is.space <- function(x) grepl(" ", x)
+    numbersnew=rep(0,length(L))
+    lettersnew=c()
+    h=matrix(0,length(L),3)
+    #numbersnew2=as.data.frame(substr(Gen3[1,1],1,L[1]),stringsAsFactors=FALSE)
+    
+    for (i in 1:length(L)){
+      numbersnew[i]=as.data.frame(substr(Gen3[i,1],1,L[i]),stringsAsFactors=FALSE)
+      # numbersnew2 <- rbind(numbersnew2,numprel)
+      
+      lettersnew[i] <- as.data.frame(substr(Gen3[i,1],L[i]+1,100),stringsAsFactors=FALSE)
+      for (j in 1:3){
+        if(is.space(substr(lettersnew[i],j,j))==TRUE){
+          h[i,j]=1
+        }
       }
+      lettersnew[i] <- as.data.frame(substr(Gen3[i,1],L[i]+1+sum(h[i,]),100),stringsAsFactors=FALSE)
     }
-    lettersnew[i] <- as.data.frame(substr(Gen3[i,1],L[i]+1+sum(h[i,]),100),stringsAsFactors=FALSE)
-  }
-  
-  #numbersnew <- as.numeric(gsub(" ","",numbersnew))
-  #numbers <- as.data.frame(substr(Gen3[,1],1,5),stringsAsFactors=FALSE)
-  #letters <- as.data.frame(substr(Gen3[,1],6,100),stringsAsFactors=FALSE)
-  
-  w <- cbind(numbersnew,lettersnew)
-  Genfin <- cbind(w, Gen3[,2:4])
-  
-  #Genfin[which(substr(Genfin[,1],5,5) %in% " "),1]=substr(Genfin[which(substr(Genfin[,1],5,5) %in% " "),1],1,4)
-  Y <- as.data.frame(gsub("[^0-9]", "", Genfin[,1]),stringsAsFactors=FALSE)
-  Genfin <- cbind (Y, Genfin[,2:length(Genfin)])
-  R1 <- as.data.frame(gsub("[^0-9]", "", Genfin[,3]),stringsAsFactors=FALSE)
-  R2 <- as.data.frame(gsub("[^0-9]", "", Genfin[,4]),stringsAsFactors=FALSE)
-  R3 <- as.data.frame(gsub("[^0-9]", "", Genfin[,4]),stringsAsFactors=FALSE)
-  Genfin <- cbind(Genfin[,1:2],R1,R2,R3)
-  #Genfin1 <- Genfin
-  J <- !((as.data.frame(substr(Genfin[,1],1,1)) == "") & (as.data.frame(substr(Genfin[,3],1,1) == "")))
-  Genfin <- as.data.frame(Genfin[J, ], stringsAsFactors=FALSE)
-  
-  colnames(Genfin) <- c("SubsecID","Description",paste(year1,"original",sep = ""),"Revision",paste(year1,"revised",sep = ""))
-  Genfin$SubsecID  <- as.numeric(Genfin$SubsecID)
-  Genfin[,3]   <- type.convert(Genfin[,3], numerals="warn.loss");
-  Genfin[,4]   <- type.convert(Genfin[,4], numerals="warn.loss");
-  Genfin[,5]   <- type.convert(Genfin[,5], numerals="warn.loss");
+    
+    #numbersnew <- as.numeric(gsub(" ","",numbersnew))
+    #numbers <- as.data.frame(substr(Gen3[,1],1,5),stringsAsFactors=FALSE)
+    #letters <- as.data.frame(substr(Gen3[,1],6,100),stringsAsFactors=FALSE)
+    
+    w <- cbind(numbersnew,lettersnew)
+    Genfin <- cbind(w, Gen3[,2:4])
+    
+    #Genfin[which(substr(Genfin[,1],5,5) %in% " "),1]=substr(Genfin[which(substr(Genfin[,1],5,5) %in% " "),1],1,4)
+    Y <- as.data.frame(gsub("[^0-9]", "", Genfin[,1]),stringsAsFactors=FALSE)
+    Genfin <- cbind (Y, Genfin[,2:length(Genfin)])
+    R1 <- as.data.frame(gsub("[^0-9]", "", Genfin[,3]),stringsAsFactors=FALSE)
+    R2 <- as.data.frame(gsub("[^0-9]", "", Genfin[,4]),stringsAsFactors=FALSE)
+    R3 <- as.data.frame(gsub("[^0-9]", "", Genfin[,4]),stringsAsFactors=FALSE)
+    Genfin <- cbind(Genfin[,1:2],R1,R2,R3)
+    #Genfin1 <- Genfin
+    J <- !((as.data.frame(substr(Genfin[,1],1,1)) == "") & (as.data.frame(substr(Genfin[,3],1,1) == "")))
+    Genfin <- as.data.frame(Genfin[J, ], stringsAsFactors=FALSE)
+    
+    colnames(Genfin) <- c("SubsecID","Description",paste(year1,"original",sep = ""),"Revision",paste(year1,"revised",sep = ""))
+    Genfin$SubsecID  <- as.numeric(Genfin$SubsecID)
+    Genfin[,3]   <- type.convert(Genfin[,3], numerals="warn.loss");
+    Genfin[,4]   <- type.convert(Genfin[,4], numerals="warn.loss");
+    Genfin[,5]   <- type.convert(Genfin[,5], numerals="warn.loss");
   }
   
   #-------------------------------------ODD
@@ -166,7 +165,7 @@ Genout2=Genout1
     
     Genout1 <- as.data.frame(Genout1[!(as.data.frame(substr(Genout1[,1],1,1)) == "-"), ], stringsAsFactors=FALSE)
     
-      Genout2=Genout1
+    Genout2=Genout1
     Gen2 <- as.data.frame(gsub("TOTAL", "00001 TOTAL", Genout2[,1]), stringsAsFactors=FALSE)
     Gen3 <- cbind(Gen2, Genout2[,2:3])
     
@@ -245,7 +244,7 @@ Genout2=Genout1
     
     w <- cbind(numbersnew,lettersnew)
     Genfin <- cbind(w, Gen3[,2:3])
-    
+    Genfin <- Genfin[!(Genfin[,1]==""),]
     #Genfin[which(substr(Genfin[,1],5,5) %in% " "),1]=substr(Genfin[which(substr(Genfin[,1],5,5) %in% " "),1],1,4)
     Y <- as.data.frame(gsub("[^0-9]", "", Genfin[,1]),stringsAsFactors=FALSE)
     Genfin <- cbind (Y, Genfin[,2:length(Genfin)])
@@ -261,14 +260,14 @@ Genout2=Genout1
     Genfin$SubsecID  <- as.numeric(Genfin$SubsecID)
     Genfin[,3]   <- type.convert(Genfin[,3], numerals="warn.loss");
     Genfin[,4]   <- type.convert(Genfin[,4], numerals="warn.loss");
-    }
+  }
   #values with 5 digit indices
   #vol[which(!substr(vol[,1],5,5) %in% ""),1]
   #indices with 5 digit indices
   M <- which(is.na(Genfin[,3]))
   N <- intersect(which(!substr(Genfin[,1],5,5) %in% ""),M)
   
-    #indices for 2nd NA
+  #indices for 2nd NA
   T <- setdiff(M,N)
   #T <- which(is.null(Genfin[,3]))
   #T <- T[!(T %in% c(which(!substr(Genfin[,1],5,5) %in% "")))]
@@ -306,6 +305,7 @@ Genout2=Genout1
   colnames(O) <- c("Supercode1","Supercode2")
   Genfin <- cbind(O,Genfin)
   
+  
  tot1 <- which(substr(Genfin$Description,1,5) %in% "TOTAL")
  net2 <- which(substr(Genfin$Description,1,3) %in% "NET")
  hfa3 <- which(Genfin$Description=="HIGHWAY FUND APPROPRIATION")
@@ -320,8 +320,9 @@ Genout2=Genout1
  C3[cfb5] <- paste(Genfin$Supercode1[cfb5],Genfin$SubsecID[cfb5],sep = "")
  
  Genfin$SubsecID <- C3
-
-  return(Genfin)
+ Genfin <- Genfin[!duplicated(Genfin),]
+ Genfin[which(Genfin$Description==""),4] <- "ESTIMATED RECEIPTS MISSING"
+ return(Genfin)
 }
 
 #for now the function ends here
@@ -336,9 +337,9 @@ vol62011 <- generator("C:/Users/Tom/Desktop/Data+/2011_13/vol6.pdf")
 
 
 # Supcode1 is the only required variable to run the code (others are optional), need to specify at least 2 variables
-matcher(Supcode1,Supcode2,SubsecID,Desc){
+matcher <- function(Supcode1,Supcode2,SubsecID,Desc){
   matcher <- list()
-  argList<-list(Supcode1,Supcode2,SubsecID,Desc)
+  argList <- list(Supcode1,Supcode2,SubsecID,Desc)
   for (t in seq(3,11,by = 2)){
     index=(t+which(seq(3,11,by = 2)==t)-1)/3
     if(t<10){
@@ -347,41 +348,41 @@ matcher(Supcode1,Supcode2,SubsecID,Desc){
       #assign(nam, files[files$Supercode1==Supcode1 & grep(Desc,files$Description),])
       if(is.null(argList[[2]])==TRUE|is.null(argList[[3]])==TRUE|is.null(argList[[4]])==TRUE|is.null(argList[[2]])&is.null(argList[[3]])==TRUE|is.null(argList[[2]])&is.null(argList[[4]])==TRUE|is.null(argList[[3]])&is.null(argList[[4]])==TRUE){
         if(is.null(argList[[2]])==TRUE){
-        if(is.null(argList[[3]])==TRUE|is.null(argList[[4]])==TRUE){
-          if(is.null(argList[[3]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), which(files$Description==Desc)),])
+          if(is.null(argList[[3]])==TRUE|is.null(argList[[4]])==TRUE){
+            if(is.null(argList[[3]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), intersect(agrep(Desc, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Desc))<2))),])
+            }
+            if(is.null(argList[[4]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), grep(SubsecID,files$SubsecID)),])
+            }
           }
-          if(is.null(argList[[4]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), grep(SubsecID,files$SubsecID)),])
-          }
-        }
-          else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), grep(SubsecID,files$SubsecID)), which(files$Description==Desc)),])
+          else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), grep(SubsecID,files$SubsecID)), intersect(agrep(Desc, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Desc))<2))),])
           }
         }
         if(is.null(argList[[3]])==TRUE){
           if(is.null(argList[[2]])==TRUE|is.null(argList[[4]])==TRUE){
-          if(is.null(argList[[4]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)),])
+            if(is.null(argList[[4]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)),])
+            }
+            if(is.null(argList[[2]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), intersect(agrep(Desc, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Desc))<2))),])
+            }
           }
-          if(is.null(argList[[2]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), which(files$Description==Desc)),])
-          }
-          }
-          else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)), which(files$Description==Desc)),])
+          else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)), intersect(agrep(Desc, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Desc))<2))),])
           }
         }
         if(is.null(argList[[4]])==TRUE){
           if(is.null(argList[[3]])==TRUE|is.null(argList[[2]])==TRUE){
-          if(is.null(argList[[2]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), grep(SubsecID,files$SubsecID)),])
-          }
-          if(is.null(argList[[3]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)),])
-          }
+            if(is.null(argList[[2]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), grep(SubsecID,files$SubsecID)),])
+            }
+            if(is.null(argList[[3]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)),])
+            }
           }
           else{
             assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)), grep(SubsecID,files$SubsecID)),])
           }
         }
       }
-      else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)), intersect(grep(SubsecID,files$SubsecID), which(files$Description==Desc))),])
+      else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)), intersect(grep(SubsecID,files$SubsecID), intersect(agrep(Desc, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Desc))<2)))),])
       }
       
-      #if( union(!is.null(Supcode1),!is.null(SubsecID),!is.null(Desc))){assign(nam, files[intersect(which(files$Supercode1==Supcode1), grep(SubsecID,files$SubsecID),which(files$Description==Desc)),])
+      #if( union(!is.null(Supcode1),!is.null(SubsecID),!is.null(Desc))){assign(nam, files[intersect(which(files$Supercode1==Supcode1), grep(SubsecID,files$SubsecID),intersect(agrep(Desc, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Desc))<2),])
       #}
       matcher[[index]]=get(nam)
     }
@@ -391,22 +392,22 @@ matcher(Supcode1,Supcode2,SubsecID,Desc){
     if(is.null(argList[[2]])==TRUE|is.null(argList[[3]])==TRUE|is.null(argList[[4]])==TRUE|is.null(argList[[2]])&is.null(argList[[3]])==TRUE|is.null(argList[[2]])&is.null(argList[[4]])==TRUE|is.null(argList[[3]])&is.null(argList[[4]])==TRUE){
       if(is.null(argList[[2]])==TRUE){
         if(is.null(argList[[3]])==TRUE|is.null(argList[[4]])==TRUE){
-          if(is.null(argList[[3]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), which(files$Description==Desc)),])
+          if(is.null(argList[[3]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), intersect(agrep(Desc, files$Description, max=list(cost=1, all=1), ignore.case=TRUE), which(abs(nchar(files$Description)-nchar(Desc))<2))),])
           }
           if(is.null(argList[[4]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), grep(SubsecID,files$SubsecID)),])
           }
         }
-        else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), grep(SubsecID,files$SubsecID)), which(files$Description==Desc)),])
+        else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), grep(SubsecID,files$SubsecID)), intersect(agrep(Desc, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Desc))<2))),])
         }
       }
       if(is.null(argList[[3]])==TRUE){
         if(is.null(argList[[2]])==TRUE|is.null(argList[[4]])==TRUE){
           if(is.null(argList[[4]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)),])
           }
-          if(is.null(argList[[2]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), which(files$Description==Desc)),])
+          if(is.null(argList[[2]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), intersect(agrep(Desc, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Desc))<2))),])
           }
         }
-        else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)), which(files$Description==Desc)),])
+        else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)), intersect(agrep(Desc, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Desc))<2))),])
         }
       }
       if(is.null(argList[[4]])==TRUE){
@@ -421,13 +422,14 @@ matcher(Supcode1,Supcode2,SubsecID,Desc){
         }
       }
     }
-    else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)), intersect(grep(SubsecID,files$SubsecID), which(files$Description==Desc))),])
+    else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)), intersect(grep(SubsecID,files$SubsecID), intersect(agrep(Desc, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Desc))<2)))),])
     }
-      matcher[[index]]=get(nam)
+    matcher[[index]]=get(nam)
     }
   }
   return(matcher)
 }
+
 
 #------------------------------------------------
 # example
@@ -476,10 +478,10 @@ for (t in seq(5,11,by = 2)){
 
 
 #dvol62003un <- unname(dvol62003)
-mapping <- function(test1){
-#test1 <- rbind(dvol62003,dvol62005,dvol62007,dvol62009,dvol62011,setNames( rev(vol62003) , names( vol62003) ) )
-test2 <- matrix(,nrow=length(test1[,1]),ncol=2*length(seq(3,11,by = 2)))
-test2 <- cbind(test1[,1:4],test2)
+mapping <- function(basefile){
+#basefile <- rbind(dvol62003,dvol62005,dvol62007,dvol62009,dvol62011,setNames( rev(vol62003) , names( vol62003) ) )
+test2 <- matrix(,nrow=length(basefile[,1]),ncol=2*length(seq(3,11,by = 2)))
+test2 <- cbind(basefile[,1:4],test2)
 
 dmatcher <- function(Supcode1,Supcode2,SubsecID,Desc){
   dmatcher <- list()
@@ -487,28 +489,28 @@ dmatcher <- function(Supcode1,Supcode2,SubsecID,Desc){
   for (t in seq(3,11,by = 2)){
     index=(t+which(seq(3,11,by = 2)==t)-1)/3
     if(t<10){
-      files <- get(paste("dvol6200",t,sep = ""))
+      files <- get(paste("vol6200",t,sep = ""))
       nam <- paste("J", t, sep = "")
       #assign(nam, files[files$Supercode1==Supcode1 & grep(Desc,files$Description),])
       if(is.null(argList[[2]])==TRUE|is.null(argList[[3]])==TRUE|is.null(argList[[4]])==TRUE|is.null(argList[[2]])&is.null(argList[[3]])==TRUE|is.null(argList[[2]])&is.null(argList[[4]])==TRUE|is.null(argList[[3]])&is.null(argList[[4]])==TRUE){
         if(is.null(argList[[2]])==TRUE){
           if(is.null(argList[[3]])==TRUE|is.null(argList[[4]])==TRUE){
-            if(is.null(argList[[3]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), which(files$Description==Desc)),])
+            if(is.null(argList[[3]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), intersect(agrep(Desc, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Desc))<2))),])
             }
             if(is.null(argList[[4]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), grep(SubsecID,files$SubsecID)),])
             }
           }
-          else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), grep(SubsecID,files$SubsecID)), which(files$Description==Desc)),])
+          else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), grep(SubsecID,files$SubsecID)), intersect(agrep(Desc, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Desc))<2))),])
           }
         }
         if(is.null(argList[[3]])==TRUE){
           if(is.null(argList[[2]])==TRUE|is.null(argList[[4]])==TRUE){
             if(is.null(argList[[4]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)),])
             }
-            if(is.null(argList[[2]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), which(files$Description==Desc)),])
+            if(is.null(argList[[2]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), intersect(agrep(Desc, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Desc))<2))),])
             }
           }
-          else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)), which(files$Description==Desc)),])
+          else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)), intersect(agrep(Desc, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Desc))<2))),])
           }
         }
         if(is.null(argList[[4]])==TRUE){
@@ -523,35 +525,35 @@ dmatcher <- function(Supcode1,Supcode2,SubsecID,Desc){
           }
         }
       }
-      else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)), intersect(grep(SubsecID,files$SubsecID), which(files$Description==Desc))),])
+      else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)), intersect(grep(SubsecID,files$SubsecID), intersect(agrep(Desc, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Desc))<2)))),])
       }
       
-      #if( union(!is.null(Supcode1),!is.null(SubsecID),!is.null(Desc))){assign(nam, files[intersect(which(files$Supercode1==Supcode1), grep(SubsecID,files$SubsecID),which(files$Description==Desc)),])
+      #if( union(!is.null(Supcode1),!is.null(SubsecID),!is.null(Desc))){assign(nam, files[intersect(which(files$Supercode1==Supcode1), grep(SubsecID,files$SubsecID),intersect(agrep(Desc, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Desc))<2),])
       #}
       dmatcher[[index]]=get(nam)
     }
-    else{files <- get(paste("dvol620",t,sep = ""))
+    else{files <- get(paste("vol620",t,sep = ""))
     nam <- paste("J", t, sep = "")
     #assign(nam, files[files$Supercode1==Supcode1 & grep(Desc,files$Description),])
     if(is.null(argList[[2]])==TRUE|is.null(argList[[3]])==TRUE|is.null(argList[[4]])==TRUE|is.null(argList[[2]])&is.null(argList[[3]])==TRUE|is.null(argList[[2]])&is.null(argList[[4]])==TRUE|is.null(argList[[3]])&is.null(argList[[4]])==TRUE){
       if(is.null(argList[[2]])==TRUE){
         if(is.null(argList[[3]])==TRUE|is.null(argList[[4]])==TRUE){
-          if(is.null(argList[[3]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), which(files$Description==Desc)),])
+          if(is.null(argList[[3]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), intersect(agrep(Desc, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Desc))<2))),])
           }
           if(is.null(argList[[4]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), grep(SubsecID,files$SubsecID)),])
           }
         }
-        else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), grep(SubsecID,files$SubsecID)), which(files$Description==Desc)),])
+        else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), grep(SubsecID,files$SubsecID)), intersect(agrep(Desc, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Desc))<2))),])
         }
       }
       if(is.null(argList[[3]])==TRUE){
         if(is.null(argList[[2]])==TRUE|is.null(argList[[4]])==TRUE){
           if(is.null(argList[[4]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)),])
           }
-          if(is.null(argList[[2]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), which(files$Description==Desc)),])
+          if(is.null(argList[[2]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), intersect(agrep(Desc, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Desc))<2))),])
           }
         }
-        else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)), which(files$Description==Desc)),])
+        else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)), intersect(agrep(Desc, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Desc))<2))),])
         }
       }
       if(is.null(argList[[4]])==TRUE){
@@ -566,7 +568,7 @@ dmatcher <- function(Supcode1,Supcode2,SubsecID,Desc){
         }
       }
     }
-    else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)), intersect(grep(SubsecID,files$SubsecID), which(files$Description==Desc))),])
+    else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)), intersect(grep(SubsecID,files$SubsecID), intersect(agrep(Desc, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Desc))<2)))),])
     }
     dmatcher[[index]]=get(nam)
     }
@@ -574,10 +576,10 @@ dmatcher <- function(Supcode1,Supcode2,SubsecID,Desc){
   return(dmatcher)
 }
 #is.empty <- function(x) grepl(numeric(0), x)
-weirdos <- matrix(0,length(test1[,1]),length(seq(3,11,by = 2)))
+weirdos <- matrix(0,length(basefile[,1]),length(seq(3,11,by = 2)))
 
-for (i in 1:length(test1[,1])){
-DMatch <- dmatcher(test1$Supercode1[i],test1$Supercode2[i], SubsecID= NULL, test1$Description[[i]])
+for (i in 1:length(basefile[,1])){
+DMatch <- dmatcher(basefile$Supercode1[i],basefile$Supercode2[i], SubsecID= NULL, basefile$Description[[i]])
 #o <- rep(0,1)
 #ow <- rep(0,1)
 for (t in seq(3,11,by = 2)){
@@ -587,7 +589,7 @@ for (t in seq(3,11,by = 2)){
     if(l > 1){
       weirdos[i,index] <- l 
       counter <- l
-      repeat{ialt <- which(row.names(DMatch[[index]][counter,])==row.names(dvol62003))
+      repeat{ialt <- which(row.names(DMatch[[index]][counter,])==row.names(basefile))
       if(t<10){nam1 <- paste("DMatch1", t, sep = "0")
       assign(nam1, (DMatch[[index]])[counter,5:length(DMatch[[index]])])}
       else{nam1 <- paste("DMatch1", t, sep = "")
@@ -618,6 +620,7 @@ for (t in seq(3,11,by = 2)){
 mapping <- test2
 return(mapping)
 }
+
 
 Map03 <- mapping(dvol62003)
 Map05 <- mapping(dvol62005)
