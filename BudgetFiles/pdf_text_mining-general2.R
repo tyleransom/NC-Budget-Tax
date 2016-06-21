@@ -177,6 +177,15 @@ generator <- function(file){
   return(Genfin)
 }
 
+#Loop to merge revised figures of 2nd Year budget with the proposed 2 year budget
+#Change variable name according to the year and area of interest
+for (i in 1:nrow(vol62003)){
+  if (vol620032[i,1:3] == vol620042[i,1:3]){}
+      #vol620042 <- vol620042[-i,]
+  else{vol620043 <- vol620043[-i,]}
+    }
+vol620033 <- cbind(vol62003,vol620043[6:7])
+
 #Change path according to the files on your PC
 
 vol62004 <- generator("C:/Users/admin/Desktop/DUKE Data+/2004_5/vol6.pdf")
