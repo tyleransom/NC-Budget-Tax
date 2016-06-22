@@ -523,103 +523,11 @@ mapping <- function(basefile){
 test2 <- matrix(,nrow=length(basefile[,1]),ncol=2*length(seq(3,11,by = 2)))
 test2 <- cbind(basefile[,1:4],test2)
 
-dmatcher <- function(Supcode1,Supcode2,SubsecID,Desc){
-  dmatcher <- list()
-  argList<-list(Supcode1,Supcode2,SubsecID,Desc)
-  for (t in seq(3,11,by = 2)){
-    index=(t+which(seq(3,11,by = 2)==t)-1)/3
-    if(t<10){
-      files <- get(paste("vol6200",t,sep = ""))
-      nam <- paste("J", t, sep = "")
-      #assign(nam, files[files$Supercode1==Supcode1 & grep(Desc,files$Description),])
-      if(is.null(argList[[2]])==TRUE|is.null(argList[[3]])==TRUE|is.null(argList[[4]])==TRUE|is.null(argList[[2]])&is.null(argList[[3]])==TRUE|is.null(argList[[2]])&is.null(argList[[4]])==TRUE|is.null(argList[[3]])&is.null(argList[[4]])==TRUE){
-        if(is.null(argList[[2]])==TRUE){
-          if(is.null(argList[[3]])==TRUE|is.null(argList[[4]])==TRUE){
-            if(is.null(argList[[3]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), intersect(agrep(Desc, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Desc))<2))),])
-            }
-            if(is.null(argList[[4]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), grep(SubsecID,files$SubsecID)),])
-            }
-          }
-          else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), grep(SubsecID,files$SubsecID)), intersect(agrep(Desc, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Desc))<2))),])
-          }
-        }
-        if(is.null(argList[[3]])==TRUE){
-          if(is.null(argList[[2]])==TRUE|is.null(argList[[4]])==TRUE){
-            if(is.null(argList[[4]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)),])
-            }
-            if(is.null(argList[[2]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), intersect(agrep(Desc, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Desc))<2))),])
-            }
-          }
-          else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)), intersect(agrep(Desc, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Desc))<2))),])
-          }
-        }
-        if(is.null(argList[[4]])==TRUE){
-          if(is.null(argList[[3]])==TRUE|is.null(argList[[2]])==TRUE){
-            if(is.null(argList[[2]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), grep(SubsecID,files$SubsecID)),])
-            }
-            if(is.null(argList[[3]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)),])
-            }
-          }
-          else{
-            assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)), grep(SubsecID,files$SubsecID)),])
-          }
-        }
-      }
-      else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)), intersect(grep(SubsecID,files$SubsecID), intersect(agrep(Desc, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Desc))<2)))),])
-      }
-      
-      #if( union(!is.null(Supcode1),!is.null(SubsecID),!is.null(Desc))){assign(nam, files[intersect(which(files$Supercode1==Supcode1), grep(SubsecID,files$SubsecID),intersect(agrep(Desc, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Desc))<2),])
-      #}
-      dmatcher[[index]]=get(nam)
-    }
-    else{files <- get(paste("vol620",t,sep = ""))
-    nam <- paste("J", t, sep = "")
-    #assign(nam, files[files$Supercode1==Supcode1 & grep(Desc,files$Description),])
-    if(is.null(argList[[2]])==TRUE|is.null(argList[[3]])==TRUE|is.null(argList[[4]])==TRUE|is.null(argList[[2]])&is.null(argList[[3]])==TRUE|is.null(argList[[2]])&is.null(argList[[4]])==TRUE|is.null(argList[[3]])&is.null(argList[[4]])==TRUE){
-      if(is.null(argList[[2]])==TRUE){
-        if(is.null(argList[[3]])==TRUE|is.null(argList[[4]])==TRUE){
-          if(is.null(argList[[3]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), intersect(agrep(Desc, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Desc))<2))),])
-          }
-          if(is.null(argList[[4]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), grep(SubsecID,files$SubsecID)),])
-          }
-        }
-        else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), grep(SubsecID,files$SubsecID)), intersect(agrep(Desc, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Desc))<2))),])
-        }
-      }
-      if(is.null(argList[[3]])==TRUE){
-        if(is.null(argList[[2]])==TRUE|is.null(argList[[4]])==TRUE){
-          if(is.null(argList[[4]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)),])
-          }
-          if(is.null(argList[[2]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), intersect(agrep(Desc, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Desc))<2))),])
-          }
-        }
-        else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)), intersect(agrep(Desc, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Desc))<2))),])
-        }
-      }
-      if(is.null(argList[[4]])==TRUE){
-        if(is.null(argList[[3]])==TRUE|is.null(argList[[2]])==TRUE){
-          if(is.null(argList[[2]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), grep(SubsecID,files$SubsecID)),])
-          }
-          if(is.null(argList[[3]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)),])
-          }
-        }
-        else{
-          assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)), grep(SubsecID,files$SubsecID)),])
-        }
-      }
-    }
-    else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supcode1), which(files$Supercode2==Supcode2)), intersect(grep(SubsecID,files$SubsecID), intersect(agrep(Desc, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Desc))<2)))),])
-    }
-    dmatcher[[index]]=get(nam)
-    }
-  }
-  return(dmatcher)
-}
 #is.empty <- function(x) grepl(numeric(0), x)
 weirdos <- matrix(0,length(basefile[,1]),length(seq(3,11,by = 2)))
 
 for (i in 1:length(basefile[,1])){
-DMatch <- dmatcher(basefile$Supercode1[i],basefile$Supercode2[i], SubsecID= NULL, basefile$Description[[i]])
+DMatch <- matcher(basefile$Supercode1[i],basefile$Supercode2[i], SubsecID= NULL, basefile$Description[[i]])
 #o <- rep(0,1)
 #ow <- rep(0,1)
 for (t in seq(3,11,by = 2)){
