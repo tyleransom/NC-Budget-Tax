@@ -598,6 +598,37 @@ Mapd <- Map[duplicated(Map),]
 
 
 
+#-----------------------------SUMMARY
+#track by supercode1 and description name
+totalsprel <- function(Supercode1,Description){
+  indices <- intersect(which(Map_finale$Supercode1==Supercode1),intersect(agrep(Description, Map_finale$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(Map_finale$Description)-nchar(Description))<2)))
+  filtered <- Map_finale[indices,5:length(Map_finale)]
+  filtered[is.na(filtered)] <- 0
+  summ <- colSums(filtered)
+  #output <- cbind(Supercode1,Description,t(summ))
+  #totals <- output
+  totalsprel <- summ
+  return(totalsprel)
+}
+
+totals <- function (Description){
+  S1 <- unique(Map_finale$Supercode1)
+  l <- length(S1)
+  totp <- totalsprel(S1[1],Description)
+  for (i in 2:l){
+    nam <- paste("totp", i, sep = "")
+    assign(nam, totalsprel(S1[i],Description))
+    totp <- rbind(totp,get(nam))
+  }
+  totrec <- t(colSums(totp))
+  totals <- totrec
+  return(totals)
+}
+
+totrec <- totals("Total Receipts")
+totreq <- totals("Total Requirements")
+netapp <- cbind("Net Appropriation", -diff(rbind(totreq,totrec)) ) 
+vol6tot <- rbind(cbind("Total Requirements",totreq),cbind("Total Receipts",totrec),netapp) #final table
 
 
 
