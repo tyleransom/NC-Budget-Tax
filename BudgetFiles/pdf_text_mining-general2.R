@@ -186,6 +186,16 @@ for (i in 1:nrow(vol62003)){
     }
 vol620033 <- cbind(vol62003,vol620043[6:7])
 
+#Updated Loop
+for(i in 1:nrow(vol620032)){
+  for (j in 1:nrow(vol620042)){
+    if(vol620032[i,1] == vol620042[j,1]&vol620032[i,2] == vol620042[j,2]&vol620032[i,3] == vol620042[j,3]&vol620032[i,4] == vol620042[j,4]){
+      vol620033[i,7] = vol62004[j,5]
+      vol620033[i,8] = vol62004[j,6]
+      vol620033[i,9] = vol62004[j,7]
+       }
+    }
+}
 #Change path according to the files on your PC
 
 vol62004 <- generator("C:/Users/admin/Desktop/DUKE Data+/2004_5/vol6.pdf")
