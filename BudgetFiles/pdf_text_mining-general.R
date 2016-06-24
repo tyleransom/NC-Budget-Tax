@@ -67,25 +67,9 @@ generator <- function(file){
     Gen2 <- as.data.frame(gsub("CHANGE IN FUND BALANCE", "00005 CHANGE IN FUND BALANCE", Gen3[,1]),stringsAsFactors=FALSE)
     Gen3 <- cbind(Gen2, Gen3[,2:4])
     
-    #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,2)) == "42"), ])
-    #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,4)) == "4200"), ])
-    #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,4)) == "4210"), ])
-    #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,4)) == "3510"), ])
-    #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,4)) == "6020"), ])
-    #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,4)) == "1000"), ])
-    #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,4)) == "3000"), ])
-    #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,4)) == "3005"), ])
     Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,3],1,4)) == "PAGE"), ],stringsAsFactors=FALSE)
-    #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "APP"), ])
     Gen3 <- as.data.frame(Gen3[!(substr(Gen3[,1],1,3) %in% c("APP", "BUD", "REQ", "DES", "EST", "POS", "SUM")), ],stringsAsFactors=FALSE)
     Gen3 <- as.data.frame(Gen3[!(substr(Gen3[,3],1,3) %in% "AWG"), ],stringsAsFactors=FALSE)
-    #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "BUD"), ])
-    #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "REQ"), ])
-    #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "142"), ])
-    #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "DES"), ])
-    #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "EST"), ])
-    #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "POS"), ])
-    #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "SUM"), ])
     
     Gen2 <- as.data.frame(gsub(",","",Gen3[,2]),stringsAsFactors=FALSE)
     Gen42 <- as.data.frame(gsub(",","",Gen3[,3]),stringsAsFactors=FALSE)
@@ -96,7 +80,6 @@ generator <- function(file){
     
     Gen3 <- cbind(as.data.frame(gsub("  "," ",Gen3[,1]), stringsAsFactors=FALSE),Gen3[,2:4])
     
-    #is.letter <- function(x) grepl("[[:alpha:]]", x)
     is.number <- function(x) grepl("[[:digit:]]", x)
     
     L=rep(0,length(Gen3[,1]))
@@ -110,11 +93,9 @@ generator <- function(file){
     numbersnew=rep(0,length(L))
     lettersnew=c()
     h=matrix(0,length(L),3)
-    #numbersnew2=as.data.frame(substr(Gen3[1,1],1,L[1]),stringsAsFactors=FALSE)
     
     for (i in 1:length(L)){
       numbersnew[i]=as.data.frame(substr(Gen3[i,1],1,L[i]),stringsAsFactors=FALSE)
-      # numbersnew2 <- rbind(numbersnew2,numprel)
       
       lettersnew[i] <- as.data.frame(substr(Gen3[i,1],L[i]+1,100),stringsAsFactors=FALSE)
       for (j in 1:3){
@@ -125,14 +106,9 @@ generator <- function(file){
       lettersnew[i] <- as.data.frame(substr(Gen3[i,1],L[i]+1+sum(h[i,]),100),stringsAsFactors=FALSE)
     }
     
-    #numbersnew <- as.numeric(gsub(" ","",numbersnew))
-    #numbers <- as.data.frame(substr(Gen3[,1],1,5),stringsAsFactors=FALSE)
-    #letters <- as.data.frame(substr(Gen3[,1],6,100),stringsAsFactors=FALSE)
-    
     w <- cbind(numbersnew,lettersnew)
     Genfin <- cbind(w, Gen3[,2:4])
     
-    #Genfin[which(substr(Genfin[,1],5,5) %in% " "),1]=substr(Genfin[which(substr(Genfin[,1],5,5) %in% " "),1],1,4)
     Y <- as.data.frame(gsub("[^0-9]", "", Genfin[,1]),stringsAsFactors=FALSE)
     Genfin <- cbind (Y, Genfin[,2:length(Genfin)])
     
@@ -162,7 +138,6 @@ generator <- function(file){
     }
     
     Genfin <- cbind(Genfin[,1:2],R1,R2,R3)
-    #Genfin1 <- Genfin
     J <- !((as.data.frame(substr(Genfin[,1],1,1)) == "") & (as.data.frame(substr(Genfin[,3],1,1) == "")))
     Genfin <- as.data.frame(Genfin[J, ], stringsAsFactors=FALSE)
     
@@ -175,8 +150,7 @@ generator <- function(file){
   
   #-------------------------------------ODD
   else{
-    # extract tables from the PDF
-    Genout1 <- as.data.frame(extract_tables(file, pages = 1, guess = FALSE, method = "data.frame", columns = list(c(320, 420)), stringsAsFactors=FALSE))
+   Genout1 <- as.data.frame(extract_tables(file, pages = 1, guess = FALSE, method = "data.frame", columns = list(c(320, 420)), stringsAsFactors=FALSE))
     for (i in 2:a) {
       try({
         Out <- as.data.frame(extract_tables(file, pages = i, guess = FALSE, method = "data.frame", columns = list(c(320, 420)), stringsAsFactors=FALSE))
@@ -204,25 +178,9 @@ generator <- function(file){
     Gen2 <- as.data.frame(gsub("CHANGE IN FUND BALANCE", "00005 CHANGE IN FUND BALANCE", Gen3[,1]),stringsAsFactors=FALSE)
     Gen3 <- cbind(Gen2, Gen3[,2:3])
     
-    #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,2)) == "42"), ])
-    #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,4)) == "4200"), ])
-    #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,4)) == "4210"), ])
-    #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,4)) == "3510"), ])
-    #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,4)) == "6020"), ])
-    #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,4)) == "1000"), ])
-    #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,4)) == "3000"), ])
-    #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,4)) == "3005"), ])
     Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,3],1,4)) == "PAGE"), ],stringsAsFactors=FALSE)
-    #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "APP"), ])
     Gen3 <- as.data.frame(Gen3[!(substr(Gen3[,1],1,3) %in% c("APP", "BUD", "REQ", "DES", "EST", "POS", "SUM")), ],stringsAsFactors=FALSE)
     Gen3 <- as.data.frame(Gen3[!(substr(Gen3[,3],1,3) %in% "AWG"), ],stringsAsFactors=FALSE)
-    #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "BUD"), ])
-    #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "REQ"), ])
-    #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "142"), ])
-    #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "DES"), ])
-    #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "EST"), ])
-    #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "POS"), ])
-    #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "SUM"), ])
     
     Gen2 <- as.data.frame(gsub(",","",Gen3[,2]),stringsAsFactors=FALSE)
     Gen42 <- as.data.frame(gsub(",","",Gen3[,3]),stringsAsFactors=FALSE)
@@ -232,7 +190,6 @@ generator <- function(file){
     
     Gen3 <- cbind(as.data.frame(gsub("  "," ",Gen3[,1]), stringsAsFactors=FALSE),Gen3[,2:3])
     
-    #is.letter <- function(x) grepl("[[:alpha:]]", x)
     is.number <- function(x) grepl("[[:digit:]]", x)
     
     L=rep(0,length(Gen3[,1]))
@@ -246,11 +203,9 @@ generator <- function(file){
     numbersnew=rep(0,length(L))
     lettersnew=c()
     h=matrix(0,length(L),3)
-    #numbersnew2=as.data.frame(substr(Gen3[1,1],1,L[1]),stringsAsFactors=FALSE)
     
     for (i in 1:length(L)){
       numbersnew[i]=as.data.frame(substr(Gen3[i,1],1,L[i]),stringsAsFactors=FALSE)
-      # numbersnew2 <- rbind(numbersnew2,numprel)
       
       lettersnew[i] <- as.data.frame(substr(Gen3[i,1],L[i]+1,100),stringsAsFactors=FALSE)
       for (j in 1:3){
@@ -261,14 +216,9 @@ generator <- function(file){
       lettersnew[i] <- as.data.frame(substr(Gen3[i,1],L[i]+1+sum(h[i,]),100),stringsAsFactors=FALSE)
     }
     
-    #numbersnew <- as.numeric(gsub(" ","",numbersnew))
-    #numbers <- as.data.frame(substr(Gen3[,1],1,5),stringsAsFactors=FALSE)
-    #letters <- as.data.frame(substr(Gen3[,1],6,100),stringsAsFactors=FALSE)
-    
     w <- cbind(numbersnew,lettersnew)
     Genfin <- cbind(w, Gen3[,2:3])
     Genfin <- Genfin[!(Genfin[,1]==""),]
-    #Genfin[which(substr(Genfin[,1],5,5) %in% " "),1]=substr(Genfin[which(substr(Genfin[,1],5,5) %in% " "),1],1,4)
     Y <- as.data.frame(gsub("[^0-9]", "", Genfin[,1]),stringsAsFactors=FALSE)
     Genfin <- cbind (Y, Genfin[,2:length(Genfin)])
     
@@ -291,7 +241,6 @@ generator <- function(file){
     }
     
     Genfin <- cbind(Genfin[,1:2],R1,R2)
-    #Genfin1 <- Genfin
     J <- !((as.data.frame(substr(Genfin[,1],1,1)) == "") & (as.data.frame(substr(Genfin[,3],1,1) == "")))
     Genfin <- as.data.frame(Genfin[J, ], stringsAsFactors=FALSE)
     
@@ -301,34 +250,18 @@ generator <- function(file){
     Genfin[,3]   <- type.convert(Genfin[,3], numerals="warn.loss");
     Genfin[,4]   <- type.convert(Genfin[,4], numerals="warn.loss");
   }
-  #values with 5 digit indices
-  #vol[which(!substr(vol[,1],5,5) %in% ""),1]
+  
   #indices with 5 digit indices
   M <- which(is.na(Genfin[,3]))
   N <- intersect(which(!substr(Genfin[,1],5,5) %in% ""),M)
   
   #indices for 2nd NA
   T <- setdiff(M,N)
-  #T <- which(is.null(Genfin[,3]))
-  #T <- T[!(T %in% c(which(!substr(Genfin[,1],5,5) %in% "")))]
-  #vol[T,1]
   
   n <- length(Genfin[,1])
   O1 <- rep(0,n)
   O2 <- rep(0,n)
   
-  #O2 <- O2[-which(is.null(Genfin[,3]))]
-  #counter1=1
-  #counter2=0
-  
-  #for (i in 1:n){
-  #  if (i==M[counter1]& counter1<=length(M)){
-  #    if(i==T[counter1-counter2]& (counter1-counter2)<=length(T)){
-  #      O2[i-counter1+1]=Genfin[T[counter1-counter2],1]
-  #    }
-  #    else{counter2=counter2+1}
-  #    counter1=1+counter1}
-  #}
   
   for (i in 1:length(N)){
     O1[N[i]:n]=Genfin[N[i],1]
@@ -366,36 +299,67 @@ generator <- function(file){
 }
 
 #for now the function ends here
+
+vol12003 <- generator("C:/Users/Tom/Desktop/Data+/2003_5/vol1.pdf")
+vol12005 <- generator("C:/Users/Tom/Desktop/Data+/2005_7/vol1.pdf")
+vol12007 <- generator("C:/Users/Tom/Desktop/Data+/2007_9/vol1.pdf")
+vol12009 <- generator("C:/Users/Tom/Desktop/Data+/2009_11/vol1.pdf")
+vol12011 <- generator("C:/Users/Tom/Desktop/Data+/2011_13/vol1.pdf")
+
+vol22003 <- generator("C:/Users/Tom/Desktop/Data+/2003_5/vol2.pdf")
+vol22005 <- generator("C:/Users/Tom/Desktop/Data+/2005_7/vol2.pdf")
+vol22007 <- generator("C:/Users/Tom/Desktop/Data+/2007_9/vol2.pdf")
+vol22009 <- generator("C:/Users/Tom/Desktop/Data+/2009_11/vol2.pdf")
+vol22011 <- generator("C:/Users/Tom/Desktop/Data+/2011_13/vol2.pdf")
+
+vol32003 <- generator("C:/Users/Tom/Desktop/Data+/2003_5/vol3.pdf")
+vol32005 <- generator("C:/Users/Tom/Desktop/Data+/2005_7/vol3.pdf")
+vol32007 <- generator("C:/Users/Tom/Desktop/Data+/2007_9/vol3.pdf")
+vol32009 <- generator("C:/Users/Tom/Desktop/Data+/2009_11/vol3.pdf")
+vol32011 <- generator("C:/Users/Tom/Desktop/Data+/2011_13/vol3.pdf")
+
+vol42003 <- generator("C:/Users/Tom/Desktop/Data+/2003_5/vol4.pdf")
+vol42005 <- generator("C:/Users/Tom/Desktop/Data+/2005_7/vol4.pdf")
+vol42007 <- generator("C:/Users/Tom/Desktop/Data+/2007_9/vol4.pdf")
+vol42009 <- generator("C:/Users/Tom/Desktop/Data+/2009_11/vol4.pdf")
+vol42011 <- generator("C:/Users/Tom/Desktop/Data+/2011_13/vol4.pdf")
+
+vol52003 <- generator("C:/Users/Tom/Desktop/Data+/2003_5/vol5.pdf")
+vol52005 <- generator("C:/Users/Tom/Desktop/Data+/2005_7/vol5.pdf")
+vol52007 <- generator("C:/Users/Tom/Desktop/Data+/2007_9/vol5.pdf")
+vol52009 <- generator("C:/Users/Tom/Desktop/Data+/2009_11/vol5.pdf")
+vol52011 <- generator("C:/Users/Tom/Desktop/Data+/2011_13/vol5.pdf")
+
 vol62003 <- generator("C:/Users/Tom/Desktop/Data+/2003_5/vol6.pdf")
 vol62005 <- generator("C:/Users/Tom/Desktop/Data+/2005_7/vol6.pdf")
 vol62007 <- generator("C:/Users/Tom/Desktop/Data+/2007_9/vol6.pdf")
 vol62009 <- generator("C:/Users/Tom/Desktop/Data+/2009_11/vol6.pdf")
 vol62011 <- generator("C:/Users/Tom/Desktop/Data+/2011_13/vol6.pdf")
 
+
 # matching function: give me supercode1 and some text from description column,
 # I give you matrices with encounters in all data frames
 
 
 # Supcode1 is the only required variable to run the code (others are optional), need to specify at least 2 variables
-matcher <- function(Supercode1,Supercode2,SubsecID,Description){
+matcher <- function(basefile,Supercode1,Supercode2,SubsecID,Description){
   matcher <- list()
   Supercode1 <- as.numeric(Supercode1)
   Supercode2 <- as.numeric(Supercode2)
   SubsecID <- as.numeric(SubsecID)
   
   if(!(length(as.numeric(SubsecID))==0)){
-  if (nchar(SubsecID)>4){
-    SubsecID <- substr(SubsecID,3,6)
-  }
+    if (nchar(SubsecID)>4){
+      SubsecID <- substr(SubsecID,3,6)
+    }
   }
   
   argList <- list(Supercode1,Supercode2,SubsecID,Description)
   for (t in seq(3,11,by = 2)){
     index=(t+which(seq(3,11,by = 2)==t)-1)/3
     if(t<10){
-      files <- get(paste("vol6200",t,sep = ""))
+      files <- get(paste(substr(basefile,1,6),t,sep = "0"))
       nam <- paste("J", t, sep = "")
-      #assign(nam, files[files$Supercode1==Supercode1 & grep(Description,files$Description),])
       if(length(as.numeric(argList[[2]]))==0|length(as.numeric(argList[[3]]))==0|is.null(argList[[4]])==TRUE|is.null(argList[[2]])&length(as.numeric(argList[[3]]))==0|is.null(argList[[2]])&is.null(argList[[4]])==TRUE|is.null(argList[[3]])&is.null(argList[[4]])==TRUE){
         if(length(as.numeric(argList[[2]]))==0){
           if(length(as.numeric(argList[[3]]))==0|is.null(argList[[4]])==TRUE){
@@ -432,11 +396,9 @@ matcher <- function(Supercode1,Supercode2,SubsecID,Description){
       else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supercode1), which(files$Supercode2==Supercode2)), intersect(grep(SubsecID,files$SubsecID), intersect(agrep(Description, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Description))<2)))),])
       }
       
-      #if( union(!is.null(Supercode1),!is.null(SubsecID),!is.null(Description))){assign(nam, files[intersect(which(files$Supercode1==Supercode1), grep(SubsecID,files$SubsecID),intersect(agrep(Description, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Description))<2),])
-      #}
       matcher[[index]]=get(nam)
     }
-    else{files <- get(paste("vol620",t,sep = ""))
+    else{files <- get(paste(substr(basefile,1,6),t,sep = ""))
     nam <- paste("J", t, sep = "")
     #assign(nam, files[files$Supercode1==Supercode1 & grep(Description,files$Description),])
     if(length(as.numeric(argList[[2]]))==0|length(as.numeric(argList[[3]]))==0|is.null(argList[[4]])==TRUE|is.null(argList[[2]])&length(as.numeric(argList[[3]]))==0|is.null(argList[[2]])&is.null(argList[[4]])==TRUE|is.null(argList[[3]])&is.null(argList[[4]])==TRUE){
@@ -480,116 +442,101 @@ matcher <- function(Supercode1,Supercode2,SubsecID,Description){
   return(matcher)
 }
 
+#-------------------NEW EXAMPLE!!!!
+#Match <- matcher("vol62003", 84210, 54,842101, "total receipts")
 
-#------------------------------------------------
-# example
-U <- matcher(84210,"STATE AID")
-I <- U[[1]] #these are encounters in vol6 2003
+##------------------OUTDATED!!!
+## example
+##U <- matcher(84210,"STATE AID")
+##I <- U[[1]] #these are encounters in vol6 2003
 
-#example with optional variables
-U2 <- matcher(84210,7828,SubsecID=NULL,Desc=NULL)
-I2 <- U2[[1]]
-#------------------------------------------------
+##example with optional variables
+##U2 <- matcher(84210,7828,SubsecID=NULL,Desc=NULL)
+##I2 <- U2[[1]]
+##------------------------------------------------
 
-Match <- matcher(14222, Supcode2=NULL, SubsecID=NULL, "STATE AID")
-
-# conveniently store output from matcher in dataframes
-for (t in seq(3,11,by = 2)){
-  index=(t+which(seq(3,11,by = 2)==t)-1)/3
-  if(t<10){nam <- paste("Match", t, sep = "0")
-  assign(nam, Match[[index]])}
-  else{nam <- paste("Match", t, sep = "")
-  assign(nam, Match[[index]])}
-}
+# JUST an idea used in further codes
+## conveniently store output from matcher in dataframes
+#for (t in seq(3,11,by = 2)){
+  #index=(t+which(seq(3,11,by = 2)==t)-1)/3
+  #if(t<10){nam <- paste("Match", t, sep = "0")
+  #assign(nam, Match[[index]])}
+ # else{nam <- paste("Match", t, sep = "")
+ # assign(nam, Match[[index]])}
+#}
 
 
 #--------------------------------------------MERGING
-# delete duplicates (approach for now, will make it better perhaps with use of my matcher function)
-dvol62003 <- vol62003[!duplicated(vol62003),]
-dvol62005 <- vol62005[!duplicated(vol62005),]
-dvol62007 <- vol62007[!duplicated(vol62007),]
-dvol62009 <- vol62009[!duplicated(vol62009),]
-dvol62011 <- vol62011[!duplicated(vol62011),]
 
 # merge this stuff
-test <- dvol62003
+test <- vol62003
 for (t in seq(5,11,by = 2)){
   #index=(t+which(seq(3,11,by = 2)==t)-1)/3
-  if(t<10){nam <- paste("dvol620", t, sep = "0")}
+  if(t<10){nam <- paste("vol620", t, sep = "0")}
   #assign(nam, (Match[[index]])[,5:length(Match[[index]])])}
-  else{nam <- paste("dvol620", t, sep = "")}
+  else{nam <- paste("vol620", t, sep = "")}
   #assign(nam, (Match[[index]])[,5:length(Match[[index]])])}
   test3 <- get(nam)
-  test <- merge(test,test3,by=c("Supercode1", "Supercode2", "Description"))
+  test <- merge(test,test3,by=c("Supercode1", "Supercode2", "Description"),all=TRUE)
 }
 
 
 #-------------------MAPPING
-
-
-#dvol62003un <- unname(dvol62003)
 mapping <- function(basefile){
-base_t <- as.numeric(substr(colnames(basefile)[5],4,5))
-base_index <- (base_t+which(seq(3,11,by = 2)==base_t)-1)/3
-#basefile <- rbind(dvol62003,dvol62005,dvol62007,dvol62009,dvol62011,setNames( rev(vol62003) , names( vol62003) ) )
-test2 <- matrix(,nrow=length(basefile[,1]),ncol=2*length(seq(3,11,by = 2)))
-test2 <- cbind(basefile[,1:4],test2)
-
-#is.empty <- function(x) grepl(numeric(0), x)
-weirdos <- matrix(0,length(basefile[,1]),length(seq(3,11,by = 2)))
-
-for (i in 1:length(basefile[,1])){
-DMatch <- do.call(matcher, as.list(basefile[i,1:4]))
-#o <- rep(0,1)
-#ow <- rep(0,1)
-for (t in seq(3,11,by = 2)){
-  index=(t+which(seq(3,11,by = 2)==t)-1)/3
-  l <- length((DMatch[[index]])[,5])
-  if (!(l == 0)){
-    if(l > 1){
-      weirdos[i,index] <- l 
-      counter <- l
-      repeat{ialt <-which(row.names(DMatch[[base_index]][counter,])==row.names(basefile))
-      if(t<10){nam1 <- paste("DMatch1", t, sep = "0")
-      assign(nam1, (DMatch[[index]])[counter,5:length(DMatch[[index]])])}
-      else{nam1 <- paste("DMatch1", t, sep = "")
-      assign(nam1, (DMatch[[index]])[counter,5:length(DMatch[[index]])])}
-      #ow <- cbind(ow,get(nam1))
-      counter=counter-1
-      #outputw <- ow[-1]
-      outputw <- get(nam1)
-      test2[ialt,(3+2*index):(3+2*index+length(outputw)-1)] <- outputw
-      if (counter==0) {break} }
-    }
-      else{
-  if(t<10){nam <- paste("DMatch", t, sep = "0")
-  assign(nam, (DMatch[[index]])[1,5:length(DMatch[[index]])])}
-  else{nam <- paste("DMatch", t, sep = "")
-  assign(nam, (DMatch[[index]])[1,5:length(DMatch[[index]])])}
-  #o <- cbind(o,get(nam))
-  output <- get(nam)
-  test2[i,(3+2*index):(3+2*index+length(output)-1)] <- output
+  basedata <- get(basefile)
+  base_t <- as.numeric(substr(colnames(basedata)[5],4,5))
+  base_index <- (base_t+which(seq(3,11,by = 2)==base_t)-1)/3
+  test2 <- matrix(,nrow=length(basedata[,1]),ncol=2*length(seq(3,11,by = 2)))
+  test2 <- cbind(basedata[,1:4],test2)
+  weirdos <- matrix(0,length(basedata[,1]),length(seq(3,11,by = 2)))
+  
+  for (i in 1:length(basedata[,1])){
+    DMatch <- do.call(matcher, as.list(cbind(basefile, basedata[i,1:4])))
+    for (t in seq(3,11,by = 2)){
+      index <- (t+which(seq(3,11,by = 2)==t)-1)/3
+      l <- length((DMatch[[index]])[,5])
+      if (!(l == 0)){
+        if(l > 1){
+          weirdos[i,index] <- l 
+          counter <- l
+          repeat{
+            ialt <-which(row.names(DMatch[[base_index]][counter,])==row.names(basedata))
+            if(t<10){nam1 <- paste("DMatch1", t, sep = "0")
+            assign(nam1, (DMatch[[index]])[counter,5:length(DMatch[[index]])])}
+            else{nam1 <- paste("DMatch1", t, sep = "")
+            assign(nam1, (DMatch[[index]])[counter,5:length(DMatch[[index]])])}
+            counter=counter-1
+            outputw <- get(nam1)
+            test2[ialt,(3+2*index):(3+2*index+length(outputw)-1)] <- outputw
+            if (counter==0) {break} }
+        }
+        else{
+          if(t<10){nam <- paste("DMatch", t, sep = "0")
+          assign(nam, (DMatch[[index]])[1,5:length(DMatch[[index]])])}
+          else{nam <- paste("DMatch", t, sep = "")
+          assign(nam, (DMatch[[index]])[1,5:length(DMatch[[index]])])}
+          output <- get(nam)
+          test2[i,(3+2*index):(3+2*index+length(output)-1)] <- output
+        }
       }
-  }
-  }
-#output <- o
-#if (length(output)>2){
-#output <- output[-1]}
-#test2[i,5:(5+length(output)-1)] <- output
-}
-mapping <- test2
-return(mapping)
+    }
+    }
+  mapping <- test2
+  return(mapping)
 }
 
 
-Map03 <- mapping(dvol62003)
-Map05 <- mapping(dvol62005)
-Map07 <- mapping(dvol62007)
-Map09 <- mapping(dvol62009)
-Map11 <- mapping(dvol62011)
 
-Map <- rbind(Map03,Map05, Map07, Map09, Map11)
-Mapd <- Map[duplicated(Map),]
+Map03 <- mapping("vol62003")
+Map05 <- mapping("vol62005")
+Map07 <- mapping("vol62007")
+Map09 <- mapping("vol62009")
+Map11 <- mapping("vol62011")
+
+Map <- rbind(Map03, Map05, Map07, Map09, Map11)
+Map_finale <- Map[!duplicated(Map),]
+Map_finale6 <- Map_finale
+#Mapd <- Map[intersect(is.na(Map),duplicated(Map)),]
 
 
 
@@ -605,8 +552,6 @@ totalsprel <- function(Supercode1,Description){
   filtered <- Map_finale[indices,5:length(Map_finale)]
   filtered[is.na(filtered)] <- 0
   summ <- colSums(filtered)
-  #output <- cbind(Supercode1,Description,t(summ))
-  #totals <- output
   totalsprel <- summ
   return(totalsprel)
 }
@@ -630,214 +575,77 @@ totreq <- totals("Total Requirements")
 netapp <- cbind("Net Appropriation", -diff(rbind(totreq,totrec)) ) 
 vol6tot <- rbind(cbind("Total Requirements",totreq),cbind("Total Receipts",totrec),netapp) #final table
 
+Map03vol1 <- mapping("vol12003")
+Map05vol1 <- mapping("vol12005")
+Map07vol1 <- mapping("vol12007")
+Map09vol1 <- mapping("vol12009")
+Map11vol1 <- mapping("vol12011")
 
+Mapvol1 <- rbind(Map03vol1, Map05vol1, Map07vol1, Map09vol1, Map11vol1)
+Map_finale <- Mapvol1[!duplicated(Mapvol1),]
+Map_finale1 <- Map_finale
 
+totrec <- totals("Total Receipts")
+totreq <- totals("Total Requirements")
+netapp <- cbind("Net Appropriation", -diff(rbind(totreq,totrec)) ) 
+vol1tot <- rbind(cbind("Total Requirements",totreq),cbind("Total Receipts",totrec),netapp)
 
+Map03vol2 <- mapping("vol22003")
+Map05vol2 <- mapping("vol22005")
+Map07vol2 <- mapping("vol22007")
+Map09vol2 <- mapping("vol22009")
+Map11vol2 <- mapping("vol22011")
 
+Mapvol2 <- rbind(Map03vol2, Map05vol2, Map07vol2, Map09vol2, Map11vol2)
+Map_finale <- Mapvol2[!duplicated(Mapvol2),]
+Map_finale2 <- Map_finale
 
+totrec <- totals("Total Receipts")
+totreq <- totals("Total Requirements")
+netapp <- cbind("Net Appropriation", -diff(rbind(totreq,totrec)) ) 
+vol2tot <- rbind(cbind("Total Requirements",totreq),cbind("Total Receipts",totrec),netapp)
 
+Map03vol3 <- mapping("vol32003")
+Map05vol3 <- mapping("vol32005")
+Map07vol3 <- mapping("vol32007")
+Map09vol3 <- mapping("vol32009")
+Map11vol3 <- mapping("vol32011")
 
+Mapvol3 <- rbind(Map03vol3, Map05vol3, Map07vol3, Map09vol3, Map11vol3)
+Map_finale <- Mapvol3[!duplicated(Mapvol3),]
+Map_finale3 <- Map_finale
 
+totrec <- totals("Total Receipts")
+totreq <- totals("Total Requirements")
+netapp <- cbind("Net Appropriation", -diff(rbind(totreq,totrec)) ) 
+vol3tot <- rbind(cbind("Total Requirements",totreq),cbind("Total Receipts",totrec),netapp)
 
+Map03vol4 <- mapping("vol42003")
+Map05vol4 <- mapping("vol42005")
+Map07vol4 <- mapping("vol42007")
+Map09vol4 <- mapping("vol42009")
+Map11vol4 <- mapping("vol42011")
 
+Mapvol4 <- rbind(Map03vol4, Map05vol4, Map07vol4, Map09vol4, Map11vol4)
+Map_finale <- Mapvol4[!duplicated(Mapvol4),]
+Map_finale4 <- Map_finale
 
+totrec <- totals("Total Receipts")
+totreq <- totals("Total Requirements")
+netapp <- cbind("Net Appropriation", -diff(rbind(totreq,totrec)) ) 
+vol4tot <- rbind(cbind("Total Requirements",totreq),cbind("Total Receipts",totrec),netapp)
 
+Map03vol5 <- mapping("vol52003")
+Map05vol5 <- mapping("vol52005")
+Map07vol5 <- mapping("vol52007")
+Map09vol5 <- mapping("vol52009")
+Map11vol5 <- mapping("vol52011")
 
+Mapvol5 <- rbind(Map03vol5, Map05vol5, Map07vol5, Map09vol5, Map11vol5)
+Map_finale <- Mapvol5[!duplicated(Mapvol5),]
+Map_finale5 <- Map_finale
 
-
-
-
-
-###############################################################################################################################
-###CODE 2 for same function###
-
-matcher2.0 <- function(Supcode1,ID=NULL,Desc=NULL){
-  matcher2.0 <- list()
-  for (t in seq(3,11,by = 2)){
-    index=(t+which(seq(3,11,by = 2)==t)-1)/3
-    if(t<10){
-      if(is.null(ID)){
-        files <- get(paste("vol6200",t,sep = ""))
-        nam <- paste("J", t, sep = "")
-        assign(nam, files[files$Supercode1==Supcode1 & files$Description==Desc,])
-        matcher2.0[[index]]=get(nam)}
-      if(is.null(Desc)){
-        files <- get(paste("vol6200",t,sep = ""))
-        nam <- paste("J", t, sep = "")
-        assign(nam, files[files$Supercode1==Supcode1 & files$SubsecID==ID,])
-        matcher2.0[[index]]=get(nam)}
-      if(is.null(ID) & is.null(Desc)){
-        files <- get(paste("vol6200",t,sep = ""))
-        nam <- paste("J", t, sep = "")
-        assign(nam, files[files$Supercode1==Supcode1,])
-        matcher2.0[[index]]=get(nam)}
-      if(!is.null(ID) & !is.null(Desc)){
-        files <- get(paste("vol6200",t,sep = ""))
-        nam <- paste("J", t, sep = "")
-        assign(nam, files[files$SubsecID==ID & files$Description==Desc & files$Supercode1 == Supcode1,])
-        matcher2.0[[index]]=get(nam)}}
-    if (t>10){
-      if(is.null(ID)){
-        files <- get(paste("vol620",t,sep = ""))
-        nam <- paste("J", t, sep = "")
-        assign(nam, files[files$Supercode1==Supcode1 & files$Description==Desc,])
-        matcher2.0[[index]]=get(nam)}
-      if (is.null(Desc)){
-        files <- get(paste("vol620",t,sep = ""))
-        nam <- paste("J", t, sep = "")
-        assign(nam, files[files$Supercode1==Supcode1 & files$SubsecID==ID,])
-        matcher2.0[[index]]=get(nam)}
-      if(is.null(ID) & is.null(Desc)){
-        files <- get(paste("vol620",t,sep = ""))
-        nam <- paste("J", t, sep = "")
-        assign(nam, files[files$Supercode1==Supcode1,])
-        matcher2.0[[index]]=get(nam)}
-      if(!is.null(ID) & !is.null(Desc)){
-        files <- get(paste("vol620",t,sep = ""))
-        nam <- paste("J", t, sep = "")
-        assign(nam, files[files$SubsecID==ID & files$Description==Desc & files$Supercode1 == Supcode1,])
-        matcher2.0[[index]]=get(nam)}
-      }
-    }
-return(matcher2.0)}
-
-#is.null(ID) & !is.null(Desc
-# example
-U2 <- matcher2.0(84210)
-I2 <- U2[[1]] #these are encounters in vol6 2003
-
-###################################################################################################################################
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# List all categories with given ID
-Genfin[Genfin$SubsecID==6990,]
-
-
-### LEFT TO DO:
-# Somehow map the "big" and "small" codes where there are currently NA's
-# into two new columns labeled "Category" and "Subcategory"
-
-# I found this function at http://www.r-bloggers.com/generating-a-laglead-variables/
-shift<-function(x,shift_by){
-    stopifnot(is.numeric(shift_by))
-    stopifnot(is.numeric(x))
- 
-    if (length(shift_by)>1)
-        return(sapply(shift_by,shift, x=x))
- 
-    out<-NULL
-    abs_shift_by=abs(shift_by)
-    if (shift_by > 0 )
-        out<-c(tail(x,-abs_shift_by),rep(NA,abs_shift_by))
-    else if (shift_by < 0 )
-        out<-c(rep(NA,abs_shift_by), head(x,-abs_shift_by))
-    else
-        out<-x
-    out
-}
-
-
-# Flag aggregate codes and sub-aggregate codes so that we can get a unique identifier
-Genfin$aggflag    <- is.na(Genfin$y200304)
-Genfin$subaggflag <- is.na(Genfin$y200304)
-Genfin$IDflag     <- as.logical(shift(as.numeric((!is.na(Genfin$y200304) & Genfin$lead1==TRUE)),-1))
-Genfin$subIDflag  <- as.logical(shift(as.numeric((!is.na(Genfin$y200304) & Genfin$lag1==TRUE)),1))
-Genfin$Category   <- as.numeric(Genfin$IDflag)*Genfin$SubsecID
-Genfin$Subategory <- as.numeric(Genfin$subIDflag)*Genfin$SubsecID
-Genfin$Category[1]<- Genfin$SubsecID[1]
-
-# Now we need to fill in the zeros between the numbers with the previously found number.
-# This will probably require looping through values
-# i.e.
-# look at next observation
-# if next observation is 0, replace it with current observation
-# otherwise continue to the next observation and repeat
-Gen$Supercode1 <- c(0)
-Gen$Supercode2 <- c(0)
-Gen <- Gen[c("Supercode1","Supercode2","SubsecID","Description","y200304","y200405")]
-# Add two columns with all zero entries to data set, and rearranging the columns using the column names
-for (i in 1:2485)
-  if (as.numeric(Gen[i,3]) == 14222){
-    Gen[i,1] = 14222} 
-for (i in 1:2485)
-  if (as.numeric(Gen[i,3]) == 84210){
-    Gen[i,1] = 84210}
-for (i in 1:2485)
-  if (as.numeric(Gen[i,3]) == 84290){
-    Gen[i,1] = 84290}
-for (i in 1:2485)
-  if (as.numeric(Gen[i,3]) == 14222 & is.na(Gen[i+1,5]) ){
-    Gen[i+1,2] = Gen[i+1,3]} 
-for (i in 1:2485)
-  if (as.numeric(Gen[i,3]) == 84210 & is.na(Gen[i+1,5]) ){
-    Gen[i+1,2] = Gen[i+1,3]}
-for (i in 1:2485)
-  if (as.numeric(Gen[i,1]) == 14222 & (as.numeric(Gen[i+1,1]) == 0)){
-    Gen[i+1,1] = 14222}
-for (i in 1:2485)
-  if (as.numeric(Gen[i,1]) == 84210 & (as.numeric(Gen[i+1,1]) == 0)){
-    Gen[i+1,1] = 84210}
-for (i in 1:2485)
-  if (as.numeric(Gen[i,1]) == 84290 & (as.numeric(Gen[i+1,1]) == 0)){
-    Gen[i+1,1] = 84290}
-for (i in 1:2485)
-  if ((as.numeric(Gen[i+1,2]) == 0) & !is.na(Gen[i+1,4])){
-    Gen[i+1,2] = Gen[i,2]}
-for (i in 1:2485)
-  if ((as.numeric(Gen[i,3]) == 14222)){
-    Gen[i,2] = 0}
-for (i in 1:2485)
-  if ((as.numeric(Gen[i,3]) == 84210)){
-    Gen[i,2] = 0}
-for (i in 1:2485)
-  if ((as.numeric(Gen[i,3]) == 84290)){
-    Gen[i,2] = 0}
-# Assigning Supercodes to SubSecID's in that page
-
-
-#values with 5 digit indeces
-vol[which(!substr(vol[,1],5,5) %in% ""),1]
-#indeces with 5 digit indeces
-N <- which(!substr(vol[,1],5,5) %in% "")
-M <- which(is.na(vol[,3]))
-
-#indeces for 2nd NA
-T <- which(is.na(vol[,3]))
-T <- T[!(T %in% c(which(!substr(vol[,1],5,5) %in% "")))]
-vol[T,1]
-
-#n <- length(vol[,1])-length(which(is.na(vol[,3])))
-n <- length(vol[,1])
-O1 <- rep(0,n)
-O2 <- rep(0,n)
-counter=1
-
-for (i in 1:length(M)){
-  if (M[i]==T[counter]& counter<=length(T)){
-  O2[T[counter]]=vol[T[counter],1]
-  counter=1+counter}
-}
-
-for (i in 1:length(N)){
-  O1[N[i]:n]=vol[N[i],1]
-}
-O1 <- O1[-which(is.na(vol[,3]))]
+totrec <- totals("Total Receipts")
+totreq <- totals("Total Requirements")
+netapp <- cbind("Net Appropriation", -diff(rbind(totreq,totrec)) ) 
+vol5tot <- rbind(cbind("Total Requirements",totreq),cbind("Total Receipts",totrec),netapp)
