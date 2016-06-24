@@ -400,7 +400,6 @@ matcher <- function(basefile,Supercode1,Supercode2,SubsecID,Description){
     }
     else{files <- get(paste(substr(basefile,1,6),t,sep = ""))
     nam <- paste("J", t, sep = "")
-    #assign(nam, files[files$Supercode1==Supercode1 & grep(Description,files$Description),])
     if(length(as.numeric(argList[[2]]))==0|length(as.numeric(argList[[3]]))==0|is.null(argList[[4]])==TRUE|is.null(argList[[2]])&length(as.numeric(argList[[3]]))==0|is.null(argList[[2]])&is.null(argList[[4]])==TRUE|is.null(argList[[3]])&is.null(argList[[4]])==TRUE){
       if(length(as.numeric(argList[[2]]))==0){
         if(length(as.numeric(argList[[3]]))==0|is.null(argList[[4]])==TRUE){
@@ -469,16 +468,16 @@ matcher <- function(basefile,Supercode1,Supercode2,SubsecID,Description){
 #--------------------------------------------MERGING
 
 # merge this stuff
-test <- vol62003
-for (t in seq(5,11,by = 2)){
+#test <- vol62003
+#for (t in seq(5,11,by = 2)){
   #index=(t+which(seq(3,11,by = 2)==t)-1)/3
-  if(t<10){nam <- paste("vol620", t, sep = "0")}
-  #assign(nam, (Match[[index]])[,5:length(Match[[index]])])}
-  else{nam <- paste("vol620", t, sep = "")}
-  #assign(nam, (Match[[index]])[,5:length(Match[[index]])])}
-  test3 <- get(nam)
-  test <- merge(test,test3,by=c("Supercode1", "Supercode2", "Description"),all=TRUE)
-}
+ # if(t<10){nam <- paste("vol620", t, sep = "0")}
+  
+ # else{nam <- paste("vol620", t, sep = "")}
+  
+ # test3 <- get(nam)
+  #test <- merge(test,test3,by=c("Supercode1", "Supercode2", "Description"),all=TRUE)
+#}
 
 
 #-------------------MAPPING
