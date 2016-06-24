@@ -173,6 +173,9 @@ generator <- function(file){
   O <- cbind(O1,O2)
   Genfin <- as.data.frame(Genfin[-(which(is.na(Genfin[,3]))), ])
   Genfin <- cbind(O,Genfin)
+  Genfin <- cbind(Genfin[,1:3],as.data.frame(substr(Genfin[,4],2,100),stringsAsFactors=FALSE),Genfin[,5:7])
+  colnames(Genfin)[1:2] <- c("Supercode1", "Supercode2")
+  colnames(Genfin)[4] <- c("Description")
   
   return(Genfin)
 }
