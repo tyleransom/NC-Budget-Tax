@@ -183,7 +183,31 @@ generator <- function(file){
 vol62003 <- generator("C:/Users/admin/Desktop/DUKE Data+/2003_5/vol6.pdf")
 vol62004 <- generator2("C:/Users/admin/Desktop/DUKE Data+/2004_5/vol6.pdf")
 
+################## New function for combining revised and actual budgets
+generator3 <- function(var1,var2){
+  
+var22 <- var2[,-c(2,6,7)]
+var23 <- var2
+var12 <- var1[,-c(2,5)]
+#var13 <- cbind(var1,0,0,0)
+#colnames(var13)[7:9] <- c(colnames(var2)[5],colnames(var2)[6],colnames(var2)[7])
+var24 <- cbind(var2[1:4],0,0,var2[5:7])
+colnames(var24)[5:6] <- c(colnames(var1)[5],colnames(var1)[6])
 
+for (j in 1:nrow(var22)){
+  for(i in 1:nrow(var12)){
+    if(var12[i,1] == var22[j,1]&var12[i,2] == var22[j,2]&var12[i,3] == var22[j,3]&var12[i,4] == var22[j,4]){
+      var1[i,5] -> var24[j,5]
+      var1[i,6] -> var24[j,6]
+    }
+  }
+}
+
+return(var24)
+}
+
+
+#####################################
 vol620042 <- vol62004[,-c(2,6,7)]
 vol620043 <- vol62004
 vol620032 <- vol62003[,-c(2,5)]
