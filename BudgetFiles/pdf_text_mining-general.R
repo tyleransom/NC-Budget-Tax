@@ -120,7 +120,7 @@ generator <- function(file){
     R3 <- as.data.frame(gsub("[^0-9]", "", Genfin[,4]),stringsAsFactors=FALSE)
     R1[M1,] <- paste("-",R1[M1,],sep = "")
     R2[M2,] <- paste("-",R2[M2,],sep = "")
-    R3[M3,] <- paste("-",R3[M3],sep = "")
+    R3[M3,] <- paste("-",R3[M3,],sep = "")
     
     for (i in 2:10){
       D1=rep(0,length(Genfin[,3]))
