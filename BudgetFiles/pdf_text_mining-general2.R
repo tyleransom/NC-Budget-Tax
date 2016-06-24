@@ -180,6 +180,19 @@ generator <- function(file){
   return(Genfin)
 }
 
+vol62003 <- generator("C:/Users/admin/Desktop/DUKE Data+/2003_5/vol6.pdf")
+vol62004 <- generator2("C:/Users/admin/Desktop/DUKE Data+/2004_5/vol6.pdf")
+
+
+vol620042 <- vol62004[,-c(2,6,7)]
+vol620043 <- vol62004
+vol620032 <- vol62003[,-c(2,5)]
+vol620033 <- cbind(vol62003,0,0,0)
+colnames(vol620033)[7:9] <- c(colnames(vol62004)[5],colnames(vol62004)[6],colnames(vol62004)[7])
+vol620044 <- cbind(vol62004[1:4],0,0,vol62004[5:7])
+colnames(vol620044)[5:6] <- c(colnames(vol62003)[5],colnames(vol62003)[6])
+
+
 #Loop to merge revised figures of 2nd Year budget with the proposed 2 year budget
 #Change variable name according to the year and area of interest
 for (i in 1:nrow(vol62003)){
@@ -189,7 +202,7 @@ for (i in 1:nrow(vol62003)){
     }
 vol620033 <- cbind(vol62003,vol620043[6:7])
 
-#Updated Loop
+#Updated Loop 1
 for(i in 1:nrow(vol620032)){
   for (j in 1:nrow(vol620042)){
     if(vol620032[i,1] == vol620042[j,1]&vol620032[i,2] == vol620042[j,2]&vol620032[i,3] == vol620042[j,3]&vol620032[i,4] == vol620042[j,4]){
@@ -199,6 +212,18 @@ for(i in 1:nrow(vol620032)){
        }
     }
 }
+#Updated Loop 2
+for (j in 1:nrow(vol620042)){
+  for(i in 1:nrow(vol620032)){
+    if(vol620032[i,1] == vol620042[j,1]&vol620032[i,2] == vol620042[j,2]&vol620032[i,3] == vol620042[j,3]&vol620032[i,4] == vol620042[j,4]){
+      vol62003[i,5] -> vol620044[j,5]
+      vol62003[i,6] -> vol620044[j,6]
+    }
+  }
+}
+
+
+
 #Change path according to the files on your PC
 
 vol62004 <- generator("C:/Users/admin/Desktop/DUKE Data+/2004_5/vol6.pdf")
