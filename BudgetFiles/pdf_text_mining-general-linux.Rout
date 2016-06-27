@@ -830,6 +830,14 @@ Error in names(Out) <- names(Genout1) :
 > netapp <- cbind("Net Appropriation", -diff(rbind(totreq,totrec)) ) 
 > vol5tot <- rbind(cbind("Total Requirements",totreq),cbind("Total Receipts",totrec),netapp)
 > 
+> save(Map_finale1,file="Map_finale1.Rda")
+> save(Map_finale2,file="Map_finale2.Rda")
+> save(Map_finale3,file="Map_finale3.Rda")
+> save(Map_finale4,file="Map_finale4.Rda")
+> save(Map_finale5,file="Map_finale5.Rda")
+> save(Map_finale6,file="Map_finale6.Rda")
+> 
+> 
 > proc.time()
      user    system   elapsed 
-72696.136    44.585 72685.101 
+67937.811    41.801 67705.614 
