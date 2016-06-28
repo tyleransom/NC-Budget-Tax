@@ -117,7 +117,7 @@ generator <- function(file){
     M3 <- intersect(which(as.numeric(Genfin[,5])<0),which(!Genfin[,5]==""))
     R1 <- as.data.frame(gsub("[^0-9]", "", Genfin[,3]),stringsAsFactors=FALSE)
     R2 <- as.data.frame(gsub("[^0-9]", "", Genfin[,4]),stringsAsFactors=FALSE)
-    R3 <- as.data.frame(gsub("[^0-9]", "", Genfin[,4]),stringsAsFactors=FALSE)
+    R3 <- as.data.frame(gsub("[^0-9]", "", Genfin[,5]),stringsAsFactors=FALSE)
     R1[M1,] <- paste("-",R1[M1,],sep = "")
     R2[M2,] <- paste("-",R2[M2,],sep = "")
     R3[M3,] <- paste("-",R3[M3,],sep = "")
@@ -342,7 +342,8 @@ vol62011 <- generator("C:/Users/Tom/Desktop/Data+/2011_13/vol6.pdf")
 
 
 # Supcode1 is the only required variable to run the code (others are optional), need to specify at least 2 variables
-matcher <- function(basefile,Supercode1,Supercode2,SubsecID,Description){
+matcher <- function(basefile,Supercode1,Supercode2,SubsecID,Description,operation){
+  
   matcher <- list()
   Supercode1 <- as.numeric(Supercode1)
   Supercode2 <- as.numeric(Supercode2)
@@ -355,15 +356,60 @@ matcher <- function(basefile,Supercode1,Supercode2,SubsecID,Description){
   }
   
   argList <- list(Supercode1,Supercode2,SubsecID,Description)
-  for (t in seq(3,11,by = 2)){
-    index=(t+which(seq(3,11,by = 2)==t)-1)/3
-    if(t<10){
-      files <- get(paste(substr(basefile,1,6),t,sep = "0"))
+  if (operation==2){
+    for (t in seq(3,11,by = 2)){
+      index=(t+which(seq(3,11,by = 2)==t)-1)/3
+      if(t<10){
+        files <- get(paste(substr(basefile,1,6),t,sep = "0"))
+        nam <- paste("J", t, sep = "")
+        #assign(nam, files[files$Supercode1==Supercode1 & grep(Description,files$Description),])
+        if(length(as.numeric(argList[[2]]))==0|length(as.numeric(argList[[3]]))==0|is.null(argList[[4]])==TRUE|is.null(argList[[2]])&length(as.numeric(argList[[3]]))==0|is.null(argList[[2]])&is.null(argList[[4]])==TRUE|is.null(argList[[3]])&is.null(argList[[4]])==TRUE){
+          if(length(as.numeric(argList[[2]]))==0){
+            if(length(as.numeric(argList[[3]]))==0|is.null(argList[[4]])==TRUE){
+              if(length(as.numeric(argList[[3]]))==0){assign(nam, files[intersect(which(files$Supercode1==Supercode1), intersect(agrep(Description, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Description))<2))),])
+              }
+              if(is.null(argList[[4]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supercode1), grep(SubsecID,files$SubsecID)),])
+              }
+            }
+            else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supercode1), grep(SubsecID,files$SubsecID)), intersect(agrep(Description, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Description))<2))),])
+            }
+          }
+          if(length(as.numeric(argList[[3]]))==0){
+            if(length(as.numeric(argList[[2]]))==0|is.null(argList[[4]])==TRUE){
+              if(is.null(argList[[4]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supercode1), which(files$Supercode2==Supercode2)),])
+              }
+              if(length(as.numeric(argList[[2]]))==0){assign(nam, files[intersect(which(files$Supercode1==Supercode1), intersect(agrep(Description, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Description))<2))),])
+              }
+            }
+            else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supercode1), which(files$Supercode2==Supercode2)), intersect(agrep(Description, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Description))<2))),])
+            }
+          }
+          if(is.null(argList[[4]])==TRUE){
+            if(length(as.numeric(argList[[3]]))==0|length(as.numeric(argList[[2]]))==0){
+              if(length(as.numeric(argList[[2]]))==0){assign(nam, files[intersect(which(files$Supercode1==Supercode1), grep(SubsecID,files$SubsecID)),])
+              }
+              if(length(as.numeric(argList[[3]]))==0){assign(nam, files[intersect(which(files$Supercode1==Supercode1), which(files$Supercode2==Supercode2)),])
+              }
+            }
+            else{
+              assign(nam, files[intersect(intersect(which(files$Supercode1==Supercode1), which(files$Supercode2==Supercode2)), grep(SubsecID,files$SubsecID)),])
+            }
+          }
+        }
+        else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supercode1), which(files$Supercode2==Supercode2)), intersect(grep(SubsecID,files$SubsecID), intersect(agrep(Description, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Description))<2)))),])
+        }
+        
+        #if( union(!is.null(Supercode1),!is.null(SubsecID),!is.null(Description))){assign(nam, files[intersect(which(files$Supercode1==Supercode1), grep(SubsecID,files$SubsecID),intersect(agrep(Description, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Description))<2),])
+        #}
+        matcher[[index]]=get(nam)
+      }
+      else{files <- get(paste(substr(basefile,1,6),t,sep = ""))
       nam <- paste("J", t, sep = "")
+      #assign(nam, files[files$Supercode1==Supercode1 & grep(Description,files$Description),])
       if(length(as.numeric(argList[[2]]))==0|length(as.numeric(argList[[3]]))==0|is.null(argList[[4]])==TRUE|is.null(argList[[2]])&length(as.numeric(argList[[3]]))==0|is.null(argList[[2]])&is.null(argList[[4]])==TRUE|is.null(argList[[3]])&is.null(argList[[4]])==TRUE){
         if(length(as.numeric(argList[[2]]))==0){
           if(length(as.numeric(argList[[3]]))==0|is.null(argList[[4]])==TRUE){
-            if(length(as.numeric(argList[[3]]))==0){assign(nam, files[intersect(which(files$Supercode1==Supercode1), intersect(agrep(Description, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Description))<2))),])
+            if(length(as.numeric(argList[[3]]))==0){assign(nam, files[intersect(which(files$Supercode1==Supercode1), intersect(agrep(Description, files$Description, max=list(cost=1, all=1), ignore.case=TRUE), which(abs(nchar(files$Description)-nchar(Description))<2))),])
             }
             if(is.null(argList[[4]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supercode1), grep(SubsecID,files$SubsecID)),])
             }
@@ -395,54 +441,30 @@ matcher <- function(basefile,Supercode1,Supercode2,SubsecID,Description){
       }
       else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supercode1), which(files$Supercode2==Supercode2)), intersect(grep(SubsecID,files$SubsecID), intersect(agrep(Description, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Description))<2)))),])
       }
-      
       matcher[[index]]=get(nam)
-    }
-    else{files <- get(paste(substr(basefile,1,6),t,sep = ""))
-    nam <- paste("J", t, sep = "")
-    if(length(as.numeric(argList[[2]]))==0|length(as.numeric(argList[[3]]))==0|is.null(argList[[4]])==TRUE|is.null(argList[[2]])&length(as.numeric(argList[[3]]))==0|is.null(argList[[2]])&is.null(argList[[4]])==TRUE|is.null(argList[[3]])&is.null(argList[[4]])==TRUE){
-      if(length(as.numeric(argList[[2]]))==0){
-        if(length(as.numeric(argList[[3]]))==0|is.null(argList[[4]])==TRUE){
-          if(length(as.numeric(argList[[3]]))==0){assign(nam, files[intersect(which(files$Supercode1==Supercode1), intersect(agrep(Description, files$Description, max=list(cost=1, all=1), ignore.case=TRUE), which(abs(nchar(files$Description)-nchar(Description))<2))),])
-          }
-          if(is.null(argList[[4]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supercode1), grep(SubsecID,files$SubsecID)),])
-          }
-        }
-        else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supercode1), grep(SubsecID,files$SubsecID)), intersect(agrep(Description, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Description))<2))),])
-        }
-      }
-      if(length(as.numeric(argList[[3]]))==0){
-        if(length(as.numeric(argList[[2]]))==0|is.null(argList[[4]])==TRUE){
-          if(is.null(argList[[4]])==TRUE){assign(nam, files[intersect(which(files$Supercode1==Supercode1), which(files$Supercode2==Supercode2)),])
-          }
-          if(length(as.numeric(argList[[2]]))==0){assign(nam, files[intersect(which(files$Supercode1==Supercode1), intersect(agrep(Description, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Description))<2))),])
-          }
-        }
-        else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supercode1), which(files$Supercode2==Supercode2)), intersect(agrep(Description, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Description))<2))),])
-        }
-      }
-      if(is.null(argList[[4]])==TRUE){
-        if(length(as.numeric(argList[[3]]))==0|length(as.numeric(argList[[2]]))==0){
-          if(length(as.numeric(argList[[2]]))==0){assign(nam, files[intersect(which(files$Supercode1==Supercode1), grep(SubsecID,files$SubsecID)),])
-          }
-          if(length(as.numeric(argList[[3]]))==0){assign(nam, files[intersect(which(files$Supercode1==Supercode1), which(files$Supercode2==Supercode2)),])
-          }
-        }
-        else{
-          assign(nam, files[intersect(intersect(which(files$Supercode1==Supercode1), which(files$Supercode2==Supercode2)), grep(SubsecID,files$SubsecID)),])
-        }
       }
     }
-    else{assign(nam, files[intersect(intersect(which(files$Supercode1==Supercode1), which(files$Supercode2==Supercode2)), intersect(grep(SubsecID,files$SubsecID), intersect(agrep(Description, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Description))<2)))),])
-    }
-    matcher[[index]]=get(nam)
-    }
+  }
+  
+  else{digits = floor(log10(as.numeric(substr(basefile,7,8)))) + 1
+  files <- get(basefile)
+  orig <- files[intersect(intersect(which(files$Supercode1==Supercode1), which(files$Supercode2==Supercode2)), intersect(grep(SubsecID,files$SubsecID), intersect(agrep(Description, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Description))<2)))),]
+  matcher[[1]]=orig
+  if (digits==1){files_rev <- get(paste(substr(basefile,1,6),as.numeric(substr(basefile,7,8))+1,sep = "0"))
+  #nam <- paste("J", t, sep = "")
+  }
+  else{files_rev <- get(paste(substr(basefile,1,6),as.numeric(substr(basefile,7,8))+1,sep = ""))
+  #nam <- paste("J", t, sep = "")
+  }
+  rev <- files_rev[intersect(intersect(which(files_rev$Supercode1==Supercode1), which(files_rev$Supercode2==Supercode2)), intersect(grep(SubsecID,files_rev$SubsecID), intersect(agrep(Description, files_rev$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files_rev$Description)-nchar(Description))<2)))),]
+  matcher[[2]]=rev
   }
   return(matcher)
 }
 
+
 #-------------------NEW EXAMPLE!!!!
-#Match <- matcher("vol62003", 84210, 54,842101, "total receipts")
+#Match <- matcher("vol62003", 84210, 54,842101, "total receipts",2)
 
 ##------------------OUTDATED!!!
 ## example
@@ -481,56 +503,132 @@ matcher <- function(basefile,Supercode1,Supercode2,SubsecID,Description){
 
 
 #-------------------MAPPING
-mapping <- function(basefile){
+mapping <- function(basefile, operation){
   basedata <- get(basefile)
   base_t <- as.numeric(substr(colnames(basedata)[5],4,5))
   base_index <- (base_t+which(seq(3,11,by = 2)==base_t)-1)/3
+  if((as.numeric(substr(basefile,7,8)) %% 2) == 0){
+    base_index2 <- 2}
+  else{base_index2 <- 1}
+  #basefile <- rbind(dvol62003,dvol62005,dvol62007,dvol62009,dvol62011,setNames( rev(vol62003) , names( vol62003) ) )
   test2 <- matrix(,nrow=length(basedata[,1]),ncol=2*length(seq(3,11,by = 2)))
   test2 <- cbind(basedata[,1:4],test2)
+  test3 <- matrix(,nrow=length(basedata[,1]),ncol=5)
+  test3 <- cbind(basedata[,1:4],test3)
   weirdos <- matrix(0,length(basedata[,1]),length(seq(3,11,by = 2)))
   
-  for (i in 1:length(basedata[,1])){
-    DMatch <- do.call(matcher, as.list(cbind(basefile, basedata[i,1:4])))
-    for (t in seq(3,11,by = 2)){
-      index <- (t+which(seq(3,11,by = 2)==t)-1)/3
-      l <- length((DMatch[[index]])[,5])
-      if (!(l == 0)){
-        if(l > 1){
-          weirdos[i,index] <- l 
-          counter <- l
-          repeat{
-            ialt <-which(row.names(DMatch[[base_index]][counter,])==row.names(basedata))
-            if(t<10){nam1 <- paste("DMatch1", t, sep = "0")
-            assign(nam1, (DMatch[[index]])[counter,5:length(DMatch[[index]])])}
-            else{nam1 <- paste("DMatch1", t, sep = "")
-            assign(nam1, (DMatch[[index]])[counter,5:length(DMatch[[index]])])}
-            counter=counter-1
-            outputw <- get(nam1)
-            test2[ialt,(3+2*index):(3+2*index+length(outputw)-1)] <- outputw
-            if (counter==0) {break} }
-        }
-        else{
-          if(t<10){nam <- paste("DMatch", t, sep = "0")
-          assign(nam, (DMatch[[index]])[1,5:length(DMatch[[index]])])}
-          else{nam <- paste("DMatch", t, sep = "")
-          assign(nam, (DMatch[[index]])[1,5:length(DMatch[[index]])])}
-          output <- get(nam)
-          test2[i,(3+2*index):(3+2*index+length(output)-1)] <- output
+  
+  if (operation==2){
+    for (i in 1:length(basedata[,1])){
+      #DMatch <- do.call(matcher, as.list(cbind(basefile, basedata[i,1:4])))
+      DMatch <- matcher(basefile, basedata$Supercode1[i], basedata$Supercode2[i], basedata$SubsecID[i], basedata$Description[i], 2)
+      #o <- rep(0,1)
+      #ow <- rep(0,1)
+      for (t in seq(3,11,by = 2)){
+        index <- (t+which(seq(3,11,by = 2)==t)-1)/3
+        l <- length((DMatch[[index]])[,5])
+        if (!(l == 0)){
+          if(l > 1){
+            weirdos[i,index] <- l 
+            counter <- l
+            repeat{#H<-do.call(matcher, as.list(b1))[[index]]
+              ialt <-which(row.names(DMatch[[base_index]][counter,])==row.names(basedata))
+              if(t<10){nam1 <- paste("DMatch1", t, sep = "0")
+              assign(nam1, (DMatch[[index]])[counter,5:length(DMatch[[index]])])}
+              else{nam1 <- paste("DMatch1", t, sep = "")
+              assign(nam1, (DMatch[[index]])[counter,5:length(DMatch[[index]])])}
+              #ow <- cbind(ow,get(nam1))
+              counter=counter-1
+              #outputw <- ow[-1]
+              outputw <- get(nam1)
+              test2[ialt,(3+2*index):(3+2*index+length(outputw)-1)] <- outputw
+              if (counter==0) {break} }
+          }
+          else{
+            if(t<10){nam <- paste("DMatch", t, sep = "0")
+            assign(nam, (DMatch[[index]])[1,5:length(DMatch[[index]])])}
+            else{nam <- paste("DMatch", t, sep = "")
+            assign(nam, (DMatch[[index]])[1,5:length(DMatch[[index]])])}
+            #o <- cbind(o,get(nam))
+            output <- get(nam)
+            test2[i,(3+2*index):(3+2*index+length(output)-1)] <- output
+          }
         }
       }
     }
+    mapping <- test2
+  }
+  else{
+    for (i in 1:length(basedata[,1])){
+      #operation
+      #b <- cbind(basefile, basedata[i,1:4])
+      #DMatch <- do.call(matcher, as.list(cbind(b, operation)))
+      DMatch <- matcher(basefile, basedata[i,1],basedata[i,2],basedata[i,3],basedata[i,4],1)
+      l1 <- length((DMatch[[1]])[,5])
+      l2 <- length((DMatch[[2]])[,5])
+      if (!(l1==0)){
+        if(l1 > 1){
+          counter1 <- l1
+          repeat{#H<-do.call(matcher, as.list(b1))[[index]]
+            ialt1 <-which(row.names(DMatch[[base_index2]][counter1,])==row.names(basedata))
+            #if(t<10){nam1 <- paste("DMatch1", t, sep = "0")
+            nam1=(DMatch[[1]])[counter1,5:length(DMatch[[1]])]
+            #else{nam1 <- paste("DMatch1", t, sep = "")
+            #assign(nam1, (DMatch[[index]])[counter,5:length(DMatch[[index]])])}
+            #ow <- cbind(ow,get(nam1))
+            counter1=counter1-1
+            #outputw <- ow[-1]
+            outputw <- nam1
+            test3[ialt1,(3+2*1):(3+2*1+length(outputw)-1)] <- outputw
+            if (counter1==0) {break} }
+        }
+        else{
+          DMatch1=DMatch[[1]][,5:length(DMatch[[1]])]
+          test3[i,(3+2*1):(3+2*1+length(DMatch1)-1)] <- DMatch1
+        }
+      }
+      #nam1 <- paste("DMatch1", t, sep = "0")
+      if(!(l2==0)){
+        if(l2 > 1){
+          counter2 <- l2
+          repeat{#H<-do.call(matcher, as.list(b1))[[index]]
+            ialt2 <-which(row.names(DMatch[[base_index2]][counter2,])==row.names(basedata))
+            #if(t<10){nam1 <- paste("DMatch1", t, sep = "0")
+            nam2=(DMatch[[2]])[counter2,5:length(DMatch[[2]])]
+            #else{nam1 <- paste("DMatch1", t, sep = "")
+            #assign(nam1, (DMatch[[index]])[counter,5:length(DMatch[[index]])])}
+            #ow <- cbind(ow,get(nam1))
+            counter2=counter2-1
+            #outputw <- ow[-1]
+            outputw <- nam2
+            test3[ialt2,(3+2*2):(3+2*2+length(outputw)-1)] <- outputw
+            if (counter2==0) {break} }
+        }
+        else{
+          DMatch2=DMatch[[2]][,5:length(DMatch[[2]])]
+          #assign(nam1, (DMatch[[index]])[counter,5:length(DMatch[[index]])])}
+          test3[i,(3+2*2):(3+2*2+length(DMatch2)-1)] <- DMatch2
+        }
+      }
+      #mapping <- test3
     }
-  mapping <- test2
+    mapping <-test3
+  }
+  # if (operation == 2){mapping <- test2}
+  # else{mapping <-test3}
   return(mapping)
 }
 
+# example of match with revised budget
+Newb <- mapping("vol62003",1)
+#------------
 
 
-Map03 <- mapping("vol62003")
-Map05 <- mapping("vol62005")
-Map07 <- mapping("vol62007")
-Map09 <- mapping("vol62009")
-Map11 <- mapping("vol62011")
+Map03 <- mapping("vol62003",2)
+Map05 <- mapping("vol62005",2)
+Map07 <- mapping("vol62007",2)
+Map09 <- mapping("vol62009",2)
+Map11 <- mapping("vol62011",2)
 
 Map <- rbind(Map03, Map05, Map07, Map09, Map11)
 Map_finale <- Map[!duplicated(Map),]
@@ -648,3 +746,12 @@ totrec <- totals("Total Receipts")
 totreq <- totals("Total Requirements")
 netapp <- cbind("Net Appropriation", -diff(rbind(totreq,totrec)) ) 
 vol5tot <- rbind(cbind("Total Requirements",totreq),cbind("Total Receipts",totrec),netapp)
+
+# LOAD NEW VARIABLES
+inflation <- read.csv("C:/Users/Tom/Desktop/Data+/cpi.csv", header=TRUE)
+population <- read.csv("C:/Users/Tom/Desktop/Data+/corrected pop.csv",header=TRUE)
+population <- as.data.frame(apply(population, 2, rev),stringsAsFactors = FALSE)
+
+totsp <- rbind(vol1tot[1,],vol2tot[1,],vol3tot[1,],vol4tot[1,],vol5tot[1,],vol6tot[1,])
+#alternatively use apply
+netsp <- rbind(vol1tot[3,],vol2tot[3,],vol3tot[3,],vol4tot[3,],vol5tot[3,],vol6tot[3,])
