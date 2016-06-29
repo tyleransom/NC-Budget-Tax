@@ -39,9 +39,9 @@ Loading required package: tabulizer
 > save(list=varname,file=paste0(varname,".Rda"))
 > 
 > proc.time()
-    user   system  elapsed 
-3722.080    2.345 3695.505 
-the same length as the vector [3]
+     user    system   elapsed 
+13217.270    19.692 11467.060 
+me length as the vector [3]
 > assign(paste0(fileList[[ch]],yr-2000,"_",yr-1998),temp)
 > save(list=varname,file=paste0(varname,".Rda"))
 > 
@@ -49,13 +49,13 @@ the same length as the vector [3]
     user   system  elapsed 
 1359.236  106.866 1226.295 
 st be the same length as the vector [1]
-Exception
 > assign(paste0(fileList[[ch]],yr-2000,"_",yr-1998),temp)
 > save(list=varname,file=paste0(varname,".Rda"))
 > 
 > proc.time()
     user   system  elapsed 
-1131.583    3.265 1096.243 
+6938.025    5.332 6740.622 
+1096.243 
 e length as the vector [1]
 Error in read.table(file = file, header = header, sep = sep, quote = quote,  : 
   no lines available in input
@@ -109,3 +109,9 @@ Error in read.table(file = file, header = header, sep = sep, quote = quote,  :
   no lines available in input
 Error in names(Out) <- names(Genout1) : 
   'names' attribute [4] must be the same length as the vector [1]
+> assign(paste0(fileList[[ch]],yr-2000,"_",yr-1998),temp)
+> save(list=varname,file=paste0(varname,".Rda"))
+> 
+> proc.time()
+    user   system  elapsed 
+6185.418  164.207 6280.167 
