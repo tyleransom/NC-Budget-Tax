@@ -343,8 +343,11 @@ vol62011 <- generator("C:/Users/Tom/Desktop/Data+/2011_13/vol6.pdf")
 # I give you matrices with encounters in all data frames
 
 
-# Supcode1 is the only required variable to run the code (others are optional), need to specify at least 2 variables
-matcher <- function(basefile,Supercode1,Supercode2,SubsecID,Description,operation){
+# Supercode1 is the only required variable to run the code (others are optional)
+# operation: 1 for pulling in revised years, 2 for time variant calculation
+# need to specify original value for operation 1
+
+matcher <- function(basefile,Supercode1,Supercode2,SubsecID,Description,operation, original){
   
   matcher <- list()
   Supercode1 <- as.numeric(Supercode1)
@@ -451,7 +454,7 @@ matcher <- function(basefile,Supercode1,Supercode2,SubsecID,Description,operatio
   else{if((as.numeric(substr(basefile,7,8)) %% 2)==0){
     digits = floor(log10(as.numeric(substr(basefile,7,8)))) + 1
     files_rev <- get(basefile)
-    rev <- files_rev[intersect(intersect(which(files_rev$Supercode1==Supercode1), which(files_rev$Supercode2==Supercode2)), intersect(grep(SubsecID,files_rev$SubsecID), intersect(agrep(Description, files_rev$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files_rev$Description)-nchar(Description))<2)))),]
+    rev <- files_rev[intersect(intersect(which(files_rev$Supercode1==Supercode1), intersect(grep(SubsecID,files_rev$SubsecID), intersect(agrep(Description, files_rev$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files_rev$Description)-nchar(Description))<2)))),which(files_rev[,5]==original)),]
     matcher[[1]]=rev
     if (digits==1){files <- get(paste(substr(basefile,1,6),as.numeric(substr(basefile,7,8))-1,sep = "0"))
     #nam <- paste("J", t, sep = "")
@@ -459,13 +462,13 @@ matcher <- function(basefile,Supercode1,Supercode2,SubsecID,Description,operatio
     else{files <- get(paste(substr(basefile,1,6),as.numeric(substr(basefile,7,8))-1,sep = ""))
     #nam <- paste("J", t, sep = "")
     }
-    orig <- files[intersect(intersect(which(files$Supercode1==Supercode1), which(files$Supercode2==Supercode2)), intersect(grep(SubsecID,files$SubsecID), intersect(agrep(Description, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Description))<2)))),]
+    orig <- files[intersect(intersect(which(files$Supercode1==Supercode1), intersect(grep(SubsecID,files$SubsecID), intersect(agrep(Description, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Description))<2)))),which(files[,6]==original)),]
     matcher[[2]]=orig
   }
     else{
     digits = floor(log10(as.numeric(substr(basefile,7,8)))) + 1
   files <- get(basefile)
-  orig <- files[intersect(intersect(which(files$Supercode1==Supercode1), which(files$Supercode2==Supercode2)), intersect(grep(SubsecID,files$SubsecID), intersect(agrep(Description, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Description))<2)))),]
+  orig <- files[intersect(intersect(which(files$Supercode1==Supercode1), intersect(grep(SubsecID,files$SubsecID), intersect(agrep(Description, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Description))<2)))),which(files[,6]==original)),]
   matcher[[1]]=orig
   if (digits==1){files_rev <- get(paste(substr(basefile,1,6),as.numeric(substr(basefile,7,8))+1,sep = "0"))
   #nam <- paste("J", t, sep = "")
@@ -473,7 +476,7 @@ matcher <- function(basefile,Supercode1,Supercode2,SubsecID,Description,operatio
   else{files_rev <- get(paste(substr(basefile,1,6),as.numeric(substr(basefile,7,8))+1,sep = ""))
   #nam <- paste("J", t, sep = "")
   }
-  rev <- files_rev[intersect(intersect(which(files_rev$Supercode1==Supercode1), which(files_rev$Supercode2==Supercode2)), intersect(grep(SubsecID,files_rev$SubsecID), intersect(agrep(Description, files_rev$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files_rev$Description)-nchar(Description))<2)))),]
+  rev <- files_rev[intersect(intersect(which(files_rev$Supercode1==Supercode1), intersect(grep(SubsecID,files_rev$SubsecID), intersect(agrep(Description, files_rev$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files_rev$Description)-nchar(Description))<2)))),which(files_rev[,5]==original)),]
   matcher[[2]]=rev
     }
   }
@@ -482,8 +485,8 @@ matcher <- function(basefile,Supercode1,Supercode2,SubsecID,Description,operatio
 
 
 #-------------------NEW EXAMPLE!!!! 
-#Match <- matcher("vol62003", 84210, 54,842101, "total receipts",2) #find a match between years
-#Match <- matcher("vol62003", 84210, 54,842101, "total receipts",1) #find a match with revised budget
+#Match <- matcher("vol62003", 84210, 54,842101, "total receipts",2,original=NULL) #find a time series match
+#Match <- matcher("vol62003", 84210, 54,842101, "total receipts",1,4796080) # find a match with revised stuff
 ##------------------OUTDATED!!!
 ## example
 ##U <- matcher(84210,"STATE AID")
@@ -544,7 +547,7 @@ mapping <- function(basefile, operation){
   if (operation==2){
     for (i in 1:length(basedata[,1])){
       #DMatch <- do.call(matcher, as.list(cbind(basefile, basedata[i,1:4])))
-      DMatch <- matcher(basefile, basedata$Supercode1[i], basedata$Supercode2[i], basedata$SubsecID[i], basedata$Description[i], 2)
+      DMatch <- matcher(basefile, basedata$Supercode1[i], basedata$Supercode2[i], basedata$SubsecID[i], basedata$Description[i], 2, original=NULL)
       #o <- rep(0,1)
       #ow <- rep(0,1)
       for (t in seq(3,11,by = 2)){
@@ -586,7 +589,12 @@ mapping <- function(basefile, operation){
       #operation
       #b <- cbind(basefile, basedata[i,1:4])
       #DMatch <- do.call(matcher, as.list(cbind(b, operation)))
-      DMatch <- matcher(basefile, basedata[i,1],basedata[i,2],basedata[i,3],basedata[i,4],1)
+      if (base_index1==2){
+      DMatch <- matcher(basefile, basedata[i,1],basedata[i,2],basedata[i,3],basedata[i,4],1, basedata[i,5])
+      }
+      else{
+      DMatch <- matcher(basefile, basedata[i,1],basedata[i,2],basedata[i,3],basedata[i,4],1, basedata[i,6])
+      }
       l1 <- length((DMatch[[1]])[,5])
       l2 <- length((DMatch[[2]])[,5])
       if (!(l1==0)){
@@ -645,11 +653,12 @@ mapping <- function(basefile, operation){
 }
 
 
+
 #example of combining revised and original budgets
-Newb <- mapping("vol62003",1)
-Newbev <- mapping("vol62004",1)
-New <- rbind(Newb,Newbev)
-New <- New[!duplicated(New),]
+#Newb <- mapping("vol62003",1)
+Newbev <- mapping("vol62004",1) #basically output
+#New <- rbind(Newb,Newbev)
+#New <- New[!duplicated(New),]
 #------------
 
 
