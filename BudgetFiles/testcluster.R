@@ -369,11 +369,11 @@ generator <- function(file){
 }
 #vol620041 <- generator("C:/Users/Tom/Desktop/Data+/2004_5/vol6.pdf")
 
-vol62003 <- generator("C:/Users/Tom/Desktop/Data+/2003_5/vol6.pdf")
-vol62005 <- generator("C:/Users/Tom/Desktop/Data+/2005_7/vol6.pdf")
-vol62007 <- generator("C:/Users/Tom/Desktop/Data+/2007_9/vol6.pdf")
-vol62009 <- generator("C:/Users/Tom/Desktop/Data+/2009_11/vol6.pdf")
-vol62011 <- generator("C:/Users/Tom/Desktop/Data+/2011_13/vol6.pdf")
+vol62003 <- generator("2003_5/vol6.pdf")
+vol62005 <- generator("2005_7/vol6.pdf")
+vol62007 <- generator("2007_9/vol6.pdf")
+vol62009 <- generator("2009_11/vol6.pdf")
+vol62011 <- generator("2011_13/vol6.pdf")
 
 save(vol62003,file="vol62003.Rda")
 save(vol62005,file="vol62005.Rda")
