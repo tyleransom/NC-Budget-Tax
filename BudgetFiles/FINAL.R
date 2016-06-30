@@ -183,7 +183,7 @@ DataGen <- function(vol,year){
   
   return(Genfin)
 }
-  if(year<10){
+  if(year<2010){
     V1 <- generator(as.character(paste("C:/Users/admin/Desktop/DUKE Data+/",paste(year,"_",as.numeric(substr(year,4,4))+2,sep=""),"/vol",vol,".pdf",sep ="")))
   }
   else{
@@ -355,7 +355,7 @@ DataGen <- function(vol,year){
   
   return(Genfin)
 }
-  if(year<10){
+  if(year<2010){
     V2 <- generator2(as.character(paste("C:/Users/admin/Desktop/DUKE Data+/",paste(year+1,"_",as.numeric(substr(year,4,4))+2,sep = ""),"/vol",vol,".pdf",sep="")))
   }
   else{V2 <- generator2(as.character(paste("C:/Users/admin/Desktop/DUKE Data+/",paste(year+1,"_",as.numeric(substr(year,3,4))+2,sep = ""),"/vol",vol,".pdf",sep="")))}
