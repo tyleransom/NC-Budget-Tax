@@ -386,7 +386,7 @@ DataGen <- function(vol,year){
 
 
 
-  return(V24[,-c(6:8)])}
+  return(V24)}
 
 Edu03_5 <- DataGen(1,2003)
 GenGov03_5 <- DataGen(2,2003)
