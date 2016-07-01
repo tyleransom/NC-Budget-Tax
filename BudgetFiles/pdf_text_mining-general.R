@@ -854,11 +854,28 @@ totreq <- totals("Total Requirements")
 netapp <- cbind("Net Appropriation", -diff(rbind(totreq,totrec)) ) 
 vol5tot <- rbind(cbind("Total Requirements",totreq),cbind("Total Receipts",totrec),netapp)
 
-# LOAD NEW VARIABLES
-inflation <- read.csv("C:/Users/Tom/Desktop/Data+/cpi.csv", header=TRUE)
-population <- read.csv("C:/Users/Tom/Desktop/Data+/corrected pop.csv",header=TRUE)
-population <- as.data.frame(apply(population, 2, rev),stringsAsFactors = FALSE)
-
 totsp <- rbind(vol1tot[1,],vol2tot[1,],vol3tot[1,],vol4tot[1,],vol5tot[1,],vol6tot[1,])
 #alternatively use apply
 netsp <- rbind(vol1tot[3,],vol2tot[3,],vol3tot[3,],vol4tot[3,],vol5tot[3,],vol6tot[3,])
+
+# LOAD NEW VARIABLES
+inflation <- read.csv("C:/Users/Tom/Desktop/Data+/cpi.csv", header=TRUE)
+#inflation[,1] <- as.numeric(levels(inflation[,1]))[inflation[,1]]
+#inflation[,2] <- as.numeric(levels(inflation[,2]))[inflation[,2]]
+#inflation <- inflation[!is.na(inflation[,1]),]
+population <- read.csv("C:/Users/Tom/Desktop/Data+/corrected pop.csv",header=TRUE)
+population <- as.data.frame(apply(population, 2, rev),stringsAsFactors = FALSE)
+
+window = 3 #years prior to t
+infind <- cbind(inflation[2:length(inflation[,1]),1],inflation[2:length(inflation[,1]),2]/inflation[1:length(inflation[,1])-1,2]-1)
+infbound <- matrix(0,length(2002:2015),2)
+popind <- cbind(population[2:length(population[,1]),1],population[2:length(population[,1]),2]/population[1:length(population[,1])-1,2]-1)
+popbound <- matrix(0,length(2002:2015),2)
+bound <- matrix(0,length(2002:2015),2)
+#32003 is 19992000 20002001 20012002 
+#for i in length(seq(3,11,by = 2))
+for (i in 2002:2015){
+  infbound[i-2002+1,] <- cbind(i,mean(infind[which(infind[,1]==i-window):which(infind[,1]==i-1),2]))
+  popbound[i-2002+1,]<- cbind(i,mean(popind[which(popind[,1]==i-window):which(popind[,1]==i-1),2]))
+  bound[i-2002+1,] <- cbind(i,infbound[i-2002+1,2]+popbound[i-2002+1,2])
+}
