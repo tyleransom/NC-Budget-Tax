@@ -22,27 +22,46 @@ require(tabulizer)
 
 # tell it where the PDF is
 #file <- "C:/Users/Tom/Desktop/Data+/2003_5/vol6.pdf"
+dloader <- read.csv("downloader.bat")
+
+for (i in 1:100){
+  if (substr(droplevels(dloader[2,]),i,i+3)=="http"){
+    n <- i
+  }
+}
+N=list()
+for (j in 1:nrow(dloader)){
+  N[j]=substr(droplevels(dloader[j,]),n,200)
+}
+N <- N[-which(N=="")]
+N <- gsub("\\\\", "/",N)
+
+#J<-strsplit(as.character(N)," -O ")
+#K<-do.call(rbind, lapply(J, data.frame, stringsAsFactors=FALSE))
+URLLib<- unname(t(as.data.frame(strsplit(as.character(N)," -O "),stringsAsFactors = FALSE)))
 
 generator <- function(file){
+  file1 <- file
+  file <- URLLib[which(URLLib[,2]==file),1]
   a <- get_n_pages(file=file)
   
-  digits = floor(log10(as.numeric(substr(gsub("[^0-9]", "", file),3,4)))) + 1
+  digits = floor(log10(as.numeric(substr(gsub("[^0-9]", "", file1),3,4)))) + 1
   if (digits==1){
-    year1 <- paste(substr(gsub("[^0-9]", "", file),1,4), as.numeric(substr(gsub("[^0-9]", "", file),3,4))+1, sep = "0")
+    year1 <- paste(substr(gsub("[^0-9]", "", file1),1,4), as.numeric(substr(gsub("[^0-9]", "", file1),3,4))+1, sep = "0")
     year1 <- paste("y",year1, sep = "")
-    year2 <- paste(substr(gsub("[^0-9]", "", file),1,3), as.numeric(substr(gsub("[^0-9]", "", file),3,4))+1, sep = "")
-    year2 <- paste(year2, as.numeric(substr(gsub("[^0-9]", "", file),3,4))+2, sep = "0")
+    year2 <- paste(substr(gsub("[^0-9]", "", file1),1,3), as.numeric(substr(gsub("[^0-9]", "", file1),3,4))+1, sep = "")
+    year2 <- paste(year2, as.numeric(substr(gsub("[^0-9]", "", file1),3,4))+2, sep = "0")
     year2 <- paste("y",year2, sep = "")
   } else {
-    year1 <- paste(substr(gsub("[^0-9]", "", file),1,4), as.numeric(substr(gsub("[^0-9]", "", file),3,4))+1, sep = "")
+    year1 <- paste(substr(gsub("[^0-9]", "", file1),1,4), as.numeric(substr(gsub("[^0-9]", "", file1),3,4))+1, sep = "")
     year1 <- paste("y",year1, sep = "")
-    year2 <- paste(substr(gsub("[^0-9]", "", file),1,2), as.numeric(substr(gsub("[^0-9]", "", file),3,4))+1, sep = "")
-    year2 <- paste(year2, as.numeric(substr(gsub("[^0-9]", "", file),3,4))+2, sep = "")
+    year2 <- paste(substr(gsub("[^0-9]", "", file1),1,2), as.numeric(substr(gsub("[^0-9]", "", file1),3,4))+1, sep = "")
+    year2 <- paste(year2, as.numeric(substr(gsub("[^0-9]", "", file1),3,4))+2, sep = "")
     year2 <- paste("y",year2, sep = "")
   }
   
   #-----------------------------------EVEN
-  if((as.numeric(substr(gsub("[^0-9]", "", file),3,4)) %% 2) == 0){
+  if((as.numeric(substr(gsub("[^0-9]", "", file1),3,4)) %% 2) == 0){
     # extract tables from the PDF
     Genout1 <- as.data.frame(extract_tables(file, pages = 1, guess = FALSE, method = "data.frame", columns = list(c(250, 345, 420)), stringsAsFactors=FALSE))
     for (i in 2:a) {
@@ -169,6 +188,8 @@ generator <- function(file){
     #Genfin1 <- Genfin
     J <- !((as.data.frame(substr(Genfin[,1],1,1)) == "") & (as.data.frame(substr(Genfin[,3],1,1) == "")))
     Genfin <- as.data.frame(Genfin[J, ], stringsAsFactors=FALSE)
+    I <- intersect(which(Genfin[,1]==233),which(Genfin[,2]=="OFFICE O"))
+    Genfin <- Genfin[-I,]
     
     colnames(Genfin) <- c("SubsecID","Description",paste(year1,"original",sep = ""),"Revision",paste(year1,"revised",sep = ""))
     Genfin$SubsecID  <- as.numeric(Genfin$SubsecID)
@@ -307,7 +328,7 @@ generator <- function(file){
   #values with 5 digit indices
   #vol[which(!substr(vol[,1],5,5) %in% ""),1]
   #indices with 5 digit indices
-  M <- which(is.na(Genfin[,3]))
+  M <- which(is.na(Genfin[,length(Genfin)]))
   N <- intersect(which(!substr(Genfin[,1],5,5) %in% ""),M)
   
   #indices for 2nd NA
@@ -336,15 +357,15 @@ generator <- function(file){
   for (i in 1:length(N)){
     O1[N[i]:n]=Genfin[N[i],1]
   }
-  O1 <- O1[-which(is.na(Genfin[,3]))]
+  O1 <- O1[-which(is.na(Genfin[,length(Genfin)]))]
   
   for (i in 1:length(T)){
     O2[T[i]:n]=Genfin[T[i],1]
   }
-  O2 <- O2[-which(is.na(Genfin[,3]))]
+  O2 <- O2[-which(is.na(Genfin[,length(Genfin)]))]
   
   O <- cbind(O1,O2)
-  Genfin <- as.data.frame(Genfin[-(which(is.na(Genfin[,3]))), ])
+  Genfin <- as.data.frame(Genfin[-(which(is.na(Genfin[,length(Genfin)]))), ])
   colnames(O) <- c("Supercode1","Supercode2")
   Genfin <- cbind(O,Genfin)
   
