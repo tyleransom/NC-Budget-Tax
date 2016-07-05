@@ -930,3 +930,11 @@ for (i in 2002:2015){
   popbound[i-2002+1,]<- cbind(i,mean(popind[which(popind[,1]==i-window):which(popind[,1]==i-1),2]))
   bound[i-2002+1,] <- cbind(i,infbound[i-2002+1,2]+popbound[i-2002+1,2])
 }
+
+#load 2013-2016 totals
+t2013 <- read.csv("2013.csv")
+t2014 <- read.csv("2014.csv")
+t2015 <- read.csv("2015.csv")
+t2016 <- read.csv("2016.csv")
+t2013_2016 <- cbind(t2013,t2014[,2:4],t2015[,2:4],t2016[,2:4])
+
