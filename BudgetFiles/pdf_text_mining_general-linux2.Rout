@@ -217,3 +217,17 @@ Loading required package: tabulizer
 > 
 > # temp<-getwd()
 > vol62003 <- generator("http://ncosbm.s3.amazonaws.com/s3fs-public/6200305_BD307_Vol6.pdf",2003)
+> vol62005 <- generator("http://ncosbm.s3.amazonaws.com/s3fs-public/6a200507_BD307_Vol6.pdf",2005)
+> vol62007 <- generator("http://ncosbm.s3.amazonaws.com/s3fs-public/200709_BD307_Vol6.pdf",2007)
+> vol62009 <- generator("http://ncosbm.s3.amazonaws.com/s3fs-public/BD307_2009-11_Vol6.pdf",2009)
+> vol62011 <- generator("http://ncosbm.s3.amazonaws.com/s3fs-public/2011-BD307-V6.pdf",2011)
+> 
+> save(vol62003,file=paste0("RdaFiles/vol62003.Rda"))
+> save(vol62005,file=paste0("RdaFiles/vol62005.Rda"))
+> save(vol62007,file=paste0("RdaFiles/vol62007.Rda"))
+> save(vol62009,file=paste0("RdaFiles/vol62009.Rda"))
+> save(vol62011,file=paste0("RdaFiles/vol62011.Rda"))
+> 
+> proc.time()
+    user   system  elapsed 
+1033.502   82.174 1059.661 
