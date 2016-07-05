@@ -19,26 +19,45 @@ require(tabulizer)
 # tell it where the PDF is
 #file <- "C:/Users/admin/Desktop/DUKE Data+/2003_5/vol6.pdf"
 
+
+dloader <- read.csv("C:/Users/Tom/Desktop/Data+/downloader.bat")
+
+for (i in 1:100){
+if (substr(droplevels(dloader[2,]),i,i+3)=="http"){
+  n <- i
+}
+}
+N=list()
+for (j in 1:nrow(dloader)){
+N[j]=substr(droplevels(dloader[j,]),n,200)
+}
+N <- N[-which(N=="")]
+N <- gsub("\\\\", "/",N)
+
+URLLib<- unname(t(as.data.frame(strsplit(as.character(N)," -O "),stringsAsFactors = FALSE)))
+
 generator <- function(file){
+  file1 <- file
+  file <- URLLib[which(URLLib[,2]==file),1]
   a <- get_n_pages(file=file)
   
-  digits = floor(log10(as.numeric(substr(gsub("[^0-9]", "", file),3,4)))) + 1
+  digits = floor(log10(as.numeric(substr(gsub("[^0-9]", "", file1),3,4)))) + 1
   if (digits==1){
-    year1 <- paste(substr(gsub("[^0-9]", "", file),1,4), as.numeric(substr(gsub("[^0-9]", "", file),3,4))+1, sep = "0")
+    year1 <- paste(substr(gsub("[^0-9]", "", file1),1,4), as.numeric(substr(gsub("[^0-9]", "", file1),3,4))+1, sep = "0")
     year1 <- paste("y",year1, sep = "")
-    year2 <- paste(substr(gsub("[^0-9]", "", file),1,3), as.numeric(substr(gsub("[^0-9]", "", file),3,4))+1, sep = "")
-    year2 <- paste(year2, as.numeric(substr(gsub("[^0-9]", "", file),3,4))+2, sep = "0")
+    year2 <- paste(substr(gsub("[^0-9]", "", file1),1,3), as.numeric(substr(gsub("[^0-9]", "", file1),3,4))+1, sep = "")
+    year2 <- paste(year2, as.numeric(substr(gsub("[^0-9]", "", file1),3,4))+2, sep = "0")
     year2 <- paste("y",year2, sep = "")
   } else {
-    year1 <- paste(substr(gsub("[^0-9]", "", file),1,4), as.numeric(substr(gsub("[^0-9]", "", file),3,4))+1, sep = "")
+    year1 <- paste(substr(gsub("[^0-9]", "", file1),1,4), as.numeric(substr(gsub("[^0-9]", "", file1),3,4))+1, sep = "")
     year1 <- paste("y",year1, sep = "")
-    year2 <- paste(substr(gsub("[^0-9]", "", file),1,2), as.numeric(substr(gsub("[^0-9]", "", file),3,4))+1, sep = "")
-    year2 <- paste(year2, as.numeric(substr(gsub("[^0-9]", "", file),3,4))+2, sep = "")
+    year2 <- paste(substr(gsub("[^0-9]", "", file1),1,2), as.numeric(substr(gsub("[^0-9]", "", file1),3,4))+1, sep = "")
+    year2 <- paste(year2, as.numeric(substr(gsub("[^0-9]", "", file1),3,4))+2, sep = "")
     year2 <- paste("y",year2, sep = "")
   }
   
   #-----------------------------------EVEN
-  if((as.numeric(substr(gsub("[^0-9]", "", file),3,4)) %% 2) == 0){
+  if((as.numeric(substr(gsub("[^0-9]", "", file1),3,4)) %% 2) == 0){
     # extract tables from the PDF
     Genout1 <- as.data.frame(extract_tables(file, pages = 1, guess = FALSE, method = "data.frame", columns = list(c(250, 345, 420)), stringsAsFactors=FALSE))
     for (i in 2:a) {
@@ -367,46 +386,76 @@ generator <- function(file){
   return(Genfin)
 }
 
+vol12003 <- generator("2003_5/vol1.pdf")
+vol12005 <- generator("2005_7/vol1.pdf")
+vol12007 <- generator("2007_9/vol1.pdf")
+vol12009 <- generator("2009_11/vol1.pdf")
+vol12011 <- generator("2011_13/vol1.pdf")
 
-#for now the function ends here
-vol62004 <- generator("C:/Users/Tom/Desktop/Data+/2004_5/vol6.pdf")
+vol22003 <- generator("2003_5/vol2.pdf")
+vol22005 <- generator("2005_7/vol2.pdf")
+vol22007 <- generator("2007_9/vol2.pdf")
+vol22009 <- generator("2009_11/vol2.pdf")
+vol22011 <- generator("2011_13/vol2.pdf")
 
-vol12003 <- generator("C:/Users/Tom/Desktop/Data+/2003_5/vol1.pdf")
-vol12005 <- generator("C:/Users/Tom/Desktop/Data+/2005_7/vol1.pdf")
-vol12007 <- generator("C:/Users/Tom/Desktop/Data+/2007_9/vol1.pdf")
-vol12009 <- generator("C:/Users/Tom/Desktop/Data+/2009_11/vol1.pdf")
-vol12011 <- generator("C:/Users/Tom/Desktop/Data+/2011_13/vol1.pdf")
+vol32003 <- generator("2003_5/vol3.pdf")
+vol32005 <- generator("2005_7/vol3.pdf")
+vol32007 <- generator("2007_9/vol3.pdf")
+vol32009 <- generator("2009_11/vol3.pdf")
+vol32011 <- generator("2011_13/vol3.pdf")
 
-vol22003 <- generator("C:/Users/Tom/Desktop/Data+/2003_5/vol2.pdf")
-vol22005 <- generator("C:/Users/Tom/Desktop/Data+/2005_7/vol2.pdf")
-vol22007 <- generator("C:/Users/Tom/Desktop/Data+/2007_9/vol2.pdf")
-vol22009 <- generator("C:/Users/Tom/Desktop/Data+/2009_11/vol2.pdf")
-vol22011 <- generator("C:/Users/Tom/Desktop/Data+/2011_13/vol2.pdf")
+vol42003 <- generator("2003_5/vol4.pdf")
+vol42005 <- generator("2005_7/vol4.pdf")
+vol42007 <- generator("2007_9/vol4.pdf")
+vol42009 <- generator("2009_11/vol4.pdf")
+vol42011 <- generator("2011_13/vol4.pdf")
 
-vol32003 <- generator("C:/Users/Tom/Desktop/Data+/2003_5/vol3.pdf")
-vol32005 <- generator("C:/Users/Tom/Desktop/Data+/2005_7/vol3.pdf")
-vol32007 <- generator("C:/Users/Tom/Desktop/Data+/2007_9/vol3.pdf")
-vol32009 <- generator("C:/Users/Tom/Desktop/Data+/2009_11/vol3.pdf")
-vol32011 <- generator("C:/Users/Tom/Desktop/Data+/2011_13/vol3.pdf")
+vol52003 <- generator("2003_5/vol5.pdf")
+vol52005 <- generator("2005_7/vol5.pdf")
+vol52007 <- generator("2007_9/vol5.pdf")
+vol52009 <- generator("2009_11/vol5.pdf")
+vol52011 <- generator("2011_13/vol5.pdf")
 
-vol42003 <- generator("C:/Users/Tom/Desktop/Data+/2003_5/vol4.pdf")
-vol42005 <- generator("C:/Users/Tom/Desktop/Data+/2005_7/vol4.pdf")
-vol42007 <- generator("C:/Users/Tom/Desktop/Data+/2007_9/vol4.pdf")
-vol42009 <- generator("C:/Users/Tom/Desktop/Data+/2009_11/vol4.pdf")
-vol42011 <- generator("C:/Users/Tom/Desktop/Data+/2011_13/vol4.pdf")
+vol62003 <- generator("2003_5/vol6.pdf")
+vol62005 <- generator("2005_7/vol6.pdf")
+vol62007 <- generator("2007_9/vol6.pdf")
+vol62009 <- generator("2009_11/vol6.pdf")
+vol62011 <- generator("2011_13/vol6.pdf")
 
-vol52003 <- generator("C:/Users/Tom/Desktop/Data+/2003_5/vol5.pdf")
-vol52005 <- generator("C:/Users/Tom/Desktop/Data+/2005_7/vol5.pdf")
-vol52007 <- generator("C:/Users/Tom/Desktop/Data+/2007_9/vol5.pdf")
-vol52009 <- generator("C:/Users/Tom/Desktop/Data+/2009_11/vol5.pdf")
-vol52011 <- generator("C:/Users/Tom/Desktop/Data+/2011_13/vol5.pdf")
+vol12004 <- generator("2004_5/vol1.pdf")
+vol22004 <- generator("2004_5/vol2.pdf")
+vol32004 <- generator("2004_5/vol3.pdf")
+vol42004 <- generator("2004_5/vol4.pdf")
+vol52004 <- generator("2004_5/vol5.pdf")
+vol62004 <- generator("2004_5/vol6.pdf")
 
-vol62003 <- generator("C:/Users/Tom/Desktop/Data+/2003_5/vol6.pdf")
-vol62005 <- generator("C:/Users/Tom/Desktop/Data+/2005_7/vol6.pdf")
-vol62007 <- generator("C:/Users/Tom/Desktop/Data+/2007_9/vol6.pdf")
-vol62009 <- generator("C:/Users/Tom/Desktop/Data+/2009_11/vol6.pdf")
-vol62011 <- generator("C:/Users/Tom/Desktop/Data+/2011_13/vol6.pdf")
+vol12006 <- generator("2006_7/vol1.pdf")
+vol22006 <- generator("2006_7/vol2.pdf")
+vol32006 <- generator("2006_7/vol3.pdf")
+vol42006 <- generator("2006_7/vol4.pdf")
+vol52006 <- generator("2006_7/vol5.pdf")
+vol62006 <- generator("2006_7/vol6.pdf")
 
+vol12008 <- generator("2008_9/vol1.pdf")
+vol22008 <- generator("2008_9/vol2.pdf")
+vol32008 <- generator("2008_9/vol3.pdf")
+vol42008 <- generator("2008_9/vol4.pdf")
+vol52008 <- generator("2008_9/vol5.pdf")
+vol62008 <- generator("2008_9/vol6.pdf")
+
+vol12010 <- generator("2010_11/vol1.pdf")
+vol22010 <- generator("2010_11/vol2.pdf")
+vol32010 <- generator("2010_11/vol3.pdf")
+vol42010 <- generator("2010_11/vol4.pdf")
+vol52010 <- generator("2010_11/vol5.pdf")
+vol62010 <- generator("2010_11/vol6.pdf")
+
+vol12012 <- generator("2012_13/vol1.pdf")
+vol22012 <- generator("2012_13/vol2.pdf")
+vol32012 <- generator("2012_13/vol3.pdf")
+vol42012 <- generator("2012_13/vol4.pdf")
+vol52012 <- generator("2012_13/vol5.pdf")
+vol62012 <- generator("2012_13/vol6.pdf")
 
 # matching function: give me supercode1 and some text from description column,
 # I give you matrices with encounters in all data frames
