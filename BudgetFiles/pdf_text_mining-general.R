@@ -185,7 +185,9 @@ generator <- function(file){
     J <- !((as.data.frame(substr(Genfin[,1],1,1)) == "") & (as.data.frame(substr(Genfin[,3],1,1) == "")))
     Genfin <- as.data.frame(Genfin[J, ], stringsAsFactors=FALSE)
     I <- intersect(which(Genfin[,1]==233),which(Genfin[,2]=="OFFICE O"))
+    if (!(length(I)==0)){
     Genfin <- Genfin[-I,]
+    }
     
     colnames(Genfin) <- c("SubsecID","Description",paste(year1,"original",sep = ""),"Revision",paste(year1,"revised",sep = ""))
     Genfin$SubsecID  <- as.numeric(Genfin$SubsecID)
