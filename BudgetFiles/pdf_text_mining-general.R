@@ -59,12 +59,14 @@ generator <- function(file){
   #-----------------------------------EVEN
   if((as.numeric(substr(gsub("[^0-9]", "", file1),3,4)) %% 2) == 0){
     # extract tables from the PDF
-    Genout1 <- as.data.frame(extract_tables(file, pages = 1, guess = FALSE, method = "data.frame", columns = list(c(250, 345, 420)), stringsAsFactors=FALSE))
+    Genout1 <- as.data.frame(extract_tables(file, pages = 1, guess = FALSE, method = "data.frame", columns = list(c(320, 420)), stringsAsFactors=FALSE))
     for (i in 2:a) {
       try({
-        Out <- as.data.frame(extract_tables(file, pages = i, guess = FALSE, method = "data.frame", columns = list(c(250, 345, 420)), stringsAsFactors=FALSE))
+        Out <- as.data.frame(extract_tables(file, pages = i, guess = FALSE, method = "data.frame", columns = list(c(320, 420)), stringsAsFactors=FALSE))
         names(Out) <- names(Genout1)
-        Genout1 <- rbind(Genout1,Out)
+        if (length(grep("SUMMARY", Out[,1]))==0){
+          Genout1 <- rbind(Genout1,Out)
+        }
       })
     }
     
@@ -186,7 +188,7 @@ generator <- function(file){
     Genfin <- as.data.frame(Genfin[J, ], stringsAsFactors=FALSE)
     I <- intersect(which(Genfin[,1]==233),which(Genfin[,2]=="OFFICE O"))
     if (!(length(I)==0)){
-    Genfin <- Genfin[-I,]
+      Genfin <- Genfin[-I,]
     }
     
     colnames(Genfin) <- c("SubsecID","Description",paste(year1,"original",sep = ""),"Revision",paste(year1,"revised",sep = ""))
@@ -204,7 +206,9 @@ generator <- function(file){
       try({
         Out <- as.data.frame(extract_tables(file, pages = i, guess = FALSE, method = "data.frame", columns = list(c(320, 420)), stringsAsFactors=FALSE))
         names(Out) <- names(Genout1)
+        if (length(grep("SUMMARY", Out[,1]))==0){
         Genout1 <- rbind(Genout1,Out)
+        }
       })
     }
     
@@ -382,9 +386,28 @@ generator <- function(file){
   C3[cfb5] <- paste(Genfin$Supercode1[cfb5],Genfin$SubsecID[cfb5],sep = "")
   
   Genfin$SubsecID <- C3
+  
+  Genfin[which(Genfin$Description==""),4] <- "MISSING"
+  Genfin[which(Genfin$Description=="MISSING"),3] <- Genfin[which(Genfin$Description=="MISSING")-1,3]
+  
+  for (i in 5:ncol(Genfin)){
+  Genfin[,i] <- as.numeric(as.character(Genfin[,i]))
+  }      
+  
+  TC <- intersect(agrep("total receipts", Genfin$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(Genfin$Description)-nchar("total receipts"))<2))
+  TR <- intersect(agrep("total requirements", Genfin$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(Genfin$Description)-nchar("total requirements"))<2))
+  #m <- get(matrix)
+  
+  #Is = matrix(0,length(TC),20)      
+  for (i in 1:length(TC)){
+    itr <- max(which(TR<TC[i]))
+    is <- TC[i]-TR[itr]-1
+    if (is > 0){
+      Genfin[(TR[itr]+1):(TR[itr]+is), 5:ncol(Genfin)] <- -abs(Genfin[(TR[itr]+1):(TR[itr]+is), 5:ncol(Genfin)])
+    }
+  }
+  
   Genfin <- Genfin[!duplicated(Genfin),]
-  Genfin[which(Genfin$Description==""),4] <- "ESTIMATED RECEIPTS MISSING"
-  Genfin[which(Genfin$Description=="ESTIMATED RECEIPTS MISSING"),3] <- Genfin[which(Genfin$Description=="ESTIMATED RECEIPTS MISSING")-1,3]
   return(Genfin)
 }
 
