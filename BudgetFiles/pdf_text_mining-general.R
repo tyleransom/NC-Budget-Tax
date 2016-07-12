@@ -59,10 +59,10 @@ generator <- function(file){
   #-----------------------------------EVEN
   if((as.numeric(substr(gsub("[^0-9]", "", file1),3,4)) %% 2) == 0){
     # extract tables from the PDF
-    Genout1 <- as.data.frame(extract_tables(file, pages = 1, guess = FALSE, method = "data.frame", columns = list(c(320, 420)), stringsAsFactors=FALSE))
+    Genout1 <- as.data.frame(extract_tables(file, pages = 1, guess = FALSE, method = "data.frame", columns = list(c(250, 345, 420)), stringsAsFactors=FALSE))
     for (i in 2:a) {
       try({
-        Out <- as.data.frame(extract_tables(file, pages = i, guess = FALSE, method = "data.frame", columns = list(c(320, 420)), stringsAsFactors=FALSE))
+        Out <- as.data.frame(extract_tables(file, pages = i, guess = FALSE, method = "data.frame", columns = list(c(250, 345, 420)), stringsAsFactors=FALSE))
         names(Out) <- names(Genout1)
         if (length(grep("SUMMARY", Out[,1]))==0){
           Genout1 <- rbind(Genout1,Out)
