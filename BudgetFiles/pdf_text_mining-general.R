@@ -59,10 +59,10 @@ generator <- function(file){
   #-----------------------------------EVEN
   if((as.numeric(substr(gsub("[^0-9]", "", file1),3,4)) %% 2) == 0){
     # extract tables from the PDF
-    Genout1 <- as.data.frame(extract_tables(file, pages = 1, guess = FALSE, method = "data.frame", columns = list(c(250, 345, 420)), stringsAsFactors=FALSE))
+    Genout1 <- as.data.frame(extract_tables(file, pages = 1, guess = FALSE, method = "data.frame", stringsAsFactors=FALSE))
     for (i in 2:a) {
       try({
-        Out <- as.data.frame(extract_tables(file, pages = i, guess = FALSE, method = "data.frame", columns = list(c(250, 345, 420)), stringsAsFactors=FALSE))
+        Out <- as.data.frame(extract_tables(file, pages = i, guess = FALSE, method = "data.frame", stringsAsFactors=FALSE))
         names(Out) <- names(Genout1)
         if (length(grep("SUMMARY", Out[,1]))==0){
           Genout1 <- rbind(Genout1,Out)
@@ -74,19 +74,19 @@ generator <- function(file){
     
     Genout2=Genout1
     Gen2 <- as.data.frame(gsub("TOTAL", "00001 TOTAL", Genout2[,1]), stringsAsFactors=FALSE)
-    Gen3 <- cbind(Gen2, Genout2[,2:4])
+    Gen3 <- cbind(Gen2, Genout2[,2])
     
     Gen2 <- as.data.frame(gsub("NET", "00002 NET", Gen3[,1]), stringsAsFactors=FALSE)
-    Gen3 <- cbind(Gen2, Gen3[,2:4])
+    Gen3 <- cbind(Gen2, Gen3[,2])
     
     Gen2 <- as.data.frame(gsub("HIGHWAY FUND APPROPRIATION", "00003 HIGHWAY FUND APPROPRIATION", Gen3[,1]), stringsAsFactors=FALSE)
-    Gen3 <- cbind(Gen2, Gen3[,2:4])
+    Gen3 <- cbind(Gen2, Gen3[,2])
     
     Gen2 <- as.data.frame(gsub("HIGHWAY TRUST FUND APPROPRTN", "00004 HIGHWAY TRUST FUND APPROPRTN", Gen3[,1]), stringsAsFactors=FALSE)
-    Gen3 <- cbind(Gen2, Gen3[,2:4])
+    Gen3 <- cbind(Gen2, Gen3[,2])
     
     Gen2 <- as.data.frame(gsub("CHANGE IN FUND BALANCE", "00005 CHANGE IN FUND BALANCE", Gen3[,1]),stringsAsFactors=FALSE)
-    Gen3 <- cbind(Gen2, Gen3[,2:4])
+    Gen3 <- cbind(Gen2, Gen3[,2])
     
     #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,2)) == "42"), ])
     #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,4)) == "4200"), ])
@@ -96,11 +96,11 @@ generator <- function(file){
     #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,4)) == "1000"), ])
     #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,4)) == "3000"), ])
     #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,4)) == "3005"), ])
-    Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,4],1,4)) == "PAGE"), ],stringsAsFactors=FALSE)
+    Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,2],1,4)) == "PAGE"), ],stringsAsFactors=FALSE)
     #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "APP"), ])
     Gen3 <- as.data.frame(Gen3[!(substr(Gen3[,1],1,3) %in% c("APP", "BUD", "REQ", "DES", "EST", "POS", "SUM")), ],stringsAsFactors=FALSE)
-    Gen3 <- as.data.frame(Gen3[!(substr(Gen3[,3],1,3) %in% "AWG"), ],stringsAsFactors=FALSE)
-    Gen3 <- as.data.frame(Gen3[!(substr(Gen3[,4],1,3) %in% "REV"), ],stringsAsFactors=FALSE)
+    Gen3 <- as.data.frame(Gen3[!(substr(Gen3[,2],1,3) %in% "AWG"), ],stringsAsFactors=FALSE)
+    Gen3 <- as.data.frame(Gen3[!(substr(Gen3[,2],1,3) %in% "REV"), ],stringsAsFactors=FALSE)
     #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "BUD"), ])
     #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "REQ"), ])
     #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "142"), ])
@@ -109,42 +109,177 @@ generator <- function(file){
     #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "POS"), ])
     #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "SUM"), ])
     
-    Gen2 <- as.data.frame(gsub(",","",Gen3[,2]),stringsAsFactors=FALSE)
-    Gen42 <- as.data.frame(gsub(",","",Gen3[,3]),stringsAsFactors=FALSE)
-    Gen43 <- as.data.frame(gsub(",","",Gen3[,4]),stringsAsFactors=FALSE)
-    Gen3 <- cbind(Gen3[,1], Gen2, Gen42, Gen43)
+    Gen2 <- as.data.frame(gsub(",","",Gen3[,1]),stringsAsFactors=FALSE)
+    Gen42 <- as.data.frame(gsub(",","",Gen3[,2]),stringsAsFactors=FALSE)
+    #Gen43 <- as.data.frame(gsub(",","",Gen3[,4]),stringsAsFactors=FALSE)
+    Gen3 <- cbind(Gen2, Gen42)
     Gen3 <- Gen3[!apply(Gen3 == "", 1, all),]
     Gen3 <- Gen3
     
-    Gen3 <- cbind(as.data.frame(gsub("  "," ",Gen3[,1]), stringsAsFactors=FALSE),Gen3[,2:4])
+    Gen3 <- cbind(as.data.frame(gsub("  "," ",Gen3[,1]), stringsAsFactors=FALSE),Gen3[,2])
+    Gen31 <- Gen3
+    
+    is.number <- function(x) grepl("[[:digit:]]", x)
+    L=rep(0,length(Gen3[,1]))
+    for (i in 1:length(Gen3[,1])){
+      j=3
+      repeat{
+        j=j+1
+        k <- as.data.frame(substr(Gen31[i,1],j,j),stringsAsFactors=FALSE)
+        if(is.number(k)==FALSE){L[i]=j-1 
+        break}
+      }
+    }
+    
+    Gen31[which(L>8),1]=paste("0000MISSING",Gen31[which(L>8),1],sep="")
+    L[which(L>8)]=4
+    
+    Gen3 <- paste(Gen31[,1], gsub(" ","", Gen31[,2]), sep="")
     
     #is.letter <- function(x) grepl("[[:alpha:]]", x)
-    is.number <- function(x) grepl("[[:digit:]]", x)
+   
     
-    L=rep(0,length(Gen3[,1]))
-    for (j in 1:12){
-      k <- as.data.frame(substr(Gen3[,1],j,j),stringsAsFactors=FALSE)
+    L2=rep(0,length(Gen3))
+    for (j in 1:60){
+      k <- as.data.frame(substr(Gen3,j,j),stringsAsFactors=FALSE)
       for (i in 1:length(k[,1])){
-        if(is.number(k[i,1])==TRUE){L[i]=j}
+        if(is.number(k[i,1])==TRUE){L2[i]=j}
       }}
     
+   Gen31[,2] <- gsub("-","",Gen31[,2])  
+   I2 <- which(is.na(as.numeric(as.character(Gen31[,2]))))
+   Targetrows <- setdiff(which(L2>10),I2)
+   
+  
+   Targetmatrix <- Gen3[Targetrows]
+   L1=rep(0,length(Targetmatrix))
+   Targetvalues <- rep(0,length(Targetmatrix))
+   #Negatives <- rep(0,length(Targetmatrix[,1]))
+   #k <- as.data.frame(substr(Gen3[i,1],nchar(Gen3[i,1])-j+1,nchar(Gen3[i,1])-j+1),stringsAsFactors=FALSE)
+   for (i in 1:length(Targetmatrix)){
+     j=0
+     repeat{
+       j=j+1
+       k <- as.data.frame(substr(Targetmatrix[i],nchar(Targetmatrix[i])-j+1,nchar(Targetmatrix[i])-j+1),stringsAsFactors=FALSE)
+       #if ((k=="-")==TRUE){Negatives[i]=j}
+       if((is.number(k)==FALSE)&((k=="-")==FALSE)&((k==" ")==FALSE)){L1[i]=j-1 
+       break}
+     }
+     Targetvalues[i]=substr(Targetmatrix[i],nchar(Targetmatrix[i])+1-L1[i],nchar(Targetmatrix[i]))
+     
+     #Targetvalues[i]=as.data.frame(substr(Targetmatrix[i,1],nchar(Targetmatrix[i,1])+1-L1[i],nchar(Targetmatrix[i,1])),stringsAsFactors=FALSE)
+   }
+   
+   
+   # double centrifuge
+   Negatives <- grep('-', Targetvalues)
+   col1 <- rep(NA,length(Targetmatrix))
+   col2 <- rep(NA,length(Targetmatrix))
+   col3 <- rep(NA,length(Targetmatrix))
+   #Neg <- which(!(Negatives==0))
+   #make repeat loop
+   for (i in 1:length(Targetmatrix)){
+   #for (i in 464){
+     if (length(which(i==Negatives))==0){
+       fixlast=0
+       #v1=1
+       #v2=3
+       #v3=5
+       repeat{fixlast=fixlast+1
+       if (fixlast>=nchar(Targetvalues[i])){
+         col3[i] <- as.numeric(as.character(Targetvalues[i]))
+         break}
+       v3 <- as.numeric(substr(Targetvalues[i],nchar(Targetvalues[i])-fixlast+1,nchar(Targetvalues[i])))
+       uroll=0
+       repeat{uroll=uroll+1
+       if ((uroll+fixlast)>=nchar(Targetvalues[i])){break}
+       v2 <- as.numeric(substr(Targetvalues[i],nchar(Targetvalues[i])-fixlast-uroll+1,nchar(Targetvalues[i])-fixlast))
+       #vroll=0
+       #if ((uroll+fixlast+vroll)>=nchar(Targetvalues[i])){break}
+       v1 <- as.numeric(substr(Targetvalues[i],1,nchar(Targetvalues[i])-fixlast-uroll))
+        if ((v1+v2)==v3){
+           col1[i] <- v1
+           col2[i] <- v2
+           col3[i] <- v3
+           break
+           }
+       }
+       if ((v1+v2)==v3){
+         col1[i] <- v1
+         col2[i] <- v2
+         col3[i] <- v3
+       break}
+       }
+       }
+     else{
+         #A <- unlist(strsplit(Targetvalues[i],"-"))
+         A <- unlist(strsplit(Targetvalues[i],"(?<=-)",perl=TRUE))
+         for (j in 2:length(A)){
+           if(substr(A[j-1],nchar(A[j-1]),nchar(A[j-1]))=="-"){
+             A[j-1] <- substr(A[j-1],1,nchar(A[j-1])-1)
+             A[j] <- paste("-",A[j],sep="")
+           }
+         }
+         if (A[1]=="") {A <- A[-1]}
+         if (length(A)==3){
+           col1[i] <- A[1]
+           col2[i] <- A[2]
+           col3[i] <- A[3]
+         }
+         else{
+           uroll=0
+           repeat{uroll=uroll+1
+         if (uroll>=nchar(A[1])){break}
+            # 1st col is big
+         v2 <- as.numeric(as.character(substr(A[1],nchar(A[1])-uroll+1,nchar(A[1]))))
+         v1 <- as.numeric(as.character(substr(A[1],1,nchar(A[1])-uroll)))
+         v3 <- as.numeric(as.character(A[2]))
+         if ((v1+v2)==v3){
+           col1[i] <- v1
+           col2[i] <- v2
+           col3[i] <- v3
+           break
+         }
+           }
+           if (is.na(col1[i])|is.na(col2[i])|is.na(col3[i])){
+             vroll=0
+             repeat{vroll=vroll+1
+             if (vroll>=nchar(A[2])){break}
+             # 2nd col is big
+             v3 <- as.numeric(as.character(substr(A[2],nchar(A[2])-vroll+1,nchar(A[2]))))
+             v2 <- as.numeric(as.character(substr(A[2],1,nchar(A[2])-vroll)))
+             v1 <- as.numeric(as.character(A[1]))
+             if ((v1+v2)==v3){
+               col1[i] <- v1
+               col2[i] <- v2
+               col3[i] <- v3
+               break
+             }
+             }
+           }
+            }
+       }
+   }
+         
     is.space <- function(x) grepl(" ", x)
     numbersnew=rep(0,length(L))
     lettersnew=c()
     h=matrix(0,length(L),3)
+    L11=rep(0,length(L))
+    L11[Targetrows]=L1
     #numbersnew2=as.data.frame(substr(Gen3[1,1],1,L[1]),stringsAsFactors=FALSE)
     
     for (i in 1:length(L)){
-      numbersnew[i]=as.data.frame(substr(Gen3[i,1],1,L[i]),stringsAsFactors=FALSE)
+      numbersnew[i]=as.data.frame(substr(Gen3[i],1,L[i]),stringsAsFactors=FALSE)
       # numbersnew2 <- rbind(numbersnew2,numprel)
       
-      lettersnew[i] <- as.data.frame(substr(Gen3[i,1],L[i]+1,100),stringsAsFactors=FALSE)
+      lettersnew[i] <- as.data.frame(substr(Gen3[i], L[i] + 1, nchar(Gen3[i])-L11[i]),stringsAsFactors=FALSE)
       for (j in 1:3){
         if(is.space(substr(lettersnew[i],j,j))==TRUE){
           h[i,j]=1
         }
       }
-      lettersnew[i] <- as.data.frame(substr(Gen3[i,1],L[i]+1+sum(h[i,]),100),stringsAsFactors=FALSE)
+      lettersnew[i] <- as.data.frame(substr(Gen3[i], L[i]+1+sum(h[i,]),nchar(Gen3[i])-L11[i]),stringsAsFactors=FALSE)
     }
     
     #numbersnew <- as.numeric(gsub(" ","",numbersnew))
@@ -152,10 +287,16 @@ generator <- function(file){
     #letters <- as.data.frame(substr(Gen3[,1],6,100),stringsAsFactors=FALSE)
     
     w <- cbind(numbersnew,lettersnew)
-    Genfin <- cbind(w, Gen3[,2:4])
+    col11 <- rep(NA,length(Gen3))
+    col11[Targetrows] <- col1
+    col21 <- rep(NA,length(Gen3))
+    col21[Targetrows] <- col2
+    col31 <- rep(NA,length(Gen3))
+    col31[Targetrows] <- col3
+    Genfin <- cbind(w, col11, col21, col31)
     
     Y <- as.data.frame(gsub("[^0-9]", "", Genfin[,1]),stringsAsFactors=FALSE)
-    Genfin <- cbind (Y, Genfin[,2:length(Genfin)])
+    Genfin <- cbind (Y, Genfin[,2:length(Genfin[1,])])
     
     M1 <- intersect(which(as.numeric(Genfin[,3])<0),which(!Genfin[,3]==""))
     M2 <- intersect(which(as.numeric(Genfin[,4])<0),which(!Genfin[,4]==""))
@@ -191,6 +332,8 @@ generator <- function(file){
       Genfin <- Genfin[-I,]
     }
     
+    Genfin <- Genfin[!(is.na(Genfin[,1])),]
+    
     colnames(Genfin) <- c("SubsecID","Description",paste(year1,"original",sep = ""),"Revision",paste(year1,"revised",sep = ""))
     Genfin$SubsecID  <- as.numeric(Genfin$SubsecID)
     Genfin[,3]   <- type.convert(Genfin[,3], numerals="warn.loss");
@@ -207,7 +350,7 @@ generator <- function(file){
         Out <- as.data.frame(extract_tables(file, pages = i, guess = FALSE, method = "data.frame", columns = list(c(320, 420)), stringsAsFactors=FALSE))
         names(Out) <- names(Genout1)
         if (length(grep("SUMMARY", Out[,1]))==0){
-        Genout1 <- rbind(Genout1,Out)
+          Genout1 <- rbind(Genout1,Out)
         }
       })
     }
@@ -327,6 +470,10 @@ generator <- function(file){
     Genfin[,3]   <- type.convert(Genfin[,3], numerals="warn.loss");
     Genfin[,4]   <- type.convert(Genfin[,4], numerals="warn.loss");
   }
+  
+  #----------------------COMMON
+  
+  
   #values with 5 digit indices
   #vol[which(!substr(vol[,1],5,5) %in% ""),1]
   #indices with 5 digit indices
@@ -391,7 +538,7 @@ generator <- function(file){
   Genfin[which(Genfin$Description=="MISSING"),3] <- Genfin[which(Genfin$Description=="MISSING")-1,3]
   
   for (i in 5:ncol(Genfin)){
-  Genfin[,i] <- as.numeric(as.character(Genfin[,i]))
+    Genfin[,i] <- as.numeric(as.character(Genfin[,i]))
   }      
   
   TC <- intersect(agrep("total receipts", Genfin$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(Genfin$Description)-nchar("total receipts"))<2))
@@ -408,6 +555,14 @@ generator <- function(file){
   }
   
   Genfin <- Genfin[!duplicated(Genfin),]
+  
+  Genfin <- Genfin[!(substr(Genfin$Description,1,5) %in% "TOTAL"),]
+  Genfin <- Genfin[!(substr(Genfin$Description,1,3) %in% "NET"),]
+  Genfin <- Genfin[!(Genfin$Description=="HIGHWAY FUND APPROPRIATION"),]
+  Genfin <- Genfin[!(Genfin$Description=="HIGHWAY TRUST FUND APPROPRTN"),]
+  Genfin <- Genfin[!(Genfin$Description=="CHANGE IN FUND BALANCE"),]
+  Genfin <- Genfin[!(Genfin$Description=="ESTIMATED RECEIPTS MISSING"),]
+  
   return(Genfin)
 }
 
