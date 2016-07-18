@@ -176,144 +176,246 @@ generator <- function(file){
    col1 <- rep(NA,length(Targetmatrix))
    col2 <- rep(NA,length(Targetmatrix))
    col3 <- rep(NA,length(Targetmatrix))
-   #Neg <- which(!(Negatives==0))
-   #make repeat loop
-   for (i in 1:length(Targetmatrix)){
-   #for (i in 464){
-     if (length(which(i==Negatives))==0){
-       if(nchar(Targetvalues[i])==3){
-         col1[i] <- as.numeric(substr(Targetvalues[i],1,1))
-         col2[i] <- as.numeric(substr(Targetvalues[i],1,1))
-         col3[i] <- as.numeric(substr(Targetvalues[i],1,1))
-       }
-       else{
-       fixlast=0
-       #v1=1
-       #v2=3
-       #v3=5
-       repeat{fixlast=fixlast+1
-       if (fixlast>nchar(Targetvalues[i])){
-         col3[i] <- as.numeric(as.character(Targetvalues[i]))
-         break}
-       v3 <- as.numeric(substr(Targetvalues[i],nchar(Targetvalues[i])-fixlast+1,nchar(Targetvalues[i])))
-       uroll=0
-       repeat{uroll=uroll+1
-       if ((uroll+fixlast)>nchar(Targetvalues[i])){break}
-       v2 <- as.numeric(substr(Targetvalues[i],nchar(Targetvalues[i])-fixlast-uroll+1,nchar(Targetvalues[i])-fixlast))
-       vroll=0
-       repeat{vroll=vroll+1
-       if ((uroll+fixlast+vroll)>nchar(Targetvalues[i])){break}
-       v1 <- as.numeric(substr(Targetvalues[i],nchar(Targetvalues[i])-fixlast-uroll-vroll+1,nchar(Targetvalues[i])-fixlast-uroll))
-        if (((v1+v2)==v3)&(!(length(which(cbind(v1,v2,v3)==0))==3))){
-           col1[i] <- v1
-           col2[i] <- v2
-           col3[i] <- v3
-           break
-           }
-       }
-       if (((v1+v2)==v3)&(!(length(which(cbind(v1,v2,v3)==0))==3))){
-         col1[i] <- v1
-         col2[i] <- v2
-         col3[i] <- v3
-         break
-       }
-       }
-       if (((v1+v2)==v3)&(!(length(which(cbind(v1,v2,v3)==0))==3))){
-         col1[i] <- v1
-         col2[i] <- v2
-         col3[i] <- v3
-         break
-       }
-       }
-       }
-     }
-     else{
-         #A <- unlist(strsplit(Targetvalues[i],"-"))
-         A <- unlist(strsplit(Targetvalues[i],"(?<=-)",perl=TRUE))
-         for (j in 2:length(A)){
-           if(substr(A[j-1],nchar(A[j-1]),nchar(A[j-1]))=="-"){
-             A[j-1] <- substr(A[j-1],1,nchar(A[j-1])-1)
-             A[j] <- paste("-",A[j],sep="")
-           }
-         }
-         if (A[1]=="") {A <- A[-1]}
-         if (length(A)==3){
-           col1[i] <- A[1]
-           col2[i] <- A[2]
-           col3[i] <- A[3]
-         }
-         else{
-           if (length(A)==2){
-           uroll=0
-           repeat{uroll=uroll+1
-         if (uroll>=nchar(A[1])){break}
+    
+    for (i in 1:length(Targetmatrix)){
+      if (length(which(i==Negatives))==0){
+        if(nchar(Targetvalues[i])==3){
+          col1[i] <- as.numeric(substr(Targetvalues[i],1,1))
+          col2[i] <- as.numeric(substr(Targetvalues[i],2,2))
+          col3[i] <- as.numeric(substr(Targetvalues[i],3,3))
+        }
+        else{# standard case/ triple centrifuge
+          fixlast=0
+          repeat{fixlast=fixlast+1
+          if (fixlast>nchar(Targetvalues[i])){
+            col3[i] <- as.numeric(as.character(Targetvalues[i]))
+            break}
+          v3 <- as.numeric(substr(Targetvalues[i],nchar(Targetvalues[i])-fixlast+1,nchar(Targetvalues[i])))
+          newlength3=nchar(v3)
+          if (!(length(grep("e",v3))==0)){j=0 
+          repeat{j=j+1 
+          if (substr(v3,j,j)=="e"){newlength3 <- nchar(floor(as.numeric(as.character(substr(v3,1,j-1)))))+(as.numeric(substr(v3,j+1,nchar(v3))))
+          break}}}
+          if (!(newlength3==nchar(substr(Targetvalues[i],nchar(Targetvalues[i])-fixlast+1,nchar(Targetvalues[i]))))){next}
+          uroll=0
+          repeat{uroll=uroll+1
+          if ((uroll+fixlast)>nchar(Targetvalues[i])){break}
+          v2 <- as.numeric(substr(Targetvalues[i],nchar(Targetvalues[i])-fixlast-uroll+1,nchar(Targetvalues[i])-fixlast))
+          newlength2=nchar(v2)
+          if (!(length(grep("e",v2))==0)){j=0 
+          repeat{j=j+1 
+          if (substr(v2,j,j)=="e"){newlength2 <- nchar(floor(as.numeric(as.character(substr(v2,1,j-1)))))+(as.numeric(substr(v2,j+1,nchar(v2))))
+          break}}}
+          if (!(newlength2==nchar(substr(Targetvalues[i],nchar(Targetvalues[i])-fixlast-uroll+1,nchar(Targetvalues[i])-fixlast)))){next}
+          vroll=0
+          repeat{vroll=vroll+1
+          if ((uroll+fixlast+vroll)>nchar(Targetvalues[i])){break}
+          v1 <- as.numeric(substr(Targetvalues[i],nchar(Targetvalues[i])-fixlast-uroll-vroll+1,nchar(Targetvalues[i])-fixlast-uroll))
+          if (((v1+v2)==v3)&(!(length(which(cbind(v1,v2,v3)==0))==3))){
+            col1[i] <- v1
+            col2[i] <- v2
+            col3[i] <- v3
+            break
+          }
+          }
+          if (((v1+v2)==v3)&(!(length(which(cbind(v1,v2,v3)==0))==3))){
+            col1[i] <- v1
+            col2[i] <- v2
+            col3[i] <- v3
+            break
+          }
+          }
+          if (((v1+v2)==v3)&(!(length(which(cbind(v1,v2,v3)==0))==3))){
+            col1[i] <- v1
+            col2[i] <- v2
+            col3[i] <- v3
+            break
+          }
+          }
+        }
+      }
+      else{# lines with identified negatives
+        # prepare the values
+        A <- unlist(strsplit(Targetvalues[i],"(?<=-)",perl=TRUE))
+        Minuses <- rep(0,length(A))
+        for (j in 2:length(A)){
+          if(substr(A[j-1],nchar(A[j-1]),nchar(A[j-1]))=="-"){
+            A[j-1] <- substr(A[j-1],1,nchar(A[j-1])-1)
+            A[j] <- paste("-",A[j],sep="")
+            Minuses[j] <- 1
+          }
+        }
+        if (A[1]=="") {A <- A[-1]
+        Minuses <- Minuses[2:length(Minuses)]}
+        
+        if (length(A)==3){
+          col1[i] <- A[1]
+          col2[i] <- A[2]
+          col3[i] <- A[3]
+        }
+        
+        else{
+          if (length(A)==2){
+            # 2nd col is big/double centrifuge
+            uroll=0
+            repeat{uroll=uroll+1
+            if (uroll>=(nchar(A[2])-Minuses[2])){break}
+            v3 <- as.numeric(as.character(substr(A[2],nchar(A[2])-uroll+1,nchar(A[2]))))
+            newlength3=nchar(v3)
+            if (!(length(grep("e",v3))==0)){j=0 
+            repeat{j=j+1 
+            if (substr(v3,j,j)=="e"){newlength3 <- nchar(round(as.numeric(as.character(substr(v3,1,j-1)))))+(as.numeric(substr(v3,j+1,nchar(v3))))
+            break}}}
+            if (!(newlength3==nchar(substr(A[2],nchar(A[2])-uroll+1,nchar(A[2]))))){next}
+            v2 <- as.numeric(as.character(substr(A[2],1,nchar(A[2])-uroll)))
+            newlength2=nchar(v2)
+            if (!(length(grep("e",v2))==0)){j=0 
+            repeat{j=j+1 
+            if (substr(v2,j,j)=="e"){newlength2 <- nchar(round(as.numeric(as.character(substr(v2,1,j-1)))))+(as.numeric(substr(v2,j+1,nchar(v2))))
+            break}}}
+            if (!(newlength2==nchar(substr(A[2],1,nchar(A[2])-uroll)))){next}
+            v1 <- as.numeric(as.character(A[1]))
+            if ((v1+v2)==v3){
+              col1[i] <- v1
+              col2[i] <- v2
+              col3[i] <- v3
+              break
+            }
+            }
+            
             # 1st col is big
-         v2 <- as.numeric(as.character(substr(A[1],nchar(A[1])-uroll+1,nchar(A[1]))))
-         v1 <- as.numeric(as.character(substr(A[1],1,nchar(A[1])-uroll)))
-         v3 <- as.numeric(as.character(A[2]))
-         if ((v1+v2)==v3){
-           col1[i] <- v1
-           col2[i] <- v2
-           col3[i] <- v3
-           break
-         }
-           }
-           if (is.na(col1[i])|is.na(col2[i])|is.na(col3[i])){
-             vroll=0
-             repeat{vroll=vroll+1
-             if (vroll>=nchar(A[2])){break}
-             # 2nd col is big
-             v3 <- as.numeric(as.character(substr(A[2],nchar(A[2])-vroll+1,nchar(A[2]))))
-             v2 <- as.numeric(as.character(substr(A[2],1,nchar(A[2])-vroll)))
-             v1 <- as.numeric(as.character(A[1]))
-             if ((v1+v2)==v3){
-               col1[i] <- v1
-               col2[i] <- v2
-               col3[i] <- v3
-               break
-             }
-             }
-           }
-           }
-           else{#lengthA=1
-             fixlast=0
-             repeat{fixlast=fixlast+1
-             if (fixlast>=nchar(A[1])){break}
-             v3 <- as.numeric(as.character(substr(A[1],nchar(A[1])-fixlast+1,nchar(A[1]))))
-             uroll=0
-             repeat{uroll=uroll+1
-             if (uroll+fixlast>=nchar(A[1])){break}
-             v2 <- as.numeric(as.character(substr(A[1],nchar(A[1])-uroll-fixlast+1,nchar(A[1])-fixlast)))
-             vroll=0
-             repeat{vroll=vroll+1
-             if (vroll+uroll+fixlast>=nchar(A[1])){break}
-             v1 <- as.numeric(as.character(substr(A[1],nchar(A[1])-uroll-vroll-fixlast+1,nchar(A[1])-fixlast-uroll)))
-             if (((v1+v2)==v3)&(!(length(which(cbind(v1,v2,v3)==0))==3))){
-               col1[i] <- v1
-               col2[i] <- v2
-               col3[i] <- v3
-               break
-             }
-             }
-             if (((v1+v2)==v3)&(!(length(which(cbind(v1,v2,v3)==0))==3))){
-               col1[i] <- v1
-               col2[i] <- v2
-               col3[i] <- v3
-               break
-             }
-             }
-             if (((v1+v2)==v3)&(!(length(which(cbind(v1,v2,v3)==0))==3))){
-               col1[i] <- v1
-               col2[i] <- v2
-               col3[i] <- v3
-               break
-             }
-       }
-           }
-         }
-     }
-   }
-         
+            if (is.na(col1[i])|is.na(col2[i])|is.na(col3[i])){
+              vroll=0
+              repeat{vroll=vroll+1
+              if (vroll>=(nchar(A[1])-Minuses[1])){break}
+              v2 <- as.numeric(as.character(substr(A[1],nchar(A[1])-vroll+1,nchar(A[1]))))
+              newlength2=nchar(v2)
+              if (!(length(grep("e",v2))==0)){j=0 
+              repeat{j=j+1 
+              if (substr(v2,j,j)=="e"){newlength2 <- nchar(round(as.numeric(as.character(substr(v2,1,j-1)))))+(as.numeric(substr(v2,j+1,nchar(v2))))
+              break}}}
+              if (!(newlength2==nchar(substr(A[1],nchar(A[1])-vroll+1,nchar(A[1]))))){next}
+              v1 <- as.numeric(as.character(substr(A[1],1,nchar(A[1])-vroll)))
+              newlength1=nchar(v1)
+              if (!(length(grep("e",v1))==0)){j=0 
+              repeat{j=j+1 
+              if (substr(v1,j,j)=="e"){newlength1 <- nchar(round(as.numeric(as.character(substr(v1,1,j-1)))))+(as.numeric(substr(v1,j+1,nchar(v1))))
+              break}}}
+              if (!(newlength1==nchar(substr(A[1],1,nchar(A[1])-vroll)))){next}
+              v3 <- as.numeric(as.character(A[2]))
+              if ((v1+v2)==v3){
+                col1[i] <- v1
+                col2[i] <- v2
+                col3[i] <- v3
+                break
+              }
+              }
+            }
+            
+            # A1 is weird (description contains numbers and weird symbols inbetween)
+            # triple centrifuge
+            if (is.na(col1[i])|is.na(col2[i])|is.na(col3[i])){
+            fixlast=0
+            repeat{fixlast=fixlast+1
+            if (fixlast>=(nchar(A[2])-Minuses[2])){
+              col3[i] <- as.numeric(as.character(A[2]))
+              break}
+            v3 <- as.numeric(substr(A[2],nchar(A[2])-fixlast+1,nchar(A[2])))
+            newlength3=nchar(v3)
+            if (!(length(grep("e",v3))==0)){j=0 
+            repeat{j=j+1 
+            if (substr(v3,j,j)=="e"){newlength3 <- nchar(round(as.numeric(as.character(substr(v3,1,j-1)))))+(as.numeric(substr(v3,j+1,nchar(v3))))
+            break}}}
+            if (!(newlength3==nchar(substr(A[2],nchar(A[2])-fixlast+1,nchar(A[2]))))){next}
+            uroll=0
+            repeat{uroll=uroll+1
+            if ((uroll+fixlast)>=(nchar(A[2])-Minuses[2])){break}
+            v2 <- as.numeric(substr(A[2],nchar(A[2])-fixlast-uroll+1,nchar(A[2])-fixlast))
+            newlength2=nchar(v2)
+            if (!(length(grep("e",v2))==0)){j=0 
+            repeat{j=j+1 
+            if (substr(v2,j,j)=="e"){newlength2 <- nchar(round(as.numeric(as.character(substr(v2,1,j-1)))))+(as.numeric(substr(v2,j+1,nchar(v2))))
+            break}}}
+            if (!(newlength2==nchar(substr(A[2],nchar(A[2])-fixlast-uroll+1,nchar(A[2])-fixlast)))){next}
+            vroll=0
+            repeat{vroll=vroll+1
+            if ((uroll+fixlast+vroll)>=(nchar(A[2])-Minuses[2])){break}
+            v1 <- as.numeric(substr(A[2],nchar(A[2])-fixlast-uroll-vroll+1,nchar(A[2])-fixlast-uroll))
+            if (((v1+v2)==v3)&(!(length(which(cbind(v1,v2,v3)==0))==3))){
+              col1[i] <- v1
+              col2[i] <- v2
+              col3[i] <- v3
+              break
+            }
+            }
+            if (((v1+v2)==v3)&(!(length(which(cbind(v1,v2,v3)==0))==3))){
+              col1[i] <- v1
+              col2[i] <- v2
+              col3[i] <- v3
+              break
+            }
+            }
+            if (((v1+v2)==v3)&(!(length(which(cbind(v1,v2,v3)==0))==3))){
+              col1[i] <- v1
+              col2[i] <- v2
+              col3[i] <- v3
+              break
+            }
+            }
+            }
+          }
+          
+          else{#lengthA=1
+            fixlast=0
+            repeat{fixlast=fixlast+1
+            if (fixlast>=nchar(A[1])){break}
+            v3 <- as.numeric(as.character(substr(A[1],nchar(A[1])-fixlast+1,nchar(A[1]))))
+            newlength3=nchar(v3)
+            if (!(length(grep("e",v3))==0)){j=0 
+            repeat{j=j+1 
+            if (substr(v3,j,j)=="e"){newlength3 <- nchar(round(as.numeric(as.character(substr(v3,1,j-1)))))+(as.numeric(substr(v3,j+1,nchar(v3))))
+            break}}}
+            if (!(newlength3==nchar(substr(A[1],nchar(A[1])-fixlast+1,nchar(A[1]))))){next}
+            uroll=0
+            repeat{uroll=uroll+1
+            if (uroll+fixlast>=nchar(A[1])){break}
+            v2 <- as.numeric(as.character(substr(A[1],nchar(A[1])-uroll-fixlast+1,nchar(A[1])-fixlast)))
+            newlength2=nchar(v2)
+            if (!(length(grep("e",v2))==0)){j=0 
+            repeat{j=j+1 
+            if (substr(v2,j,j)=="e"){newlength2 <- nchar(round(as.numeric(as.character(substr(v2,1,j-1)))))+(as.numeric(substr(v2,j+1,nchar(v2))))
+            break}}}
+            if (!(newlength2==nchar(substr(A[1],nchar(A[1])-uroll-fixlast+1,nchar(A[1])-fixlast)))){next}
+            vroll=0
+            repeat{vroll=vroll+1
+            if (vroll+uroll+fixlast>=nchar(A[1])){break}
+            v1 <- as.numeric(as.character(substr(A[1],nchar(A[1])-uroll-vroll-fixlast+1,nchar(A[1])-fixlast-uroll)))
+            if (((v1+v2)==v3)&(!(length(which(cbind(v1,v2,v3)==0))==3))){
+              col1[i] <- v1
+              col2[i] <- v2
+              col3[i] <- v3
+              break
+            }
+            }
+            if (((v1+v2)==v3)&(!(length(which(cbind(v1,v2,v3)==0))==3))){
+              col1[i] <- v1
+              col2[i] <- v2
+              col3[i] <- v3
+              break
+            }
+            }
+            if (((v1+v2)==v3)&(!(length(which(cbind(v1,v2,v3)==0))==3))){
+              col1[i] <- v1
+              col2[i] <- v2
+              col3[i] <- v3
+              break
+            }
+            }
+          }
+        }
+      }
+    }
+          
     is.space <- function(x) grepl(" ", x)
     numbersnew=rep(0,length(L))
     lettersnew=c()
