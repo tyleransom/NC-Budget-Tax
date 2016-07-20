@@ -184,62 +184,69 @@ generator <- function(file){
           col2[i] <- as.numeric(substr(Targetvalues[i],2,2))
           col3[i] <- as.numeric(substr(Targetvalues[i],3,3))
         }
-        else{# standard case/ triple centrifuge
-          fixlast=0
-          repeat{fixlast=fixlast+1
-          if (fixlast>nchar(Targetvalues[i])){
-            col3[i] <- as.numeric(as.character(Targetvalues[i]))
-            break}
-          v3 <- as.numeric(substr(Targetvalues[i],nchar(Targetvalues[i])-fixlast+1,nchar(Targetvalues[i])))
-          newlength3=nchar(v3)
-          if (!(length(grep("e",v3))==0)){j=0 
-          repeat{j=j+1 
-          if (substr(v3,j,j)=="e"){newlength3 <- nchar(floor(as.numeric(as.character(substr(v3,1,j-1)))))+(as.numeric(substr(v3,j+1,nchar(v3))))
-          break}}}
-          if (!(newlength3==nchar(substr(Targetvalues[i],nchar(Targetvalues[i])-fixlast+1,nchar(Targetvalues[i]))))){next}
-          uroll=0
-          repeat{uroll=uroll+1
-          if ((uroll+fixlast)>nchar(Targetvalues[i])){break}
-          v2 <- as.numeric(substr(Targetvalues[i],nchar(Targetvalues[i])-fixlast-uroll+1,nchar(Targetvalues[i])-fixlast))
-          newlength2=nchar(v2)
-          if (!(length(grep("e",v2))==0)){j=0 
-          repeat{j=j+1 
-          if (substr(v2,j,j)=="e"){newlength2 <- nchar(floor(as.numeric(as.character(substr(v2,1,j-1)))))+(as.numeric(substr(v2,j+1,nchar(v2))))
-          break}}}
-          if (!(newlength2==nchar(substr(Targetvalues[i],nchar(Targetvalues[i])-fixlast-uroll+1,nchar(Targetvalues[i])-fixlast)))){next}
-          vroll=0
-          repeat{vroll=vroll+1
-          if ((uroll+fixlast+vroll)>nchar(Targetvalues[i])){break}
-          v1 <- as.numeric(substr(Targetvalues[i],nchar(Targetvalues[i])-fixlast-uroll-vroll+1,nchar(Targetvalues[i])-fixlast-uroll))
-          if (((v1+v2)==v3)&(!(length(which(cbind(v1,v2,v3)==0))==3))){
-            col1[i] <- v1
-            col2[i] <- v2
-            col3[i] <- v3
-            break
+        else{# weird case with just one digit
+          if(nchar(Targetvalues[i])==1){
+            col1[i] <- as.numeric(substr(Targetvalues[i],1,1))
+            col2[i] <- as.numeric(substr(Targetvalues[i],1,1))
+            col3[i] <- as.numeric(substr(Targetvalues[i],1,1))
           }
-          }
-          if (((v1+v2)==v3)&(!(length(which(cbind(v1,v2,v3)==0))==3))){
-            col1[i] <- v1
-            col2[i] <- v2
-            col3[i] <- v3
-            break
-          }
-          }
-          if (((v1+v2)==v3)&(!(length(which(cbind(v1,v2,v3)==0))==3))){
-            col1[i] <- v1
-            col2[i] <- v2
-            col3[i] <- v3
-            break
-          }
-          }
-          if (is.na(col1[i])|is.na(col2[i])|is.na(col3[i])){
-        v3 <- as.numeric(as.character(substr(Targetvalues[i],nchar(Targetvalues[i]),nchar(Targetvalues[i]))))
-        v2 <- as.numeric(as.character(substr(Targetvalues[i],nchar(Targetvalues[i])-1,nchar(Targetvalues[i])-1))) 
-        v1 <- as.numeric(as.character(substr(Targetvalues[i],nchar(Targetvalues[i])-2,nchar(Targetvalues[i])-2))) 
-            if (length(which(cbind(v1,v2,v3)==0))==3){
+          else{# standard case/ triple centrifuge
+            fixlast=0
+            repeat{fixlast=fixlast+1
+            if (fixlast>nchar(Targetvalues[i])){
+              col3[i] <- as.numeric(as.character(Targetvalues[i]))
+              break}
+            v3 <- as.numeric(substr(Targetvalues[i],nchar(Targetvalues[i])-fixlast+1,nchar(Targetvalues[i])))
+            newlength3=nchar(v3)
+            if (!(length(grep("e",v3))==0)){j=0 
+            repeat{j=j+1 
+            if (substr(v3,j,j)=="e"){newlength3 <- nchar(floor(as.numeric(as.character(substr(v3,1,j-1)))))+(as.numeric(substr(v3,j+1,nchar(v3))))
+            break}}}
+            if (!(newlength3==nchar(substr(Targetvalues[i],nchar(Targetvalues[i])-fixlast+1,nchar(Targetvalues[i]))))){next}
+            uroll=0
+            repeat{uroll=uroll+1
+            if ((uroll+fixlast)>nchar(Targetvalues[i])){break}
+            v2 <- as.numeric(substr(Targetvalues[i],nchar(Targetvalues[i])-fixlast-uroll+1,nchar(Targetvalues[i])-fixlast))
+            newlength2=nchar(v2)
+            if (!(length(grep("e",v2))==0)){j=0 
+            repeat{j=j+1 
+            if (substr(v2,j,j)=="e"){newlength2 <- nchar(floor(as.numeric(as.character(substr(v2,1,j-1)))))+(as.numeric(substr(v2,j+1,nchar(v2))))
+            break}}}
+            if (!(newlength2==nchar(substr(Targetvalues[i],nchar(Targetvalues[i])-fixlast-uroll+1,nchar(Targetvalues[i])-fixlast)))){next}
+            vroll=0
+            repeat{vroll=vroll+1
+            if ((uroll+fixlast+vroll)>nchar(Targetvalues[i])){break}
+            v1 <- as.numeric(substr(Targetvalues[i],nchar(Targetvalues[i])-fixlast-uroll-vroll+1,nchar(Targetvalues[i])-fixlast-uroll))
+            if (((v1+v2)==v3)&(!(length(which(cbind(v1,v2,v3)==0))==3))){
               col1[i] <- v1
               col2[i] <- v2
               col3[i] <- v3
+              break
+            }
+            }
+            if (((v1+v2)==v3)&(!(length(which(cbind(v1,v2,v3)==0))==3))){
+              col1[i] <- v1
+              col2[i] <- v2
+              col3[i] <- v3
+              break
+            }
+            }
+            if (((v1+v2)==v3)&(!(length(which(cbind(v1,v2,v3)==0))==3))){
+              col1[i] <- v1
+              col2[i] <- v2
+              col3[i] <- v3
+              break
+            }
+            }
+            if (is.na(col1[i])|is.na(col2[i])|is.na(col3[i])){
+              v3 <- as.numeric(as.character(substr(Targetvalues[i],nchar(Targetvalues[i]),nchar(Targetvalues[i]))))
+              v2 <- as.numeric(as.character(substr(Targetvalues[i],nchar(Targetvalues[i])-1,nchar(Targetvalues[i])-1))) 
+              v1 <- as.numeric(as.character(substr(Targetvalues[i],nchar(Targetvalues[i])-2,nchar(Targetvalues[i])-2))) 
+              if (length(which(cbind(v1,v2,v3)==0))==3){
+                col1[i] <- v1
+                col2[i] <- v2
+                col3[i] <- v3
+              }
             }
           }
         }
@@ -260,9 +267,9 @@ generator <- function(file){
         
         if (length(A)==3){# simplest case when every element is the column itself
           if ((as.numeric(as.character(A[1]))+as.numeric(as.character(A[2])))==as.numeric(as.character(A[3]))){
-          col1[i] <- A[1]
-          col2[i] <- A[2]
-          col3[i] <- A[3]
+            col1[i] <- A[1]
+            col2[i] <- A[2]
+            col3[i] <- A[3]
           }
           else{# complicated case with A[1] storing weird stuff:
             # CASE1: col 3 is big => double centrifuge
@@ -342,8 +349,8 @@ generator <- function(file){
                 break
               }
               }
-              }
-              }
+            }
+          }
         }
         
         else{
@@ -373,7 +380,7 @@ generator <- function(file){
               break
             }
             }
-           
+            
             
             # 1st col is big
             if (is.na(col1[i])|is.na(col2[i])|is.na(col3[i])){
@@ -402,7 +409,7 @@ generator <- function(file){
                 break
               }
               }
-              }
+            }
             
             # A1 is weird and IS needed (description contains numbers and weird symbols inbetween)
             # triple centrifuge
@@ -505,8 +512,8 @@ generator <- function(file){
               }
             }
             }
-              
-              
+            
+            
             # A1 is weird and IS NOT needed (description contains numbers and weird symbols inbetween)
             # triple centrifuge
             if (is.na(col1[i])|is.na(col2[i])|is.na(col3[i])){
@@ -760,13 +767,16 @@ generator <- function(file){
     
     #is.letter <- function(x) grepl("[[:alpha:]]", x)
     is.number <- function(x) grepl("[[:digit:]]", x)
-    
     L=rep(0,length(Gen3[,1]))
-    for (j in 1:12){
-      k <- as.data.frame(substr(Gen3[,1],j,j),stringsAsFactors=FALSE)
-      for (i in 1:length(k[,1])){
-        if(is.number(k[i,1])==TRUE){L[i]=j}
-      }}
+    for (i in 1:length(Gen3[,1])){
+      j=3
+      repeat{
+        j=j+1
+        k <- as.data.frame(substr(Gen3[i,1],j,j),stringsAsFactors=FALSE)
+        if(is.number(k)==FALSE){L[i]=j-1 
+        break}
+      }
+    }
     
     is.space <- function(x) grepl(" ", x)
     numbersnew=rep(0,length(L))
@@ -1191,7 +1201,8 @@ mapping <- function(basefile, operation){
   else{base_index1 <- 1
   base_index2 <- 2}
   #basefile <- rbind(dvol62003,dvol62005,dvol62007,dvol62009,dvol62011,setNames( rev(vol62003) , names( vol62003) ) )
-  test2 <- matrix(,nrow=length(basedata[,1]),ncol=2*length(seq(3,11,by = 2)))
+  cols=length(basedata[,5:length(basedata[1,])])
+  test2 <- matrix(,nrow=length(basedata[,1]),ncol=cols*length(seq(3,11,by = 2)))
   test2 <- cbind(basedata[,1:4],test2)
   test3 <- matrix(,nrow=length(basedata[,1]),ncol=5)
   weirdos1 <- matrix(0,length(basedata[,1]),5)
@@ -1222,7 +1233,8 @@ mapping <- function(basefile, operation){
               counter=counter-1
               #outputw <- ow[-1]
               outputw <- get(nam1)
-              test2[ialt,(3+2*index):(3+2*index+length(outputw)-1)] <- outputw
+              test2[ialt,(5+cols*(index-1)):(5+cols*(index-1)+length(outputw)-1)] <- outputw
+              colnames(test2)[(5+cols*(index-1)):(5+cols*(index-1)+length(outputw)-1)] <- colnames(get(nam1))
               if (counter==0) {break} }
           }
           else{
@@ -1232,7 +1244,8 @@ mapping <- function(basefile, operation){
             assign(nam, (DMatch[[index]])[1,5:length(DMatch[[index]])])}
             #o <- cbind(o,get(nam))
             output <- get(nam)
-            test2[i,(3+2*index):(3+2*index+length(output)-1)] <- output
+            test2[i,(5+cols*(index-1)):(5+cols*(index-1)+length(output)-1)] <- output
+            colnames(test2)[(5+cols*(index-1)):(5+cols*(index-1)+length(output)-1)] <- colnames(get(nam))
           }
         }
       }
@@ -1245,10 +1258,10 @@ mapping <- function(basefile, operation){
       #b <- cbind(basefile, basedata[i,1:4])
       #DMatch <- do.call(matcher, as.list(cbind(b, operation)))
       if (base_index1==2){
-      DMatch <- matcher(basefile, basedata[i,1],basedata[i,2],basedata[i,3],basedata[i,4],1, basedata[i,5])
+        DMatch <- matcher(basefile, basedata[i,1],basedata[i,2],basedata[i,3],basedata[i,4],1, basedata[i,5])
       }
       else{
-      DMatch <- matcher(basefile, basedata[i,1],basedata[i,2],basedata[i,3],basedata[i,4],1, basedata[i,6])
+        DMatch <- matcher(basefile, basedata[i,1],basedata[i,2],basedata[i,3],basedata[i,4],1, basedata[i,6])
       }
       l1 <- length((DMatch[[1]])[,5])
       l2 <- length((DMatch[[2]])[,5])
@@ -1267,12 +1280,14 @@ mapping <- function(basefile, operation){
             #outputw <- ow[-1]
             outputw <- nam1
             test3[ialt1,(3+2*base_index1):(3+2*base_index1+length(outputw)-1)] <- outputw
+            colnames(test3)[(3+2*base_index1):(3+2*base_index1+length(outputw)-1)] <- colnames(get(nam1))
             if (counter1==0) {break} }
         }
         else{
           DMatch1=DMatch[[1]][,5:length(DMatch[[1]])]
           test3[i,(3+2*base_index1):(3+2*base_index1+length(DMatch1)-1)] <- DMatch1
-        }
+          colnames(test3)[(3+2*base_index1):(3+2*base_index1+length(DMatch1)-1)] <- colnames(DMatch1)
+          }
       }
       #nam1 <- paste("DMatch1", t, sep = "0")
       if(!(l2==0)){
@@ -1290,12 +1305,14 @@ mapping <- function(basefile, operation){
             #outputw <- ow[-1]
             outputw <- nam2
             test3[ialt2,(3+2*base_index2):(3+2*base_index2+length(outputw)-1)] <- outputw
+            colnames(test3)[(3+2*base_index2):(3+2*base_index2+length(outputw)-1)] <- colnames(outputw)
             if (counter2==0) {break} }
         }
         else{
           DMatch2=DMatch[[2]][,5:length(DMatch[[2]])]
           #assign(nam1, (DMatch[[index]])[counter,5:length(DMatch[[index]])])}
           test3[i,(3+2*base_index2):(3+2*base_index2+length(DMatch2)-1)] <- DMatch2
+          colnames(test3)[(3+2*base_index2):(3+2*base_index2+length(DMatch2)-1)] <- colnames(DMatch2)
         }
       }
       #mapping <- test3
