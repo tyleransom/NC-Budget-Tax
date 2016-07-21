@@ -1490,159 +1490,164 @@ t2015 <- read.csv("2015.csv")
 t2016 <- read.csv("2016.csv")
 t2013_2016 <- cbind(t2013,t2014[,2:4],t2015[,2:4],t2016[,2:4])
 
+vol12003p <- unname(cbind(vol12003[,1:5],rep(2003,length(vol12003[,1]))))                 
+colnames(vol12003p)[length(vol12003p[1,])] <- "Year"                    
+vol12005p <- unname(cbind(vol12005[,1:5],rep(2005,length(vol12005[,1]))))                   
+colnames(vol12005p)[length(vol12005p[1,])] <- "Year"                    
+vol12007p <- unname(cbind(vol12007[,1:5],rep(2007,length(vol12007[,1]))))                   
+colnames(vol12007p)[length(vol12007p[1,])] <- "Year"                    
+vol12009p <- unname(cbind(vol12009[,1:5],rep(2009,length(vol12009[,1]))))                   
+colnames(vol12009p)[length(vol12009p[1,])] <- "Year"                    
+vol12011p <- unname(cbind(vol12011[,1:5],rep(2011,length(vol12011[,1]))))                   
+colnames(vol12011p)[length(vol12011p[1,])] <- "Year"                    
 
-vol12003p <- cbind(vol12003[,1:6],rep(2003,length(vol12003[,1])))                   
-                   colnames(vol12003p)[length(vol12003p[1,])] <- "Year"                    
-                   vol12005p <- cbind(vol12005[,1:6],rep(2005,length(vol12005[,1])))                   
-                   colnames(vol12005p)[length(vol12005p[1,])] <- "Year"                    
-                   vol12007p <- cbind(vol12007[,1:6],rep(2007,length(vol12007[,1])))                   
-                   colnames(vol12007p)[length(vol12007p[1,])] <- "Year"                    
-                   vol12009p <- cbind(vol12009[,1:6],rep(2009,length(vol12009[,1])))                   
-                   colnames(vol12009p)[length(vol12009p[1,])] <- "Year"                    
-                   vol12011p <- cbind(vol12011[,1:6],rep(2011,length(vol12011[,1])))                   
-                   colnames(vol12011p)[length(vol12011p[1,])] <- "Year"                    
-                   
-                   vol12004p <-  cbind(vol12004[,1:4],vol12004[,7],rep(2004,length(vol12004[,1])))                                     
-                   colnames(vol12004p)[length(vol12004p[1,])] <- "Year"    
-                   vol12006p <-  cbind(vol12006[,1:4],vol12006[,7],rep(2006,length(vol12006[,1])))                                     
-                   colnames(vol12006p)[length(vol12006p[1,])] <- "Year" 
-                   vol12008p <-  cbind(vol12008[,1:4],vol12008[,7],rep(2008,length(vol12008[,1])))                                     
-                   colnames(vol12008p)[length(vol12008p[1,])] <- "Year" 
-                   vol12010p <-  cbind(vol12010[,1:4],vol12010[,7],rep(2010,length(vol12010[,1])))                                     
-                   colnames(vol12010p)[length(vol12010p[1,])] <- "Year" 
-                   vol12012p <-  cbind(vol12012[,1:4],vol12012[,7],rep(2012,length(vol12012[,1])))                                     
-                   colnames(vol12012p)[length(vol12012p[1,])] <- "Year" 
-                   
-                   vol1 <- rbind(vol12003p,vol12004p,vol12005p,vol12006p,vol12007p,vol12008p,vol12009p,vol12010p,vol12011p,vol12012p)
-                   vol1 <- cbind(rep("Education",length(vol1([,1]))),vol1)
-                   
-                   vol22003p <- cbind(vol22003[,1:6],rep(2003,length(vol22003[,1])))                   
-                   colnames(vol22003p)[length(vol22003p[1,])] <- "Year"                    
-                   vol22005p <- cbind(vol22005[,1:6],rep(2005,length(vol22005[,1])))                   
-                   colnames(vol22005p)[length(vol22005p[1,])] <- "Year"                    
-                   vol22007p <- cbind(vol22007[,1:6],rep(2007,length(vol22007[,1])))                   
-                   colnames(vol22007p)[length(vol22007p[1,])] <- "Year"                    
-                   vol22009p <- cbind(vol22009[,1:6],rep(2009,length(vol22009[,1])))                   
-                   colnames(vol22009p)[length(vol22009p[1,])] <- "Year"                    
-                   vol22011p <- cbind(vol22011[,1:6],rep(2011,length(vol22011[,1])))                   
-                   colnames(vol22011p)[length(vol22011p[1,])] <- "Year"                    
-                   
-                   vol22004p <-  cbind(vol22004[,1:4],vol22004[,7],rep(2004,length(vol22004[,1])))                                     
-                   colnames(vol22004p)[length(vol22004p[1,])] <- "Year"    
-                   vol22006p <-  cbind(vol22006[,1:4],vol22006[,7],rep(2006,length(vol22006[,1])))                                     
-                   colnames(vol22006p)[length(vol22006p[1,])] <- "Year" 
-                   vol22008p <-  cbind(vol22008[,1:4],vol22008[,7],rep(2008,length(vol22008[,1])))                                     
-                   colnames(vol22008p)[length(vol22008p[1,])] <- "Year" 
-                   vol22010p <-  cbind(vol22010[,1:4],vol22010[,7],rep(2010,length(vol22010[,1])))                                     
-                   colnames(vol22010p)[length(vol22010p[1,])] <- "Year" 
-                   vol22012p <-  cbind(vol22012[,1:4],vol22012[,7],rep(2012,length(vol22012[,1])))                                     
-                   colnames(vol22012p)[length(vol22012p[1,])] <- "Year" 
-                   
-                   vol2 <- rbind(vol22003p,vol22004p,vol22005p,vol22006p,vol22007p,vol22008p,vol22009p,vol22010p,vol22011p,vol22012p)
-                   vol2 <- cbind(rep("General Government",length(vol2([,1]))),vol2)
-                   
-                   
-                   vol32003p <- cbind(vol32003[,1:6],rep(2003,length(vol32003[,1])))                   
-                   colnames(vol32003p)[length(vol32003p[1,])] <- "Year"                    
-                   vol32005p <- cbind(vol32005[,1:6],rep(2005,length(vol32005[,1])))                   
-                   colnames(vol32005p)[length(vol32005p[1,])] <- "Year"                    
-                   vol32007p <- cbind(vol32007[,1:6],rep(2007,length(vol32007[,1])))                   
-                   colnames(vol32007p)[length(vol32007p[1,])] <- "Year"                    
-                   vol32009p <- cbind(vol32009[,1:6],rep(2009,length(vol32009[,1])))                   
-                   colnames(vol32009p)[length(vol32009p[1,])] <- "Year"                    
-                   vol32011p <- cbind(vol32011[,1:6],rep(2011,length(vol32011[,1])))                   
-                   colnames(vol32011p)[length(vol32011p[1,])] <- "Year"                    
-                   
-                   vol32004p <-  cbind(vol32004[,1:4],vol32004[,7],rep(2004,length(vol32004[,1])))                                     
-                   colnames(vol32004p)[length(vol32004p[1,])] <- "Year"    
-                   vol32006p <-  cbind(vol32006[,1:4],vol32006[,7],rep(2006,length(vol32006[,1])))                                     
-                   colnames(vol32006p)[length(vol32006p[1,])] <- "Year" 
-                   vol32008p <-  cbind(vol32008[,1:4],vol32008[,7],rep(2008,length(vol32008[,1])))                                     
-                   colnames(vol32008p)[length(vol32008p[1,])] <- "Year" 
-                   vol32010p <-  cbind(vol32010[,1:4],vol32010[,7],rep(2010,length(vol32010[,1])))                                     
-                   colnames(vol32010p)[length(vol32010p[1,])] <- "Year" 
-                   vol32012p <-  cbind(vol32012[,1:4],vol32012[,7],rep(2012,length(vol32012[,1])))                                     
-                   colnames(vol32012p)[length(vol32012p[1,])] <- "Year" 
-                   
-                   vol3 <- rbind(vol32003p,vol32004p,vol32005p,vol32006p,vol32007p,vol32008p,vol32009p,vol32010p,vol32011p,vol32012p)
-                   vol3 <- cbind(rep("Health",length(vol3([,1]))),vol3)
-                   
-                   
-                   vol42003p <- cbind(vol42003[,1:6],rep(2003,length(vol42003[,1])))                   
-                   colnames(vol42003p)[length(vol42003p[1,])] <- "Year"                    
-                   vol42005p <- cbind(vol42005[,1:6],rep(2005,length(vol42005[,1])))                   
-                   colnames(vol42005p)[length(vol42005p[1,])] <- "Year"                    
-                   vol42007p <- cbind(vol42007[,1:6],rep(2007,length(vol42007[,1])))                   
-                   colnames(vol42007p)[length(vol42007p[1,])] <- "Year"                    
-                   vol42009p <- cbind(vol42009[,1:6],rep(2009,length(vol42009[,1])))                   
-                   colnames(vol42009p)[length(vol42009p[1,])] <- "Year"                    
-                   vol42011p <- cbind(vol42011[,1:6],rep(2011,length(vol42011[,1])))                   
-                   colnames(vol42011p)[length(vol42011p[1,])] <- "Year"                    
-                   
-                   vol42004p <-  cbind(vol42004[,1:4],vol42004[,7],rep(2004,length(vol42004[,1])))                                     
-                   colnames(vol42004p)[length(vol42004p[1,])] <- "Year"    
-                   vol42006p <-  cbind(vol42006[,1:4],vol42006[,7],rep(2006,length(vol42006[,1])))                                     
-                   colnames(vol42006p)[length(vol42006p[1,])] <- "Year" 
-                   vol42008p <-  cbind(vol42008[,1:4],vol42008[,7],rep(2008,length(vol42008[,1])))                                     
-                   colnames(vol42008p)[length(vol42008p[1,])] <- "Year" 
-                   vol42010p <-  cbind(vol42010[,1:4],vol42010[,7],rep(2010,length(vol42010[,1])))                                     
-                   colnames(vol42010p)[length(vol42010p[1,])] <- "Year" 
-                   vol42012p <-  cbind(vol42012[,1:4],vol42012[,7],rep(2012,length(vol42012[,1])))                                     
-                   colnames(vol42012p)[length(vol42012p[1,])] <- "Year" 
-                   
-                   vol4 <- rbind(vol42003p,vol42004p,vol42005p,vol42006p,vol42007p,vol42008p,vol42009p,vol42010p,vol42011p,vol42012p)
-                   vol4 <- cbind(rep("Justice",length(vol4([,1]))),vol4)
-                   
-                   vol52003p <- cbind(vol52003[,1:6],rep(2003,length(vol52003[,1])))                   
-                   colnames(vol52003p)[length(vol52003p[1,])] <- "Year"                    
-                   vol52005p <- cbind(vol52005[,1:6],rep(2005,length(vol52005[,1])))                   
-                   colnames(vol52005p)[length(vol52005p[1,])] <- "Year"                    
-                   vol52007p <- cbind(vol52007[,1:6],rep(2007,length(vol52007[,1])))                   
-                   colnames(vol52007p)[length(vol52007p[1,])] <- "Year"                    
-                   vol52009p <- cbind(vol52009[,1:6],rep(2009,length(vol52009[,1])))                   
-                   colnames(vol52009p)[length(vol52009p[1,])] <- "Year"                    
-                   vol52011p <- cbind(vol52011[,1:6],rep(2011,length(vol52011[,1])))                   
-                   colnames(vol52011p)[length(vol52011p[1,])] <- "Year"                    
-                   
-                   vol52004p <-  cbind(vol52004[,1:4],vol52004[,7],rep(2004,length(vol52004[,1])))                                     
-                   colnames(vol52004p)[length(vol52004p[1,])] <- "Year"    
-                   vol52006p <-  cbind(vol52006[,1:4],vol52006[,7],rep(2006,length(vol52006[,1])))                                     
-                   colnames(vol52006p)[length(vol52006p[1,])] <- "Year" 
-                   vol52008p <-  cbind(vol52008[,1:4],vol52008[,7],rep(2008,length(vol52008[,1])))                                     
-                   colnames(vol52008p)[length(vol52008p[1,])] <- "Year" 
-                   vol52010p <-  cbind(vol52010[,1:4],vol52010[,7],rep(2010,length(vol52010[,1])))                                     
-                   colnames(vol52010p)[length(vol52010p[1,])] <- "Year" 
-                   vol52012p <-  cbind(vol52012[,1:4],vol52012[,7],rep(2012,length(vol52012[,1])))                                     
-                   colnames(vol52012p)[length(vol52012p[1,])] <- "Year" 
-                   
-                   vol5 <- rbind(vol52003p,vol52004p,vol52005p,vol52006p,vol52007p,vol52008p,vol52009p,vol52010p,vol52011p,vol52012p)
-                   vol5 <- cbind(rep("Natural Resources",length(vol5([,1]))),vol5)
-                  
-                   vol62003p <- cbind(vol62003[,1:6],rep(2003,length(vol62003[,1])))                   
-                   colnames(vol62003p)[length(vol62003p[1,])] <- "Year"                    
-                   vol62005p <- cbind(vol62005[,1:6],rep(2005,length(vol62005[,1])))                   
-                   colnames(vol62005p)[length(vol62005p[1,])] <- "Year"                    
-                   vol62007p <- cbind(vol62007[,1:6],rep(2007,length(vol62007[,1])))                   
-                   colnames(vol62007p)[length(vol62007p[1,])] <- "Year"                    
-                   vol62009p <- cbind(vol62009[,1:6],rep(2009,length(vol62009[,1])))                   
-                   colnames(vol62009p)[length(vol62009p[1,])] <- "Year"                    
-                   vol62011p <- cbind(vol62011[,1:6],rep(2011,length(vol62011[,1])))                   
-                   colnames(vol62011p)[length(vol62011p[1,])] <- "Year"                    
-                   
-                   vol62004p <-  cbind(vol62004[,1:4],vol62004[,7],rep(2004,length(vol62004[,1])))                                     
-                   colnames(vol62004p)[length(vol62004p[1,])] <- "Year"    
-                   vol62006p <-  cbind(vol62006[,1:4],vol62006[,7],rep(2006,length(vol62006[,1])))                                     
-                   colnames(vol62006p)[length(vol62006p[1,])] <- "Year" 
-                   vol62008p <-  cbind(vol62008[,1:4],vol62008[,7],rep(2008,length(vol62008[,1])))                                     
-                   colnames(vol62008p)[length(vol62008p[1,])] <- "Year" 
-                   vol62010p <-  cbind(vol62010[,1:4],vol62010[,7],rep(2010,length(vol62010[,1])))                                     
-                   colnames(vol62010p)[length(vol62010p[1,])] <- "Year" 
-                   vol62012p <-  cbind(vol62012[,1:4],vol62012[,7],rep(2012,length(vol62012[,1])))                                     
-                   colnames(vol62012p)[length(vol62012p[1,])] <- "Year" 
-                   
-                   vol6 <- rbind(vol62003p,vol62004p,vol62005p,vol62006p,vol62007p,vol62008p,vol62009p,vol62010p,vol62011p,vol62012p)
-                   vol6 <- cbind(rep("Transportation",length(vol6([,1]))),vol6)
-                   
-                  Panel <- rbind(vol1,vol2,vol3,vol4,vol5,vol6)
-                  
-                
+vol12004p <-  unname(cbind(vol12004[,1:4],vol12004[,7],rep(2004,length(vol12004[,1]))))                                     
+colnames(vol12004p)[length(vol12004p[1,])] <- "Year"    
+vol12006p <-  unname(cbind(vol12006[,1:4],vol12006[,7],rep(2006,length(vol12006[,1]))))                                     
+colnames(vol12006p)[length(vol12006p[1,])] <- "Year" 
+vol12008p <-  unname(cbind(vol12008[,1:4],vol12008[,7],rep(2008,length(vol12008[,1]))))                                     
+colnames(vol12008p)[length(vol12008p[1,])] <- "Year" 
+vol12010p <-  unname(cbind(vol12010[,1:4],vol12010[,7],rep(2010,length(vol12010[,1]))))                                     
+colnames(vol12010p)[length(vol12010p[1,])] <- "Year" 
+vol12012p <-  unname(cbind(vol12012[,1:4],vol12012[,7],rep(2012,length(vol12012[,1]))))                                     
+colnames(vol12012p)[length(vol12012p[1,])] <- "Year" 
+
+vol1 <- rbind(vol12003p,vol12004p,vol12005p,vol12006p,vol12007p,vol12008p,vol12009p,vol12010p,vol12011p,vol12012p)
+vol1 <- cbind(rep("Education",length(vol1[,1])),vol1)
+colnames(vol1)[1:6] <- c("Category","Budget code", "Fund code", "Account code", "Description", "Amount")
+
+vol22003p <- unname(cbind(vol22003[,1:5],rep(2003,length(vol22003[,1]))))                   
+colnames(vol22003p)[length(vol22003p[1,])] <- "Year"                    
+vol22005p <- unname(cbind(vol22005[,1:5],rep(2005,length(vol22005[,1]))))                   
+colnames(vol22005p)[length(vol22005p[1,])] <- "Year"                    
+vol22007p <- unname(cbind(vol22007[,1:5],rep(2007,length(vol22007[,1]))))                   
+colnames(vol22007p)[length(vol22007p[1,])] <- "Year"                    
+vol22009p <- unname(cbind(vol22009[,1:5],rep(2009,length(vol22009[,1]))))                   
+colnames(vol22009p)[length(vol22009p[1,])] <- "Year"                    
+vol22011p <- unname(cbind(vol22011[,1:5],rep(2011,length(vol22011[,1]))))                   
+colnames(vol22011p)[length(vol22011p[1,])] <- "Year"                    
+
+vol22004p <-  unname(cbind(vol22004[,1:4],vol22004[,7],rep(2004,length(vol22004[,1]))))                                     
+colnames(vol22004p)[length(vol22004p[1,])] <- "Year"    
+vol22006p <-  unname(cbind(vol22006[,1:4],vol22006[,7],rep(2006,length(vol22006[,1]))))                                     
+colnames(vol22006p)[length(vol22006p[1,])] <- "Year" 
+vol22008p <-  unname(cbind(vol22008[,1:4],vol22008[,7],rep(2008,length(vol22008[,1]))))                                     
+colnames(vol22008p)[length(vol22008p[1,])] <- "Year" 
+vol22010p <-  unname(cbind(vol22010[,1:4],vol22010[,7],rep(2010,length(vol22010[,1]))))                                     
+colnames(vol22010p)[length(vol22010p[1,])] <- "Year" 
+vol22012p <-  unname(cbind(vol22012[,1:4],vol22012[,7],rep(2012,length(vol22012[,1]))))                                     
+colnames(vol22012p)[length(vol22012p[1,])] <- "Year" 
+
+vol2 <- rbind(vol22003p,vol22004p,vol22005p,vol22006p,vol22007p,vol22008p,vol22009p,vol22010p,vol22011p,vol22012p)
+vol2 <- cbind(rep("General Government",length(vol2[,1])),vol2)
+colnames(vol2)[1:6] <- c("Category","Budget code", "Fund code", "Account code", "Description", "Amount")
+               
+
+vol32003p <- unname(cbind(vol32003[,1:5],rep(2003,length(vol32003[,1]))))                   
+colnames(vol32003p)[length(vol32003p[1,])] <- "Year"                    
+vol32005p <- unname(cbind(vol32005[,1:5],rep(2005,length(vol32005[,1]))))                   
+colnames(vol32005p)[length(vol32005p[1,])] <- "Year"                    
+vol32007p <- unname(cbind(vol32007[,1:5],rep(2007,length(vol32007[,1]))))                   
+colnames(vol32007p)[length(vol32007p[1,])] <- "Year"                    
+vol32009p <- unname(cbind(vol32009[,1:5],rep(2009,length(vol32009[,1]))))                   
+colnames(vol32009p)[length(vol32009p[1,])] <- "Year"                    
+vol32011p <- unname(cbind(vol32011[,1:5],rep(2011,length(vol32011[,1]))))                   
+colnames(vol32011p)[length(vol32011p[1,])] <- "Year"                    
+
+vol32004p <-  unname(cbind(vol32004[,1:4],vol32004[,7],rep(2004,length(vol32004[,1]))))                                     
+colnames(vol32004p)[length(vol32004p[1,])] <- "Year"    
+vol32006p <-  unname(cbind(vol32006[,1:4],vol32006[,7],rep(2006,length(vol32006[,1]))))                                     
+colnames(vol32006p)[length(vol32006p[1,])] <- "Year" 
+vol32008p <-  unname(cbind(vol32008[,1:4],vol32008[,7],rep(2008,length(vol32008[,1]))))                                     
+colnames(vol32008p)[length(vol32008p[1,])] <- "Year" 
+vol32010p <-  unname(cbind(vol32010[,1:4],vol32010[,7],rep(2010,length(vol32010[,1]))))                                     
+colnames(vol32010p)[length(vol32010p[1,])] <- "Year" 
+vol32012p <-  unname(cbind(vol32012[,1:4],vol32012[,7],rep(2012,length(vol32012[,1]))))                                     
+colnames(vol32012p)[length(vol32012p[1,])] <- "Year" 
+
+vol3 <- rbind(vol32003p,vol32004p,vol32005p,vol32006p,vol32007p,vol32008p,vol32009p,vol32010p,vol32011p,vol32012p)
+vol3 <- cbind(rep("Health",length(vol3[,1])),vol3)
+colnames(vol3)[1:6] <- c("Category","Budget code", "Fund code", "Account code", "Description", "Amount")
+               
+
+vol42003p <- unname(cbind(vol42003[,1:5],rep(2003,length(vol42003[,1]))))                   
+colnames(vol42003p)[length(vol42003p[1,])] <- "Year"                    
+vol42005p <- unname(cbind(vol42005[,1:5],rep(2005,length(vol42005[,1]))))                   
+colnames(vol42005p)[length(vol42005p[1,])] <- "Year"                    
+vol42007p <- unname(cbind(vol42007[,1:5],rep(2007,length(vol42007[,1]))))                   
+colnames(vol42007p)[length(vol42007p[1,])] <- "Year"                    
+vol42009p <- unname(cbind(vol42009[,1:5],rep(2009,length(vol42009[,1]))))                   
+colnames(vol42009p)[length(vol42009p[1,])] <- "Year"                    
+vol42011p <- unname(cbind(vol42011[,1:5],rep(2011,length(vol42011[,1]))))                   
+colnames(vol42011p)[length(vol42011p[1,])] <- "Year"                    
+
+vol42004p <-  unname(cbind(vol42004[,1:4],vol42004[,7],rep(2004,length(vol42004[,1]))))                                     
+colnames(vol42004p)[length(vol42004p[1,])] <- "Year"    
+vol42006p <-  unname(cbind(vol42006[,1:4],vol42006[,7],rep(2006,length(vol42006[,1]))))                                     
+colnames(vol42006p)[length(vol42006p[1,])] <- "Year" 
+vol42008p <-  unname(cbind(vol42008[,1:4],vol42008[,7],rep(2008,length(vol42008[,1]))))                                     
+colnames(vol42008p)[length(vol42008p[1,])] <- "Year" 
+vol42010p <-  unname(cbind(vol42010[,1:4],vol42010[,7],rep(2010,length(vol42010[,1]))))                                     
+colnames(vol42010p)[length(vol42010p[1,])] <- "Year" 
+vol42012p <-  unname(cbind(vol42012[,1:4],vol42012[,7],rep(2012,length(vol42012[,1]))))                                     
+colnames(vol42012p)[length(vol42012p[1,])] <- "Year" 
+
+vol4 <- rbind(vol42003p,vol42004p,vol42005p,vol42006p,vol42007p,vol42008p,vol42009p,vol42010p,vol42011p,vol42012p)
+vol4 <- cbind(rep("Justice",length(vol4[,1])),vol4)
+colnames(vol4)[1:6] <- c("Category","Budget code", "Fund code", "Account code", "Description", "Amount")
+
+
+vol52003p <- unname(cbind(vol52003[,1:5],rep(2003,length(vol52003[,1]))))                   
+colnames(vol52003p)[length(vol52003p[1,])] <- "Year"                    
+vol52005p <- unname(cbind(vol52005[,1:5],rep(2005,length(vol52005[,1]))))                   
+colnames(vol52005p)[length(vol52005p[1,])] <- "Year"                    
+vol52007p <- unname(cbind(vol52007[,1:5],rep(2007,length(vol52007[,1]))))                   
+colnames(vol52007p)[length(vol52007p[1,])] <- "Year"                    
+vol52009p <- unname(cbind(vol52009[,1:5],rep(2009,length(vol52009[,1]))))                   
+colnames(vol52009p)[length(vol52009p[1,])] <- "Year"                    
+vol52011p <- unname(cbind(vol52011[,1:5],rep(2011,length(vol52011[,1]))))                   
+colnames(vol52011p)[length(vol52011p[1,])] <- "Year"                    
+
+vol52004p <-  unname(cbind(vol52004[,1:4],vol52004[,7],rep(2004,length(vol52004[,1]))))                                     
+colnames(vol52004p)[length(vol52004p[1,])] <- "Year"    
+vol52006p <-  unname(cbind(vol52006[,1:4],vol52006[,7],rep(2006,length(vol52006[,1]))))                                     
+colnames(vol52006p)[length(vol52006p[1,])] <- "Year" 
+vol52008p <-  unname(cbind(vol52008[,1:4],vol52008[,7],rep(2008,length(vol52008[,1]))))                                     
+colnames(vol52008p)[length(vol52008p[1,])] <- "Year" 
+vol52010p <-  unname(cbind(vol52010[,1:4],vol52010[,7],rep(2010,length(vol52010[,1]))))                                     
+colnames(vol52010p)[length(vol52010p[1,])] <- "Year" 
+vol52012p <-  unname(cbind(vol52012[,1:4],vol52012[,7],rep(2012,length(vol52012[,1]))))                                     
+colnames(vol52012p)[length(vol52012p[1,])] <- "Year" 
+
+vol5 <- rbind(vol52003p,vol52004p,vol52005p,vol52006p,vol52007p,vol52008p,vol52009p,vol52010p,vol52011p,vol52012p)
+vol5 <- cbind(rep("Natural Resources",length(vol5[,1])),vol5)
+colnames(vol5)[1:6] <- c("Category","Budget code", "Fund code", "Account code", "Description", "Amount")
+
+
+vol62003p <- unname(cbind(vol62003[,1:5],rep(2003,length(vol62003[,1]))))                   
+colnames(vol62003p)[length(vol62003p[1,])] <- "Year"                    
+vol62005p <- unname(cbind(vol62005[,1:5],rep(2005,length(vol62005[,1]))))                   
+colnames(vol62005p)[length(vol62005p[1,])] <- "Year"                    
+vol62007p <- unname(cbind(vol62007[,1:5],rep(2007,length(vol62007[,1]))))                   
+colnames(vol62007p)[length(vol62007p[1,])] <- "Year"                    
+vol62009p <- unname(cbind(vol62009[,1:5],rep(2009,length(vol62009[,1]))))                   
+colnames(vol62009p)[length(vol62009p[1,])] <- "Year"                    
+vol62011p <- unname(cbind(vol62011[,1:5],rep(2011,length(vol62011[,1]))))                   
+colnames(vol62011p)[length(vol62011p[1,])] <- "Year"                    
+
+vol62004p <-  unname(cbind(vol62004[,1:4],vol62004[,7],rep(2004,length(vol62004[,1]))))                                     
+colnames(vol62004p)[length(vol62004p[1,])] <- "Year"    
+vol62006p <-  unname(cbind(vol62006[,1:4],vol62006[,7],rep(2006,length(vol62006[,1]))))                                     
+colnames(vol62006p)[length(vol62006p[1,])] <- "Year" 
+vol62008p <-  unname(cbind(vol62008[,1:4],vol62008[,7],rep(2008,length(vol62008[,1]))))                                     
+colnames(vol62008p)[length(vol62008p[1,])] <- "Year" 
+vol62010p <-  unname(cbind(vol62010[,1:4],vol62010[,7],rep(2010,length(vol62010[,1]))))                                     
+colnames(vol62010p)[length(vol62010p[1,])] <- "Year" 
+vol62012p <-  unname(cbind(vol62012[,1:4],vol62012[,7],rep(2012,length(vol62012[,1]))))                                     
+colnames(vol62012p)[length(vol62012p[1,])] <- "Year" 
+
+vol6 <- rbind(vol62003p,vol62004p,vol62005p,vol62006p,vol62007p,vol62008p,vol62009p,vol62010p,vol62011p,vol62012p)
+vol6 <- cbind(rep("Transportation",length(vol6[,1])),vol6)
+colnames(vol6)[1:6] <- c("Category","Budget code", "Fund code", "Account code", "Description", "Amount")
+
+Panel <- rbind(vol1,vol2,vol3,vol4,vol5,vol6)
