@@ -1651,3 +1651,5 @@ vol6 <- cbind(rep("Transportation",length(vol6[,1])),vol6)
 colnames(vol6)[1:6] <- c("Category","Budget code", "Fund code", "Account code", "Description", "Amount")
 
 Panel <- rbind(vol1,vol2,vol3,vol4,vol5,vol6)
+Panel[,5] <- as.character(Panel[,5])
+write.csv(Panel,file="Panel.csv")
