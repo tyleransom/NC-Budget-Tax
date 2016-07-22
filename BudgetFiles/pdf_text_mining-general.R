@@ -63,8 +63,9 @@ generator <- function(file){
     for (i in 2:a) {
       try({
         Out <- as.data.frame(extract_tables(file, pages = i, guess = FALSE, method = "data.frame", stringsAsFactors=FALSE))
+        if (length(Out)==3){Out=data.frame(Out[,1],paste(Out[,2],Out[,3],sep=""))}
         names(Out) <- names(Genout1)
-        if (length(grep("SUMMARY", Out[,1]))==0){
+        if ((length(grep("SUMMARY", Out[,1]))==0)&(length(grep("SUMMARY", Out[,2]))==0)){
           Genout1 <- rbind(Genout1,Out)
         }
       })
@@ -193,9 +194,7 @@ generator <- function(file){
           else{# standard case/ triple centrifuge
             fixlast=0
             repeat{fixlast=fixlast+1
-            if (fixlast>nchar(Targetvalues[i])){
-              col3[i] <- as.numeric(as.character(Targetvalues[i]))
-              break}
+            if (fixlast>nchar(Targetvalues[i])){break}
             v3 <- as.numeric(substr(Targetvalues[i],nchar(Targetvalues[i])-fixlast+1,nchar(Targetvalues[i])))
             newlength3=nchar(v3)
             if (!(length(grep("e",v3))==0)){j=0 
@@ -221,23 +220,12 @@ generator <- function(file){
               col1[i] <- v1
               col2[i] <- v2
               col3[i] <- v3
-              break
+              next
             }
             }
-            if (((v1+v2)==v3)&(!(length(which(cbind(v1,v2,v3)==0))==3))){
-              col1[i] <- v1
-              col2[i] <- v2
-              col3[i] <- v3
-              break
             }
             }
-            if (((v1+v2)==v3)&(!(length(which(cbind(v1,v2,v3)==0))==3))){
-              col1[i] <- v1
-              col2[i] <- v2
-              col3[i] <- v3
-              break
-            }
-            }
+            
             if (is.na(col1[i])|is.na(col2[i])|is.na(col3[i])){
               v3 <- as.numeric(as.character(substr(Targetvalues[i],nchar(Targetvalues[i]),nchar(Targetvalues[i]))))
               v2 <- as.numeric(as.character(substr(Targetvalues[i],nchar(Targetvalues[i])-1,nchar(Targetvalues[i])-1))) 
@@ -298,15 +286,8 @@ generator <- function(file){
               col1[i] <- v1
               col2[i] <- v2
               col3[i] <- v3
-              break
+              next
             }
-            }
-            
-            if (((v1+v2)==v3)&(!(length(which(cbind(v1,v2,v3)==0))==3))){
-              col1[i] <- v1
-              col2[i] <- v2
-              col3[i] <- v3
-              break
             }
             }
             
@@ -338,15 +319,8 @@ generator <- function(file){
                 col1[i] <- v1
                 col2[i] <- v2
                 col3[i] <- v3
-                break
+                next
               }
-              }
-              
-              if (((v1+v2)==v3)&(!(length(which(cbind(v1,v2,v3)==0))==3))){
-                col1[i] <- v1
-                col2[i] <- v2
-                col3[i] <- v3
-                break
               }
               }
             }
@@ -377,7 +351,7 @@ generator <- function(file){
               col1[i] <- v1
               col2[i] <- v2
               col3[i] <- v3
-              break
+              next
             }
             }
             
@@ -406,7 +380,7 @@ generator <- function(file){
                 col1[i] <- v1
                 col2[i] <- v2
                 col3[i] <- v3
-                break
+                next
               }
               }
             }
@@ -451,23 +425,9 @@ generator <- function(file){
               col1[i] <- v1
               col2[i] <- v2
               col3[i] <- v3
-              break
+              next
             }
             }
-            
-            if (((v1+v2)==v3)&(!(length(which(cbind(v1,v2,v3)==0))==3))){
-              col1[i] <- v1
-              col2[i] <- v2
-              col3[i] <- v3
-              break
-            }
-            }
-            
-            if (((v1+v2)==v3)&(!(length(which(cbind(v1,v2,v3)==0))==3))){
-              col1[i] <- v1
-              col2[i] <- v2
-              col3[i] <- v3
-              break
             }
             }
             
@@ -500,14 +460,8 @@ generator <- function(file){
                 col1[i] <- v1
                 col2[i] <- v2
                 col3[i] <- v3
-                break
+                next
               }
-              }
-              if (((v1+v2)==v3)&(!(length(which(cbind(v1,v2,v3)==0))==3))){
-                col1[i] <- v1
-                col2[i] <- v2
-                col3[i] <- v3
-                break
               }
               }
             }
@@ -547,21 +501,9 @@ generator <- function(file){
                 col1[i] <- v1
                 col2[i] <- v2
                 col3[i] <- v3
-                break
+                next
               }
               }
-              if (((v1+v2)==v3)&(!(length(which(cbind(v1,v2,v3)==0))==3))){
-                col1[i] <- v1
-                col2[i] <- v2
-                col3[i] <- v3
-                break
-              }
-              }
-              if (((v1+v2)==v3)&(!(length(which(cbind(v1,v2,v3)==0))==3))){
-                col1[i] <- v1
-                col2[i] <- v2
-                col3[i] <- v3
-                break
               }
               }
             }
@@ -595,21 +537,9 @@ generator <- function(file){
               col1[i] <- v1
               col2[i] <- v2
               col3[i] <- v3
-              break
+              next
             }
             }
-            if (((v1+v2)==v3)&(!(length(which(cbind(v1,v2,v3)==0))==3))){
-              col1[i] <- v1
-              col2[i] <- v2
-              col3[i] <- v3
-              break
-            }
-            }
-            if (((v1+v2)==v3)&(!(length(which(cbind(v1,v2,v3)==0))==3))){
-              col1[i] <- v1
-              col2[i] <- v2
-              col3[i] <- v3
-              break
             }
             }
           }
@@ -655,6 +585,15 @@ generator <- function(file){
     Genfin <- cbind (Y, Genfin[,2:length(Genfin[1,])])
     # store number of digits before e and the sign after
     #sign is in +1
+    
+    c1 <- is.na(col11)
+    c2 <- is.na(col21)
+    c3 <- is.na(col31)
+    cut <- (substr(Genfin[,2],1,5) %in% "TOTAL")
+    Genfin[which(c1&cut),3]=0
+    Genfin[which(c2&cut),4]=0
+    Genfin[which(c3&cut),5]=0
+    
     
     M1 <- intersect(which(as.numeric(Genfin[,3])<0),which(!Genfin[,3]==""))
     M2 <- intersect(which(as.numeric(Genfin[,4])<0),which(!Genfin[,4]==""))
@@ -767,16 +706,13 @@ generator <- function(file){
     
     #is.letter <- function(x) grepl("[[:alpha:]]", x)
     is.number <- function(x) grepl("[[:digit:]]", x)
+    
     L=rep(0,length(Gen3[,1]))
-    for (i in 1:length(Gen3[,1])){
-      j=3
-      repeat{
-        j=j+1
-        k <- as.data.frame(substr(Gen3[i,1],j,j),stringsAsFactors=FALSE)
-        if(is.number(k)==FALSE){L[i]=j-1 
-        break}
-      }
-    }
+    for (j in 1:12){
+      k <- as.data.frame(substr(Gen3[,1],j,j),stringsAsFactors=FALSE)
+      for (i in 1:length(k[,1])){
+        if(is.number(k[i,1])==TRUE){L[i]=j}
+      }}
     
     is.space <- function(x) grepl(" ", x)
     numbersnew=rep(0,length(L))
@@ -807,6 +743,13 @@ generator <- function(file){
     #Genfin[which(substr(Genfin[,1],5,5) %in% " "),1]=substr(Genfin[which(substr(Genfin[,1],5,5) %in% " "),1],1,4)
     Y <- as.data.frame(gsub("[^0-9]", "", Genfin[,1]),stringsAsFactors=FALSE)
     Genfin <- cbind (Y, Genfin[,2:length(Genfin)])
+    
+    c1 <- is.na(Genfin[,3])
+    c2 <- is.na(Genfin[,4])
+    cut <- (substr(Genfin[,2],1,5) %in% "TOTAL")
+    Genfin[which(c1&cut),3]=0
+    Genfin[which(c2&cut),4]=0
+    
     M1 <- intersect(which(as.numeric(Genfin[,3])<0),which(!Genfin[,3]==""))
     M2 <- intersect(which(as.numeric(Genfin[,4])<0),which(!Genfin[,4]==""))
     R1 <- as.data.frame(gsub("[^0-9]", "", Genfin[,3]),stringsAsFactors=FALSE)
@@ -838,13 +781,11 @@ generator <- function(file){
   }
   
   #----------------------COMMON
-  
-  
   #values with 5 digit indices
   #vol[which(!substr(vol[,1],5,5) %in% ""),1]
   #indices with 5 digit indices
   M <- which(is.na(Genfin[,length(Genfin)]))
-  f <- which(nchar(Genfin[,1])==4)
+  f <- which(nchar(Genfin[,1])==5)
   N <- intersect(f,M)
   
   #indices for 2nd NA
@@ -932,6 +873,7 @@ generator <- function(file){
   
   return(Genfin)
 }
+
 
 vol12003 <- generator("2003_5/vol1.pdf")
 vol12005 <- generator("2005_7/vol1.pdf")
