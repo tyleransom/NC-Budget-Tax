@@ -876,6 +876,22 @@ generator <- function(file){
 }
 
 
+vol12010 <- generator("2010_11/vol1.pdf")
+
+
+vol22010 <- generator("2010_11/vol2.pdf")
+
+
+vol32010 <- generator("2010_11/vol3.pdf")
+
+
 vol42010 <- generator("2010_11/vol4.pdf")
 
-save.image(file="20104.RData")
+
+vol52010 <- generator("2010_11/vol5.pdf")
+
+
+vol62010 <- generator("2010_11/vol6.pdf")
+
+
+save.image(file="2010even.RData")

@@ -476,9 +476,7 @@ generator <- function(file){
             if (is.na(col1[i])|is.na(col2[i])|is.na(col3[i])){
               fixlast=0
               repeat{fixlast=fixlast+1
-              if (fixlast>=nchar(A[2])-Minuses[2]){
-                col3[i] <- as.numeric(as.character(A[2]))
-                break}
+              if (fixlast>=nchar(A[2])-Minuses[2]){break}
               v3 <- as.numeric(substr(A[2],nchar(A[2])-fixlast+1,nchar(A[2])))
               newlength3=nchar(v3)
               if (!(length(grep("e",v3))==0)){j=0 

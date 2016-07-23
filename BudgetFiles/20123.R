@@ -876,6 +876,8 @@ generator <- function(file){
 }
 
 
-vol42010 <- generator("2010_11/vol4.pdf")
 
-save.image(file="20104.RData")
+vol32012 <- generator("2012_13/vol3.pdf")
+
+
+save.image(file="20123.RData")
