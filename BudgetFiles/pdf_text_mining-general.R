@@ -59,12 +59,15 @@ generator <- function(file){
   #-----------------------------------EVEN
   if((as.numeric(substr(gsub("[^0-9]", "", file1),3,4)) %% 2) == 0){
     # extract tables from the PDF
-    Genout1 <- as.data.frame(extract_tables(file, pages = 1, guess = FALSE, method = "data.frame", columns = list(c(250, 345, 420)), stringsAsFactors=FALSE))
+    Genout1 <- as.data.frame(extract_tables(file, pages = 1, guess = FALSE, method = "data.frame", stringsAsFactors=FALSE))
     for (i in 2:a) {
       try({
-        Out <- as.data.frame(extract_tables(file, pages = i, guess = FALSE, method = "data.frame", columns = list(c(250, 345, 420)), stringsAsFactors=FALSE))
+        Out <- as.data.frame(extract_tables(file, pages = i, guess = FALSE, method = "data.frame", stringsAsFactors=FALSE))
+        if (length(Out)==3){Out=data.frame(Out[,1],paste(Out[,2],Out[,3],sep=""))}
         names(Out) <- names(Genout1)
-        Genout1 <- rbind(Genout1,Out)
+        if ((length(grep("SUMMARY", Out[,1]))==0)&(length(grep("SUMMARY", Out[,2]))==0)){
+          Genout1 <- rbind(Genout1,Out)
+        }
       })
     }
     
@@ -72,19 +75,19 @@ generator <- function(file){
     
     Genout2=Genout1
     Gen2 <- as.data.frame(gsub("TOTAL", "00001 TOTAL", Genout2[,1]), stringsAsFactors=FALSE)
-    Gen3 <- cbind(Gen2, Genout2[,2:4])
+    Gen3 <- cbind(Gen2, Genout2[,2])
     
     Gen2 <- as.data.frame(gsub("NET", "00002 NET", Gen3[,1]), stringsAsFactors=FALSE)
-    Gen3 <- cbind(Gen2, Gen3[,2:4])
+    Gen3 <- cbind(Gen2, Gen3[,2])
     
     Gen2 <- as.data.frame(gsub("HIGHWAY FUND APPROPRIATION", "00003 HIGHWAY FUND APPROPRIATION", Gen3[,1]), stringsAsFactors=FALSE)
-    Gen3 <- cbind(Gen2, Gen3[,2:4])
+    Gen3 <- cbind(Gen2, Gen3[,2])
     
     Gen2 <- as.data.frame(gsub("HIGHWAY TRUST FUND APPROPRTN", "00004 HIGHWAY TRUST FUND APPROPRTN", Gen3[,1]), stringsAsFactors=FALSE)
-    Gen3 <- cbind(Gen2, Gen3[,2:4])
+    Gen3 <- cbind(Gen2, Gen3[,2])
     
     Gen2 <- as.data.frame(gsub("CHANGE IN FUND BALANCE", "00005 CHANGE IN FUND BALANCE", Gen3[,1]),stringsAsFactors=FALSE)
-    Gen3 <- cbind(Gen2, Gen3[,2:4])
+    Gen3 <- cbind(Gen2, Gen3[,2])
     
     #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,2)) == "42"), ])
     #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,4)) == "4200"), ])
@@ -94,11 +97,11 @@ generator <- function(file){
     #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,4)) == "1000"), ])
     #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,4)) == "3000"), ])
     #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,4)) == "3005"), ])
-    Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,4],1,4)) == "PAGE"), ],stringsAsFactors=FALSE)
+    Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,2],1,4)) == "PAGE"), ],stringsAsFactors=FALSE)
     #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "APP"), ])
     Gen3 <- as.data.frame(Gen3[!(substr(Gen3[,1],1,3) %in% c("APP", "BUD", "REQ", "DES", "EST", "POS", "SUM")), ],stringsAsFactors=FALSE)
-    Gen3 <- as.data.frame(Gen3[!(substr(Gen3[,3],1,3) %in% "AWG"), ],stringsAsFactors=FALSE)
-    Gen3 <- as.data.frame(Gen3[!(substr(Gen3[,4],1,3) %in% "REV"), ],stringsAsFactors=FALSE)
+    Gen3 <- as.data.frame(Gen3[!(substr(Gen3[,2],1,3) %in% "AWG"), ],stringsAsFactors=FALSE)
+    Gen3 <- as.data.frame(Gen3[!(substr(Gen3[,2],1,3) %in% "REV"), ],stringsAsFactors=FALSE)
     #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "BUD"), ])
     #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "REQ"), ])
     #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "142"), ])
@@ -107,42 +110,462 @@ generator <- function(file){
     #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "POS"), ])
     #Gen3 <- as.data.frame(Gen3[!(as.data.frame(substr(Gen3[,1],1,3)) == "SUM"), ])
     
-    Gen2 <- as.data.frame(gsub(",","",Gen3[,2]),stringsAsFactors=FALSE)
-    Gen42 <- as.data.frame(gsub(",","",Gen3[,3]),stringsAsFactors=FALSE)
-    Gen43 <- as.data.frame(gsub(",","",Gen3[,4]),stringsAsFactors=FALSE)
-    Gen3 <- cbind(Gen3[,1], Gen2, Gen42, Gen43)
+    Gen2 <- as.data.frame(gsub(",","",Gen3[,1]),stringsAsFactors=FALSE)
+    Gen42 <- as.data.frame(gsub(",","",Gen3[,2]),stringsAsFactors=FALSE)
+    #Gen43 <- as.data.frame(gsub(",","",Gen3[,4]),stringsAsFactors=FALSE)
+    Gen3 <- cbind(Gen2, Gen42)
     Gen3 <- Gen3[!apply(Gen3 == "", 1, all),]
     Gen3 <- Gen3
     
-    Gen3 <- cbind(as.data.frame(gsub("  "," ",Gen3[,1]), stringsAsFactors=FALSE),Gen3[,2:4])
+    Gen3 <- cbind(as.data.frame(gsub("  "," ",Gen3[,1]), stringsAsFactors=FALSE),Gen3[,2])
+    Gen31 <- Gen3
+    
+    is.number <- function(x) grepl("[[:digit:]]", x)
+    L=rep(0,length(Gen3[,1]))
+    for (i in 1:length(Gen3[,1])){
+      j=3
+      repeat{
+        j=j+1
+        k <- as.data.frame(substr(Gen31[i,1],j,j),stringsAsFactors=FALSE)
+        if(is.number(k)==FALSE){L[i]=j-1 
+        break}
+      }
+    }
+    
+    Gen31[which(L>8),1]=paste("0000MISSING",Gen31[which(L>8),1],sep="")
+    L[which(L>8)]=4
+    
+    Gen3 <- paste(Gen31[,1], gsub(" ","", Gen31[,2]), sep="")
     
     #is.letter <- function(x) grepl("[[:alpha:]]", x)
-    is.number <- function(x) grepl("[[:digit:]]", x)
     
-    L=rep(0,length(Gen3[,1]))
-    for (j in 1:12){
-      k <- as.data.frame(substr(Gen3[,1],j,j),stringsAsFactors=FALSE)
+    
+    L2=rep(0,length(Gen3))
+    for (j in 1:60){
+      k <- as.data.frame(substr(Gen3,j,j),stringsAsFactors=FALSE)
       for (i in 1:length(k[,1])){
-        if(is.number(k[i,1])==TRUE){L[i]=j}
+        if(is.number(k[i,1])==TRUE){L2[i]=j}
       }}
+    
+    Gen31[,2] <- gsub("-","",Gen31[,2])  
+    I2 <- which(is.na(as.numeric(as.character(Gen31[,2]))))
+    Targetrows <- setdiff(which(L2>10),I2)
+    
+    
+    Targetmatrix <- Gen3[Targetrows]
+    L1=rep(0,length(Targetmatrix))
+    Targetvalues <- rep(0,length(Targetmatrix))
+    #Negatives <- rep(0,length(Targetmatrix[,1]))
+    #k <- as.data.frame(substr(Gen3[i,1],nchar(Gen3[i,1])-j+1,nchar(Gen3[i,1])-j+1),stringsAsFactors=FALSE)
+    for (i in 1:length(Targetmatrix)){
+      j=0
+      repeat{
+        j=j+1
+        k <- as.data.frame(substr(Targetmatrix[i],nchar(Targetmatrix[i])-j+1,nchar(Targetmatrix[i])-j+1),stringsAsFactors=FALSE)
+        #if ((k=="-")==TRUE){Negatives[i]=j}
+        if((is.number(k)==FALSE)&((k=="-")==FALSE)&((k==" ")==FALSE)){L1[i]=j-1 
+        break}
+      }
+      Targetvalues[i]=substr(Targetmatrix[i],nchar(Targetmatrix[i])+1-L1[i],nchar(Targetmatrix[i]))
+      
+      #Targetvalues[i]=as.data.frame(substr(Targetmatrix[i,1],nchar(Targetmatrix[i,1])+1-L1[i],nchar(Targetmatrix[i,1])),stringsAsFactors=FALSE)
+    }
+    Targetvalues <- gsub(" ","",Targetvalues)
+    
+    
+    Negatives <- grep('-', Targetvalues)
+    col1 <- rep(NA,length(Targetmatrix))
+    col2 <- rep(NA,length(Targetmatrix))
+    col3 <- rep(NA,length(Targetmatrix))
+    
+    for (i in 1:length(Targetmatrix)){
+      if (length(which(i==Negatives))==0){
+        if(nchar(Targetvalues[i])==3){
+          col1[i] <- as.numeric(substr(Targetvalues[i],1,1))
+          col2[i] <- as.numeric(substr(Targetvalues[i],2,2))
+          col3[i] <- as.numeric(substr(Targetvalues[i],3,3))
+        }
+        else{# weird case with just one digit
+          if(nchar(Targetvalues[i])==1){
+            col1[i] <- as.numeric(substr(Targetvalues[i],1,1))
+            col2[i] <- as.numeric(substr(Targetvalues[i],1,1))
+            col3[i] <- as.numeric(substr(Targetvalues[i],1,1))
+          }
+          else{# standard case/ triple centrifuge
+            fixlast=0
+            repeat{fixlast=fixlast+1
+            if (fixlast>nchar(Targetvalues[i])){break}
+            v3 <- as.numeric(substr(Targetvalues[i],nchar(Targetvalues[i])-fixlast+1,nchar(Targetvalues[i])))
+            newlength3=nchar(v3)
+            if (!(length(grep("e",v3))==0)){j=0 
+            repeat{j=j+1 
+            if (substr(v3,j,j)=="e"){newlength3 <- nchar(floor(as.numeric(as.character(substr(v3,1,j-1)))))+(as.numeric(substr(v3,j+1,nchar(v3))))
+            break}}}
+            if (!(newlength3==nchar(substr(Targetvalues[i],nchar(Targetvalues[i])-fixlast+1,nchar(Targetvalues[i]))))){next}
+            uroll=0
+            repeat{uroll=uroll+1
+            if ((uroll+fixlast)>nchar(Targetvalues[i])){break}
+            v2 <- as.numeric(substr(Targetvalues[i],nchar(Targetvalues[i])-fixlast-uroll+1,nchar(Targetvalues[i])-fixlast))
+            newlength2=nchar(v2)
+            if (!(length(grep("e",v2))==0)){j=0 
+            repeat{j=j+1 
+            if (substr(v2,j,j)=="e"){newlength2 <- nchar(floor(as.numeric(as.character(substr(v2,1,j-1)))))+(as.numeric(substr(v2,j+1,nchar(v2))))
+            break}}}
+            if (!(newlength2==nchar(substr(Targetvalues[i],nchar(Targetvalues[i])-fixlast-uroll+1,nchar(Targetvalues[i])-fixlast)))){next}
+            vroll=0
+            repeat{vroll=vroll+1
+            if ((uroll+fixlast+vroll)>nchar(Targetvalues[i])){break}
+            v1 <- as.numeric(substr(Targetvalues[i],nchar(Targetvalues[i])-fixlast-uroll-vroll+1,nchar(Targetvalues[i])-fixlast-uroll))
+            if (((v1+v2)==v3)&(!(length(which(cbind(v1,v2,v3)==0))==3))){
+              col1[i] <- v1
+              col2[i] <- v2
+              col3[i] <- v3
+              next
+            }
+            }
+            }
+            }
+            
+            if (is.na(col1[i])|is.na(col2[i])|is.na(col3[i])){
+              v3 <- as.numeric(as.character(substr(Targetvalues[i],nchar(Targetvalues[i]),nchar(Targetvalues[i]))))
+              v2 <- as.numeric(as.character(substr(Targetvalues[i],nchar(Targetvalues[i])-1,nchar(Targetvalues[i])-1))) 
+              v1 <- as.numeric(as.character(substr(Targetvalues[i],nchar(Targetvalues[i])-2,nchar(Targetvalues[i])-2))) 
+              if (length(which(cbind(v1,v2,v3)==0))==3){
+                col1[i] <- v1
+                col2[i] <- v2
+                col3[i] <- v3
+              }
+            }
+          }
+        }
+      }
+      else{# lines with identified negatives
+        # prepare the values
+        A <- unlist(strsplit(Targetvalues[i],"(?<=-)",perl=TRUE))
+        Minuses <- rep(0,length(A))
+        for (j in 2:length(A)){
+          if(substr(A[j-1],nchar(A[j-1]),nchar(A[j-1]))=="-"){
+            A[j-1] <- substr(A[j-1],1,nchar(A[j-1])-1)
+            A[j] <- paste("-",A[j],sep="")
+            Minuses[j] <- 1
+          }
+        }
+        if (A[1]=="") {A <- A[-1]
+        Minuses <- Minuses[2:length(Minuses)]}
+        
+        if (length(A)==3){# simplest case when every element is the column itself
+          if ((as.numeric(as.character(A[1]))+as.numeric(as.character(A[2])))==as.numeric(as.character(A[3]))){
+            col1[i] <- A[1]
+            col2[i] <- A[2]
+            col3[i] <- A[3]
+          }
+          else{# complicated case with A[1] storing weird stuff:
+            # CASE1: col 3 is big => double centrifuge
+            v1 <- as.numeric(as.character(A[2]))
+            dummy32=0
+            repeat{dummy32=dummy32+1
+            if (dummy32>=nchar(A[3])-Minuses[3]){break}
+            v3 <- as.numeric(as.character(substr(A[3],nchar(A[3])-dummy32+1,nchar(A[3]))))
+            newlength3=nchar(v3)
+            if (!(length(grep("e",v3))==0)){j=0 
+            repeat{j=j+1 
+            if (substr(v3,j,j)=="e"){newlength3 <- nchar(round(as.numeric(as.character(substr(v3,1,j-1)))))+(as.numeric(substr(v3,j+1,nchar(v3))))
+            break}}}
+            if (!(newlength3==nchar(substr(A[3],nchar(A[3])-dummy32+1,nchar(A[3]))))){next}
+            dummy31=0
+            repeat{dummy31=dummy31+1
+            if ((dummy32+dummy31)>nchar(A[3])){break}
+            v2 <- as.numeric(as.character(substr(A[3],nchar(A[3])-dummy32-dummy31+1,nchar(A[3])-dummy32)))
+            newlength2=nchar(v2)
+            if (!(length(grep("e",v2))==0)){j=0 
+            repeat{j=j+1 
+            if (substr(v2,j,j)=="e"){newlength2 <- nchar(round(as.numeric(as.character(substr(v2,1,j-1)))))+(as.numeric(substr(v2,j+1,nchar(v2))))
+            break}}}
+            if (!(newlength2==nchar(substr(A[3],nchar(A[3])-dummy32-dummy31+1,nchar(A[3])-dummy32)))){next}
+            if (((v1+v2)==v3)&(!(length(which(cbind(v1,v2,v3)==0))==3))){
+              col1[i] <- v1
+              col2[i] <- v2
+              col3[i] <- v3
+              next
+            }
+            }
+            }
+            
+            
+            # CASE 2: col 2 is big => double centrifuge
+            if (is.na(col1[i])|is.na(col2[i])|is.na(col3[i])){
+              v3 <- as.numeric(as.character(A[3]))
+              dummy22=0
+              repeat{dummy22=dummy22+1
+              if (dummy22>=nchar(A[2])-Minuses[2]){break}
+              v2 <- as.numeric(as.character(substr(A[2],nchar(A[2])-dummy22+1,nchar(A[2]))))
+              newlength2=nchar(v2)
+              if (!(length(grep("e",v2))==0)){j=0 
+              repeat{j=j+1 
+              if (substr(v2,j,j)=="e"){newlength2 <- nchar(round(as.numeric(as.character(substr(v2,1,j-1)))))+(as.numeric(substr(v2,j+1,nchar(v2))))
+              break}}}
+              if (!(newlength2==nchar(substr(A[2],nchar(A[2])-dummy22+1,nchar(A[2]))))){next}
+              dummy21=0
+              repeat{dummy21=dummy21+1
+              if ((dummy22+dummy21)>nchar(A[2])){break}
+              v1 <- as.numeric(as.character(substr(A[2],nchar(A[2])-dummy22-dummy21+1,nchar(A[2])-dummy22)))
+              newlength1=nchar(v1)
+              if (!(length(grep("e",v1))==0)){j=0 
+              repeat{j=j+1 
+              if (substr(v1,j,j)=="e"){newlength1 <- nchar(round(as.numeric(as.character(substr(v1,1,j-1)))))+(as.numeric(substr(v1,j+1,nchar(v1))))
+              break}}}
+              if (!(newlength1==nchar(substr(A[2],nchar(A[2])-dummy22-dummy21+1,nchar(A[2])-dummy22)))){next}
+              if (((v1+v2)==v3)&(!(length(which(cbind(v1,v2,v3)==0))==3))){
+                col1[i] <- v1
+                col2[i] <- v2
+                col3[i] <- v3
+                next
+              }
+              }
+              }
+            }
+          }
+        }
+        
+        else{
+          if (length(A)==2){# 2nd col is big/double centrifuge
+            v1 <- as.numeric(as.character(A[1]))
+            uroll=0
+            repeat{uroll=uroll+1
+            if (uroll>=nchar(A[2])-Minuses[2]){break}
+            v3 <- as.numeric(as.character(substr(A[2],nchar(A[2])-uroll+1,nchar(A[2]))))
+            newlength3=nchar(v3)
+            if (!(length(grep("e",v3))==0)){j=0 
+            repeat{j=j+1 
+            if (substr(v3,j,j)=="e"){newlength3 <- nchar(round(as.numeric(as.character(substr(v3,1,j-1)))))+(as.numeric(substr(v3,j+1,nchar(v3))))
+            break}}}
+            if (!(newlength3==nchar(substr(A[2],nchar(A[2])-uroll+1,nchar(A[2]))))){next}
+            v2 <- as.numeric(as.character(substr(A[2],1,nchar(A[2])-uroll)))
+            newlength2=nchar(v2)
+            if (!(length(grep("e",v2))==0)){j=0 
+            repeat{j=j+1 
+            if (substr(v2,j,j)=="e"){newlength2 <- nchar(round(as.numeric(as.character(substr(v2,1,j-1)))))+(as.numeric(substr(v2,j+1,nchar(v2))))
+            break}}}
+            if (!(newlength2==nchar(substr(A[2],1,nchar(A[2])-uroll)))){next}
+            if (((v1+v2)==v3)&(!(length(which(cbind(v1,v2,v3)==0))==3))){
+              col1[i] <- v1
+              col2[i] <- v2
+              col3[i] <- v3
+              next
+            }
+            }
+            
+            
+            # 1st col is big
+            if (is.na(col1[i])|is.na(col2[i])|is.na(col3[i])){
+              v3 <- as.numeric(as.character(A[2]))
+              vroll=0
+              repeat{vroll=vroll+1
+              if (vroll>=nchar(A[1])-Minuses[1]){break}
+              v2 <- as.numeric(as.character(substr(A[1],nchar(A[1])-vroll+1,nchar(A[1]))))
+              newlength2=nchar(v2)
+              if (!(length(grep("e",v2))==0)){j=0 
+              repeat{j=j+1 
+              if (substr(v2,j,j)=="e"){newlength2 <- nchar(round(as.numeric(as.character(substr(v2,1,j-1)))))+(as.numeric(substr(v2,j+1,nchar(v2))))
+              break}}}
+              if (!(newlength2==nchar(substr(A[1],nchar(A[1])-vroll+1,nchar(A[1]))))){next}
+              v1 <- as.numeric(as.character(substr(A[1],1,nchar(A[1])-vroll)))
+              newlength1=nchar(v1)
+              if (!(length(grep("e",v1))==0)){j=0 
+              repeat{j=j+1 
+              if (substr(v1,j,j)=="e"){newlength1 <- nchar(round(as.numeric(as.character(substr(v1,1,j-1)))))+(as.numeric(substr(v1,j+1,nchar(v1))))
+              break}}}
+              if (!(newlength1==nchar(substr(A[1],1,nchar(A[1])-vroll)))){next}
+              if (((v1+v2)==v3)&(!(length(which(cbind(v1,v2,v3)==0))==3))){
+                col1[i] <- v1
+                col2[i] <- v2
+                col3[i] <- v3
+                next
+              }
+              }
+            }
+            
+            # A1 is weird and IS needed (description contains numbers and weird symbols inbetween)
+            # triple centrifuge
+            if (is.na(col1[i])|is.na(col2[i])|is.na(col3[i])){dummy22=0
+            #2nd col is big (2 values)
+            repeat{dummy22=dummy22+1
+            if (dummy22>=nchar(A[2])-Minuses[2]){break}
+            v3 <- as.numeric(as.character(substr(A[2],nchar(A[2])-dummy22+1,nchar(A[2]))))
+            newlength3=nchar(v3)
+            if (!(length(grep("e",v3))==0)){j=0 
+            repeat{j=j+1 
+            if (substr(v3,j,j)=="e"){newlength3 <- nchar(round(as.numeric(as.character(substr(v3,1,j-1)))))+(as.numeric(substr(v3,j+1,nchar(v3))))
+            break}}}
+            if (!(newlength3==nchar(substr(A[2],nchar(A[2])-dummy22+1,nchar(A[2]))))){next}
+            
+            dummy21=0
+            repeat{dummy21=dummy21+1
+            if ((dummy22+dummy21)>nchar(A[2])){break}
+            v2 <- as.numeric(as.character(substr(A[2],nchar(A[2])-dummy22-dummy21+1,nchar(A[2])-dummy22)))
+            newlength2=nchar(v2)
+            if (!(length(grep("e",v2))==0)){j=0 
+            repeat{j=j+1 
+            if (substr(v2,j,j)=="e"){newlength2 <- nchar(round(as.numeric(as.character(substr(v2,1,j-1)))))+(as.numeric(substr(v2,j+1,nchar(v2))))
+            break}}}
+            if (!(newlength2==nchar(substr(A[2],nchar(A[2])-dummy22-dummy21+1,nchar(A[2])-dummy22)))){next}
+            
+            dummy1=0  
+            repeat{dummy1=dummy1+1
+            if (dummy1>nchar(A[1])){break}
+            v1 <- as.numeric(as.character(substr(A[1],nchar(A[1])-dummy1+1,nchar(A[1]))))
+            newlength1=nchar(v1)
+            if (!(length(grep("e",v1))==0)){j=0 
+            repeat{j=j+1 
+            if (substr(v1,j,j)=="e"){newlength1 <- nchar(round(as.numeric(as.character(substr(v1,1,j-1)))))+(as.numeric(substr(v1,j+1,nchar(v1))))
+            break}}}
+            if (!(newlength1==nchar(substr(A[1],nchar(A[1])-dummy1+1,nchar(A[1]))))){next}
+            
+            if (((v1+v2)==v3)&(!(length(which(cbind(v1,v2,v3)==0))==3))){
+              col1[i] <- v1
+              col2[i] <- v2
+              col3[i] <- v3
+              next
+            }
+            }
+            }
+            }
+            
+            #1st col is big (2 values => 2nd col is v3)
+            #double centrifuge
+            if (is.na(col1[i])|is.na(col2[i])|is.na(col3[i])){
+              v3 <- as.numeric(as.character(A[2]))
+              dummy12=0
+              repeat{dummy12=dummy12+1
+              if (dummy12>=nchar(A[1])-Minuses[1]){break}
+              v2 <- as.numeric(as.character(substr(A[1],nchar(A[1])-dummy12+1,nchar(A[1]))))
+              newlength2=nchar(v2)
+              if (!(length(grep("e",v2))==0)){j=0 
+              repeat{j=j+1 
+              if (substr(v2,j,j)=="e"){newlength2 <- nchar(round(as.numeric(as.character(substr(v2,1,j-1)))))+(as.numeric(substr(v2,j+1,nchar(v2))))
+              break}}}
+              if (!(newlength2==nchar(substr(A[1],nchar(A[1])-dummy12+1,nchar(A[1]))))){next}
+              dummy11=0
+              repeat{dummy11=dummy11+1
+              if ((dummy12+dummy11)>nchar(A[1])){break}
+              v1 <- as.numeric(as.character(substr(A[1],nchar(A[1])-dummy12-dummy11+1,nchar(A[1])-dummy12)))
+              newlength2=nchar(v1)
+              if (!(length(grep("e",v1))==0)){j=0 
+              repeat{j=j+1 
+              if (substr(v1,j,j)=="e"){newlength1 <- nchar(round(as.numeric(as.character(substr(v1,1,j-1)))))+(as.numeric(substr(v1,j+1,nchar(v1))))
+              break}}}
+              if (!(newlength1==nchar(substr(A[1],nchar(A[1])-dummy12-dummy11+1,nchar(A[1])-dummy12)))){next}
+              
+              if (((v1+v2)==v3)&(!(length(which(cbind(v1,v2,v3)==0))==3))){
+                col1[i] <- v1
+                col2[i] <- v2
+                col3[i] <- v3
+                next
+              }
+              }
+              }
+            }
+            }
+            
+            
+            # A1 is weird and IS NOT needed (description contains numbers and weird symbols inbetween)
+            # triple centrifuge
+            if (is.na(col1[i])|is.na(col2[i])|is.na(col3[i])){
+              fixlast=0
+              repeat{fixlast=fixlast+1
+              if (fixlast>=nchar(A[2])-Minuses[2]){
+                col3[i] <- as.numeric(as.character(A[2]))
+                break}
+              v3 <- as.numeric(substr(A[2],nchar(A[2])-fixlast+1,nchar(A[2])))
+              newlength3=nchar(v3)
+              if (!(length(grep("e",v3))==0)){j=0 
+              repeat{j=j+1 
+              if (substr(v3,j,j)=="e"){newlength3 <- nchar(round(as.numeric(as.character(substr(v3,1,j-1)))))+(as.numeric(substr(v3,j+1,nchar(v3))))
+              break}}}
+              if (!(newlength3==nchar(substr(A[2],nchar(A[2])-fixlast+1,nchar(A[2]))))){next}
+              uroll=0
+              repeat{uroll=uroll+1
+              if ((uroll+fixlast)>=nchar(A[2])-Minuses[2]){break}
+              v2 <- as.numeric(substr(A[2],nchar(A[2])-fixlast-uroll+1,nchar(A[2])-fixlast))
+              newlength2=nchar(v2)
+              if (!(length(grep("e",v2))==0)){j=0 
+              repeat{j=j+1 
+              if (substr(v2,j,j)=="e"){newlength2 <- nchar(round(as.numeric(as.character(substr(v2,1,j-1)))))+(as.numeric(substr(v2,j+1,nchar(v2))))
+              break}}}
+              if (!(newlength2==nchar(substr(A[2],nchar(A[2])-fixlast-uroll+1,nchar(A[2])-fixlast)))){next}
+              vroll=0
+              repeat{vroll=vroll+1
+              if ((uroll+fixlast+vroll)>nchar(A[2])){break}
+              v1 <- as.numeric(substr(A[2],nchar(A[2])-fixlast-uroll-vroll+1,nchar(A[2])-fixlast-uroll))
+              if (((v1+v2)==v3)&(!(length(which(cbind(v1,v2,v3)==0))==3))){
+                col1[i] <- v1
+                col2[i] <- v2
+                col3[i] <- v3
+                next
+              }
+              }
+              }
+              }
+            }
+          }
+          else{#lengthA=1
+            fixlast=0
+            repeat{fixlast=fixlast+1
+            if (fixlast>=nchar(A[1])-Minuses[1]){break}
+            v3 <- as.numeric(as.character(substr(A[1],nchar(A[1])-fixlast+1,nchar(A[1]))))
+            newlength3=nchar(v3)
+            if (!(length(grep("e",v3))==0)){j=0 
+            repeat{j=j+1 
+            if (substr(v3,j,j)=="e"){newlength3 <- nchar(round(as.numeric(as.character(substr(v3,1,j-1)))))+(as.numeric(substr(v3,j+1,nchar(v3))))
+            break}}}
+            if (!(newlength3==nchar(substr(A[1],nchar(A[1])-fixlast+1,nchar(A[1]))))){next}
+            uroll=0
+            repeat{uroll=uroll+1
+            if (uroll+fixlast>=nchar(A[1])-Minuses[1]){break}
+            v2 <- as.numeric(as.character(substr(A[1],nchar(A[1])-uroll-fixlast+1,nchar(A[1])-fixlast)))
+            newlength2=nchar(v2)
+            if (!(length(grep("e",v2))==0)){j=0 
+            repeat{j=j+1 
+            if (substr(v2,j,j)=="e"){newlength2 <- nchar(round(as.numeric(as.character(substr(v2,1,j-1)))))+(as.numeric(substr(v2,j+1,nchar(v2))))
+            break}}}
+            if (!(newlength2==nchar(substr(A[1],nchar(A[1])-uroll-fixlast+1,nchar(A[1])-fixlast)))){next}
+            vroll=0
+            repeat{vroll=vroll+1
+            if (vroll+uroll+fixlast>nchar(A[1])){break}
+            v1 <- as.numeric(as.character(substr(A[1],nchar(A[1])-uroll-vroll-fixlast+1,nchar(A[1])-fixlast-uroll)))
+            if (((v1+v2)==v3)&(!(length(which(cbind(v1,v2,v3)==0))==3))){
+              col1[i] <- v1
+              col2[i] <- v2
+              col3[i] <- v3
+              next
+            }
+            }
+            }
+            }
+          }
+        }
+      }
+    }
     
     is.space <- function(x) grepl(" ", x)
     numbersnew=rep(0,length(L))
     lettersnew=c()
     h=matrix(0,length(L),3)
+    L11=rep(0,length(L))
+    L11[Targetrows]=L1
     #numbersnew2=as.data.frame(substr(Gen3[1,1],1,L[1]),stringsAsFactors=FALSE)
     
     for (i in 1:length(L)){
-      numbersnew[i]=as.data.frame(substr(Gen3[i,1],1,L[i]),stringsAsFactors=FALSE)
+      numbersnew[i]=as.data.frame(substr(Gen3[i],1,L[i]),stringsAsFactors=FALSE)
       # numbersnew2 <- rbind(numbersnew2,numprel)
       
-      lettersnew[i] <- as.data.frame(substr(Gen3[i,1],L[i]+1,100),stringsAsFactors=FALSE)
+      lettersnew[i] <- as.data.frame(substr(Gen3[i], L[i] + 1, nchar(Gen3[i])-L11[i]),stringsAsFactors=FALSE)
       for (j in 1:3){
         if(is.space(substr(lettersnew[i],j,j))==TRUE){
           h[i,j]=1
         }
       }
-      lettersnew[i] <- as.data.frame(substr(Gen3[i,1],L[i]+1+sum(h[i,]),100),stringsAsFactors=FALSE)
+      lettersnew[i] <- as.data.frame(substr(Gen3[i], L[i]+1+sum(h[i,]),nchar(Gen3[i])-L11[i]),stringsAsFactors=FALSE)
     }
     
     #numbersnew <- as.numeric(gsub(" ","",numbersnew))
@@ -150,14 +573,32 @@ generator <- function(file){
     #letters <- as.data.frame(substr(Gen3[,1],6,100),stringsAsFactors=FALSE)
     
     w <- cbind(numbersnew,lettersnew)
-    Genfin <- cbind(w, Gen3[,2:4])
+    col11 <- rep(NA,length(Gen3))
+    col11[Targetrows] <- col1
+    col21 <- rep(NA,length(Gen3))
+    col21[Targetrows] <- col2
+    col31 <- rep(NA,length(Gen3))
+    col31[Targetrows] <- col3
+    Genfin <- cbind(w, col11, col21, col31)
     
     Y <- as.data.frame(gsub("[^0-9]", "", Genfin[,1]),stringsAsFactors=FALSE)
-    Genfin <- cbind (Y, Genfin[,2:length(Genfin)])
+    Genfin <- cbind (Y, Genfin[,2:length(Genfin[1,])])
+    # store number of digits before e and the sign after
+    #sign is in +1
+    
+    c1 <- is.na(col11)
+    c2 <- is.na(col21)
+    c3 <- is.na(col31)
+    cut <- (substr(Genfin[,2],1,5) %in% "TOTAL")
+    Genfin[which(c1&cut),3]=0
+    Genfin[which(c2&cut),4]=0
+    Genfin[which(c3&cut),5]=0
+    
     
     M1 <- intersect(which(as.numeric(Genfin[,3])<0),which(!Genfin[,3]==""))
     M2 <- intersect(which(as.numeric(Genfin[,4])<0),which(!Genfin[,4]==""))
     M3 <- intersect(which(as.numeric(Genfin[,5])<0),which(!Genfin[,5]==""))
+    #grep("e",Genfin[,j+2])
     R1 <- as.data.frame(gsub("[^0-9]", "", Genfin[,3]),stringsAsFactors=FALSE)
     R2 <- as.data.frame(gsub("[^0-9]", "", Genfin[,4]),stringsAsFactors=FALSE)
     R3 <- as.data.frame(gsub("[^0-9]", "", Genfin[,5]),stringsAsFactors=FALSE)
@@ -180,15 +621,23 @@ generator <- function(file){
       R3[D3,] <- paste(substr(R3[D3,],1,i-1),substr(R3[D3,],i,15),sep = ".")
     }
     
+    R1[grep("e",Genfin[,3]),] <- as.numeric(as.character(Genfin[grep("e",Genfin[,3]),3]))
+    R2[grep("e",Genfin[,4]),] <- as.numeric(as.character(Genfin[grep("e",Genfin[,4]),4]))
+    R3[grep("e",Genfin[,5]),] <- as.numeric(as.character(Genfin[grep("e",Genfin[,5]),5]))
+    
     Genfin <- cbind(Genfin[,1:2],R1,R2,R3)
     #Genfin1 <- Genfin
     J <- !((as.data.frame(substr(Genfin[,1],1,1)) == "") & (as.data.frame(substr(Genfin[,3],1,1) == "")))
     Genfin <- as.data.frame(Genfin[J, ], stringsAsFactors=FALSE)
     I <- intersect(which(Genfin[,1]==233),which(Genfin[,2]=="OFFICE O"))
-    Genfin <- Genfin[-I,]
+    if (!(length(I)==0)){
+      Genfin <- Genfin[-I,]
+    }
+    
+    Genfin <- Genfin[!(is.na(Genfin[,1])),]
     
     colnames(Genfin) <- c("SubsecID","Description",paste(year1,"original",sep = ""),"Revision",paste(year1,"revised",sep = ""))
-    Genfin$SubsecID  <- as.numeric(Genfin$SubsecID)
+    #Genfin$SubsecID  <- as.numeric(Genfin$SubsecID)
     Genfin[,3]   <- type.convert(Genfin[,3], numerals="warn.loss");
     Genfin[,4]   <- type.convert(Genfin[,4], numerals="warn.loss");
     Genfin[,5]   <- type.convert(Genfin[,5], numerals="warn.loss");
@@ -202,7 +651,9 @@ generator <- function(file){
       try({
         Out <- as.data.frame(extract_tables(file, pages = i, guess = FALSE, method = "data.frame", columns = list(c(320, 420)), stringsAsFactors=FALSE))
         names(Out) <- names(Genout1)
-        Genout1 <- rbind(Genout1,Out)
+        if (length(grep("SUMMARY", Out[,1]))==0){
+          Genout1 <- rbind(Genout1,Out)
+        }
       })
     }
     
@@ -292,6 +743,13 @@ generator <- function(file){
     #Genfin[which(substr(Genfin[,1],5,5) %in% " "),1]=substr(Genfin[which(substr(Genfin[,1],5,5) %in% " "),1],1,4)
     Y <- as.data.frame(gsub("[^0-9]", "", Genfin[,1]),stringsAsFactors=FALSE)
     Genfin <- cbind (Y, Genfin[,2:length(Genfin)])
+    
+    c1 <- is.na(Genfin[,3])
+    c2 <- is.na(Genfin[,4])
+    cut <- (substr(Genfin[,2],1,5) %in% "TOTAL")
+    Genfin[which(c1&cut),3]=0
+    Genfin[which(c2&cut),4]=0
+    
     M1 <- intersect(which(as.numeric(Genfin[,3])<0),which(!Genfin[,3]==""))
     M2 <- intersect(which(as.numeric(Genfin[,4])<0),which(!Genfin[,4]==""))
     R1 <- as.data.frame(gsub("[^0-9]", "", Genfin[,3]),stringsAsFactors=FALSE)
@@ -321,11 +779,14 @@ generator <- function(file){
     Genfin[,3]   <- type.convert(Genfin[,3], numerals="warn.loss");
     Genfin[,4]   <- type.convert(Genfin[,4], numerals="warn.loss");
   }
+  
+  #----------------------COMMON
   #values with 5 digit indices
   #vol[which(!substr(vol[,1],5,5) %in% ""),1]
   #indices with 5 digit indices
   M <- which(is.na(Genfin[,length(Genfin)]))
-  N <- intersect(which(!substr(Genfin[,1],5,5) %in% ""),M)
+  f <- which(nchar(Genfin[,1])==5)
+  N <- intersect(f,M)
   
   #indices for 2nd NA
   T <- setdiff(M,N)
@@ -380,11 +841,39 @@ generator <- function(file){
   C3[cfb5] <- paste(Genfin$Supercode1[cfb5],Genfin$SubsecID[cfb5],sep = "")
   
   Genfin$SubsecID <- C3
+  
+  Genfin[which(Genfin$Description==""),4] <- "MISSING"
+  Genfin[which(Genfin$Description=="MISSING"),3] <- Genfin[which(Genfin$Description=="MISSING")-1,3]
+  
+  for (i in 5:ncol(Genfin)){
+    Genfin[,i] <- as.numeric(as.character(Genfin[,i]))
+  }      
+  
+  TC <- intersect(agrep("total receipts", Genfin$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(Genfin$Description)-nchar("total receipts"))<2))
+  TR <- intersect(agrep("total requirements", Genfin$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(Genfin$Description)-nchar("total requirements"))<2))
+  #m <- get(matrix)
+  
+  #Is = matrix(0,length(TC),20)      
+  for (i in 1:length(TC)){
+    itr <- max(which(TR<TC[i]))
+    is <- TC[i]-TR[itr]-1
+    if (is > 0){
+      Genfin[(TR[itr]+1):(TR[itr]+is), 5:ncol(Genfin)] <- -(Genfin[(TR[itr]+1):(TR[itr]+is), 5:ncol(Genfin)])
+    }
+  }
+  
   Genfin <- Genfin[!duplicated(Genfin),]
-  Genfin[which(Genfin$Description==""),4] <- "ESTIMATED RECEIPTS MISSING"
-  Genfin[which(Genfin$Description=="ESTIMATED RECEIPTS MISSING"),3] <- Genfin[which(Genfin$Description=="ESTIMATED RECEIPTS MISSING")-1,3]
+  
+  Genfin <- Genfin[!(substr(Genfin$Description,1,5) %in% "TOTAL"),]
+  Genfin <- Genfin[!(substr(Genfin$Description,1,3) %in% "NET"),]
+  Genfin <- Genfin[!(Genfin$Description=="HIGHWAY FUND APPROPRIATION"),]
+  Genfin <- Genfin[!(Genfin$Description=="HIGHWAY TRUST FUND APPROPRTN"),]
+  Genfin <- Genfin[!(Genfin$Description=="CHANGE IN FUND BALANCE"),]
+  Genfin <- Genfin[!(Genfin$Description=="ESTIMATED RECEIPTS MISSING"),]
+  
   return(Genfin)
 }
+
 
 vol12003 <- generator("2003_5/vol1.pdf")
 vol12005 <- generator("2005_7/vol1.pdf")
@@ -654,7 +1143,8 @@ mapping <- function(basefile, operation){
   else{base_index1 <- 1
   base_index2 <- 2}
   #basefile <- rbind(dvol62003,dvol62005,dvol62007,dvol62009,dvol62011,setNames( rev(vol62003) , names( vol62003) ) )
-  test2 <- matrix(,nrow=length(basedata[,1]),ncol=2*length(seq(3,11,by = 2)))
+  cols=length(basedata[,5:length(basedata[1,])])
+  test2 <- matrix(,nrow=length(basedata[,1]),ncol=cols*length(seq(3,11,by = 2)))
   test2 <- cbind(basedata[,1:4],test2)
   test3 <- matrix(,nrow=length(basedata[,1]),ncol=5)
   weirdos1 <- matrix(0,length(basedata[,1]),5)
@@ -685,7 +1175,8 @@ mapping <- function(basefile, operation){
               counter=counter-1
               #outputw <- ow[-1]
               outputw <- get(nam1)
-              test2[ialt,(3+2*index):(3+2*index+length(outputw)-1)] <- outputw
+              test2[ialt,(5+cols*(index-1)):(5+cols*(index-1)+length(outputw)-1)] <- outputw
+              colnames(test2)[(5+cols*(index-1)):(5+cols*(index-1)+length(outputw)-1)] <- colnames(get(nam1))
               if (counter==0) {break} }
           }
           else{
@@ -695,7 +1186,8 @@ mapping <- function(basefile, operation){
             assign(nam, (DMatch[[index]])[1,5:length(DMatch[[index]])])}
             #o <- cbind(o,get(nam))
             output <- get(nam)
-            test2[i,(3+2*index):(3+2*index+length(output)-1)] <- output
+            test2[i,(5+cols*(index-1)):(5+cols*(index-1)+length(output)-1)] <- output
+            colnames(test2)[(5+cols*(index-1)):(5+cols*(index-1)+length(output)-1)] <- colnames(get(nam))
           }
         }
       }
@@ -708,10 +1200,10 @@ mapping <- function(basefile, operation){
       #b <- cbind(basefile, basedata[i,1:4])
       #DMatch <- do.call(matcher, as.list(cbind(b, operation)))
       if (base_index1==2){
-      DMatch <- matcher(basefile, basedata[i,1],basedata[i,2],basedata[i,3],basedata[i,4],1, basedata[i,5])
+        DMatch <- matcher(basefile, basedata[i,1],basedata[i,2],basedata[i,3],basedata[i,4],1, basedata[i,5])
       }
       else{
-      DMatch <- matcher(basefile, basedata[i,1],basedata[i,2],basedata[i,3],basedata[i,4],1, basedata[i,6])
+        DMatch <- matcher(basefile, basedata[i,1],basedata[i,2],basedata[i,3],basedata[i,4],1, basedata[i,6])
       }
       l1 <- length((DMatch[[1]])[,5])
       l2 <- length((DMatch[[2]])[,5])
@@ -730,12 +1222,14 @@ mapping <- function(basefile, operation){
             #outputw <- ow[-1]
             outputw <- nam1
             test3[ialt1,(3+2*base_index1):(3+2*base_index1+length(outputw)-1)] <- outputw
+            colnames(test3)[(3+2*base_index1):(3+2*base_index1+length(outputw)-1)] <- colnames(get(nam1))
             if (counter1==0) {break} }
         }
         else{
           DMatch1=DMatch[[1]][,5:length(DMatch[[1]])]
           test3[i,(3+2*base_index1):(3+2*base_index1+length(DMatch1)-1)] <- DMatch1
-        }
+          colnames(test3)[(3+2*base_index1):(3+2*base_index1+length(DMatch1)-1)] <- colnames(DMatch1)
+          }
       }
       #nam1 <- paste("DMatch1", t, sep = "0")
       if(!(l2==0)){
@@ -753,12 +1247,14 @@ mapping <- function(basefile, operation){
             #outputw <- ow[-1]
             outputw <- nam2
             test3[ialt2,(3+2*base_index2):(3+2*base_index2+length(outputw)-1)] <- outputw
+            colnames(test3)[(3+2*base_index2):(3+2*base_index2+length(outputw)-1)] <- colnames(outputw)
             if (counter2==0) {break} }
         }
         else{
           DMatch2=DMatch[[2]][,5:length(DMatch[[2]])]
           #assign(nam1, (DMatch[[index]])[counter,5:length(DMatch[[index]])])}
           test3[i,(3+2*base_index2):(3+2*base_index2+length(DMatch2)-1)] <- DMatch2
+          colnames(test3)[(3+2*base_index2):(3+2*base_index2+length(DMatch2)-1)] <- colnames(DMatch2)
         }
       }
       #mapping <- test3
@@ -928,3 +1424,174 @@ for (i in 2002:2015){
   popbound[i-2002+1,]<- cbind(i,mean(popind[which(popind[,1]==i-window):which(popind[,1]==i-1),2]))
   bound[i-2002+1,] <- cbind(i,infbound[i-2002+1,2]+popbound[i-2002+1,2])
 }
+
+#load 2013-2016 totals
+t2013 <- read.csv("2013.csv")
+t2014 <- read.csv("2014.csv")
+t2015 <- read.csv("2015.csv")
+t2016 <- read.csv("2016.csv")
+t2013_2016 <- cbind(t2013,t2014[,2:4],t2015[,2:4],t2016[,2:4])
+
+vol12003p <- unname(cbind(vol12003[,1:5],rep(2003,length(vol12003[,1]))))                 
+colnames(vol12003p)[length(vol12003p[1,])] <- "Year"                    
+vol12005p <- unname(cbind(vol12005[,1:5],rep(2005,length(vol12005[,1]))))                   
+colnames(vol12005p)[length(vol12005p[1,])] <- "Year"                    
+vol12007p <- unname(cbind(vol12007[,1:5],rep(2007,length(vol12007[,1]))))                   
+colnames(vol12007p)[length(vol12007p[1,])] <- "Year"                    
+vol12009p <- unname(cbind(vol12009[,1:5],rep(2009,length(vol12009[,1]))))                   
+colnames(vol12009p)[length(vol12009p[1,])] <- "Year"                    
+vol12011p <- unname(cbind(vol12011[,1:5],rep(2011,length(vol12011[,1]))))                   
+colnames(vol12011p)[length(vol12011p[1,])] <- "Year"                    
+
+vol12004p <-  unname(cbind(vol12004[,1:4],vol12004[,7],rep(2004,length(vol12004[,1]))))                                     
+colnames(vol12004p)[length(vol12004p[1,])] <- "Year"    
+vol12006p <-  unname(cbind(vol12006[,1:4],vol12006[,7],rep(2006,length(vol12006[,1]))))                                     
+colnames(vol12006p)[length(vol12006p[1,])] <- "Year" 
+vol12008p <-  unname(cbind(vol12008[,1:4],vol12008[,7],rep(2008,length(vol12008[,1]))))                                     
+colnames(vol12008p)[length(vol12008p[1,])] <- "Year" 
+vol12010p <-  unname(cbind(vol12010[,1:4],vol12010[,7],rep(2010,length(vol12010[,1]))))                                     
+colnames(vol12010p)[length(vol12010p[1,])] <- "Year" 
+vol12012p <-  unname(cbind(vol12012[,1:4],vol12012[,7],rep(2012,length(vol12012[,1]))))                                     
+colnames(vol12012p)[length(vol12012p[1,])] <- "Year" 
+
+vol1 <- rbind(vol12003p,vol12004p,vol12005p,vol12006p,vol12007p,vol12008p,vol12009p,vol12010p,vol12011p,vol12012p)
+vol1 <- cbind(rep("Education",length(vol1[,1])),vol1)
+colnames(vol1)[1:6] <- c("Category","Budget code", "Fund code", "Account code", "Description", "Amount")
+
+vol22003p <- unname(cbind(vol22003[,1:5],rep(2003,length(vol22003[,1]))))                   
+colnames(vol22003p)[length(vol22003p[1,])] <- "Year"                    
+vol22005p <- unname(cbind(vol22005[,1:5],rep(2005,length(vol22005[,1]))))                   
+colnames(vol22005p)[length(vol22005p[1,])] <- "Year"                    
+vol22007p <- unname(cbind(vol22007[,1:5],rep(2007,length(vol22007[,1]))))                   
+colnames(vol22007p)[length(vol22007p[1,])] <- "Year"                    
+vol22009p <- unname(cbind(vol22009[,1:5],rep(2009,length(vol22009[,1]))))                   
+colnames(vol22009p)[length(vol22009p[1,])] <- "Year"                    
+vol22011p <- unname(cbind(vol22011[,1:5],rep(2011,length(vol22011[,1]))))                   
+colnames(vol22011p)[length(vol22011p[1,])] <- "Year"                    
+
+vol22004p <-  unname(cbind(vol22004[,1:4],vol22004[,7],rep(2004,length(vol22004[,1]))))                                     
+colnames(vol22004p)[length(vol22004p[1,])] <- "Year"    
+vol22006p <-  unname(cbind(vol22006[,1:4],vol22006[,7],rep(2006,length(vol22006[,1]))))                                     
+colnames(vol22006p)[length(vol22006p[1,])] <- "Year" 
+vol22008p <-  unname(cbind(vol22008[,1:4],vol22008[,7],rep(2008,length(vol22008[,1]))))                                     
+colnames(vol22008p)[length(vol22008p[1,])] <- "Year" 
+vol22010p <-  unname(cbind(vol22010[,1:4],vol22010[,7],rep(2010,length(vol22010[,1]))))                                     
+colnames(vol22010p)[length(vol22010p[1,])] <- "Year" 
+vol22012p <-  unname(cbind(vol22012[,1:4],vol22012[,7],rep(2012,length(vol22012[,1]))))                                     
+colnames(vol22012p)[length(vol22012p[1,])] <- "Year" 
+
+vol2 <- rbind(vol22003p,vol22004p,vol22005p,vol22006p,vol22007p,vol22008p,vol22009p,vol22010p,vol22011p,vol22012p)
+vol2 <- cbind(rep("General Government",length(vol2[,1])),vol2)
+colnames(vol2)[1:6] <- c("Category","Budget code", "Fund code", "Account code", "Description", "Amount")
+               
+
+vol32003p <- unname(cbind(vol32003[,1:5],rep(2003,length(vol32003[,1]))))                   
+colnames(vol32003p)[length(vol32003p[1,])] <- "Year"                    
+vol32005p <- unname(cbind(vol32005[,1:5],rep(2005,length(vol32005[,1]))))                   
+colnames(vol32005p)[length(vol32005p[1,])] <- "Year"                    
+vol32007p <- unname(cbind(vol32007[,1:5],rep(2007,length(vol32007[,1]))))                   
+colnames(vol32007p)[length(vol32007p[1,])] <- "Year"                    
+vol32009p <- unname(cbind(vol32009[,1:5],rep(2009,length(vol32009[,1]))))                   
+colnames(vol32009p)[length(vol32009p[1,])] <- "Year"                    
+vol32011p <- unname(cbind(vol32011[,1:5],rep(2011,length(vol32011[,1]))))                   
+colnames(vol32011p)[length(vol32011p[1,])] <- "Year"                    
+
+vol32004p <-  unname(cbind(vol32004[,1:4],vol32004[,7],rep(2004,length(vol32004[,1]))))                                     
+colnames(vol32004p)[length(vol32004p[1,])] <- "Year"    
+vol32006p <-  unname(cbind(vol32006[,1:4],vol32006[,7],rep(2006,length(vol32006[,1]))))                                     
+colnames(vol32006p)[length(vol32006p[1,])] <- "Year" 
+vol32008p <-  unname(cbind(vol32008[,1:4],vol32008[,7],rep(2008,length(vol32008[,1]))))                                     
+colnames(vol32008p)[length(vol32008p[1,])] <- "Year" 
+vol32010p <-  unname(cbind(vol32010[,1:4],vol32010[,7],rep(2010,length(vol32010[,1]))))                                     
+colnames(vol32010p)[length(vol32010p[1,])] <- "Year" 
+vol32012p <-  unname(cbind(vol32012[,1:4],vol32012[,7],rep(2012,length(vol32012[,1]))))                                     
+colnames(vol32012p)[length(vol32012p[1,])] <- "Year" 
+
+vol3 <- rbind(vol32003p,vol32004p,vol32005p,vol32006p,vol32007p,vol32008p,vol32009p,vol32010p,vol32011p,vol32012p)
+vol3 <- cbind(rep("Health",length(vol3[,1])),vol3)
+colnames(vol3)[1:6] <- c("Category","Budget code", "Fund code", "Account code", "Description", "Amount")
+               
+
+vol42003p <- unname(cbind(vol42003[,1:5],rep(2003,length(vol42003[,1]))))                   
+colnames(vol42003p)[length(vol42003p[1,])] <- "Year"                    
+vol42005p <- unname(cbind(vol42005[,1:5],rep(2005,length(vol42005[,1]))))                   
+colnames(vol42005p)[length(vol42005p[1,])] <- "Year"                    
+vol42007p <- unname(cbind(vol42007[,1:5],rep(2007,length(vol42007[,1]))))                   
+colnames(vol42007p)[length(vol42007p[1,])] <- "Year"                    
+vol42009p <- unname(cbind(vol42009[,1:5],rep(2009,length(vol42009[,1]))))                   
+colnames(vol42009p)[length(vol42009p[1,])] <- "Year"                    
+vol42011p <- unname(cbind(vol42011[,1:5],rep(2011,length(vol42011[,1]))))                   
+colnames(vol42011p)[length(vol42011p[1,])] <- "Year"                    
+
+vol42004p <-  unname(cbind(vol42004[,1:4],vol42004[,7],rep(2004,length(vol42004[,1]))))                                     
+colnames(vol42004p)[length(vol42004p[1,])] <- "Year"    
+vol42006p <-  unname(cbind(vol42006[,1:4],vol42006[,7],rep(2006,length(vol42006[,1]))))                                     
+colnames(vol42006p)[length(vol42006p[1,])] <- "Year" 
+vol42008p <-  unname(cbind(vol42008[,1:4],vol42008[,7],rep(2008,length(vol42008[,1]))))                                     
+colnames(vol42008p)[length(vol42008p[1,])] <- "Year" 
+vol42010p <-  unname(cbind(vol42010[,1:4],vol42010[,7],rep(2010,length(vol42010[,1]))))                                     
+colnames(vol42010p)[length(vol42010p[1,])] <- "Year" 
+vol42012p <-  unname(cbind(vol42012[,1:4],vol42012[,7],rep(2012,length(vol42012[,1]))))                                     
+colnames(vol42012p)[length(vol42012p[1,])] <- "Year" 
+
+vol4 <- rbind(vol42003p,vol42004p,vol42005p,vol42006p,vol42007p,vol42008p,vol42009p,vol42010p,vol42011p,vol42012p)
+vol4 <- cbind(rep("Justice",length(vol4[,1])),vol4)
+colnames(vol4)[1:6] <- c("Category","Budget code", "Fund code", "Account code", "Description", "Amount")
+
+
+vol52003p <- unname(cbind(vol52003[,1:5],rep(2003,length(vol52003[,1]))))                   
+colnames(vol52003p)[length(vol52003p[1,])] <- "Year"                    
+vol52005p <- unname(cbind(vol52005[,1:5],rep(2005,length(vol52005[,1]))))                   
+colnames(vol52005p)[length(vol52005p[1,])] <- "Year"                    
+vol52007p <- unname(cbind(vol52007[,1:5],rep(2007,length(vol52007[,1]))))                   
+colnames(vol52007p)[length(vol52007p[1,])] <- "Year"                    
+vol52009p <- unname(cbind(vol52009[,1:5],rep(2009,length(vol52009[,1]))))                   
+colnames(vol52009p)[length(vol52009p[1,])] <- "Year"                    
+vol52011p <- unname(cbind(vol52011[,1:5],rep(2011,length(vol52011[,1]))))                   
+colnames(vol52011p)[length(vol52011p[1,])] <- "Year"                    
+
+vol52004p <-  unname(cbind(vol52004[,1:4],vol52004[,7],rep(2004,length(vol52004[,1]))))                                     
+colnames(vol52004p)[length(vol52004p[1,])] <- "Year"    
+vol52006p <-  unname(cbind(vol52006[,1:4],vol52006[,7],rep(2006,length(vol52006[,1]))))                                     
+colnames(vol52006p)[length(vol52006p[1,])] <- "Year" 
+vol52008p <-  unname(cbind(vol52008[,1:4],vol52008[,7],rep(2008,length(vol52008[,1]))))                                     
+colnames(vol52008p)[length(vol52008p[1,])] <- "Year" 
+vol52010p <-  unname(cbind(vol52010[,1:4],vol52010[,7],rep(2010,length(vol52010[,1]))))                                     
+colnames(vol52010p)[length(vol52010p[1,])] <- "Year" 
+vol52012p <-  unname(cbind(vol52012[,1:4],vol52012[,7],rep(2012,length(vol52012[,1]))))                                     
+colnames(vol52012p)[length(vol52012p[1,])] <- "Year" 
+
+vol5 <- rbind(vol52003p,vol52004p,vol52005p,vol52006p,vol52007p,vol52008p,vol52009p,vol52010p,vol52011p,vol52012p)
+vol5 <- cbind(rep("Natural Resources",length(vol5[,1])),vol5)
+colnames(vol5)[1:6] <- c("Category","Budget code", "Fund code", "Account code", "Description", "Amount")
+
+
+vol62003p <- unname(cbind(vol62003[,1:5],rep(2003,length(vol62003[,1]))))                   
+colnames(vol62003p)[length(vol62003p[1,])] <- "Year"                    
+vol62005p <- unname(cbind(vol62005[,1:5],rep(2005,length(vol62005[,1]))))                   
+colnames(vol62005p)[length(vol62005p[1,])] <- "Year"                    
+vol62007p <- unname(cbind(vol62007[,1:5],rep(2007,length(vol62007[,1]))))                   
+colnames(vol62007p)[length(vol62007p[1,])] <- "Year"                    
+vol62009p <- unname(cbind(vol62009[,1:5],rep(2009,length(vol62009[,1]))))                   
+colnames(vol62009p)[length(vol62009p[1,])] <- "Year"                    
+vol62011p <- unname(cbind(vol62011[,1:5],rep(2011,length(vol62011[,1]))))                   
+colnames(vol62011p)[length(vol62011p[1,])] <- "Year"                    
+
+vol62004p <-  unname(cbind(vol62004[,1:4],vol62004[,7],rep(2004,length(vol62004[,1]))))                                     
+colnames(vol62004p)[length(vol62004p[1,])] <- "Year"    
+vol62006p <-  unname(cbind(vol62006[,1:4],vol62006[,7],rep(2006,length(vol62006[,1]))))                                     
+colnames(vol62006p)[length(vol62006p[1,])] <- "Year" 
+vol62008p <-  unname(cbind(vol62008[,1:4],vol62008[,7],rep(2008,length(vol62008[,1]))))                                     
+colnames(vol62008p)[length(vol62008p[1,])] <- "Year" 
+vol62010p <-  unname(cbind(vol62010[,1:4],vol62010[,7],rep(2010,length(vol62010[,1]))))                                     
+colnames(vol62010p)[length(vol62010p[1,])] <- "Year" 
+vol62012p <-  unname(cbind(vol62012[,1:4],vol62012[,7],rep(2012,length(vol62012[,1]))))                                     
+colnames(vol62012p)[length(vol62012p[1,])] <- "Year" 
+
+vol6 <- rbind(vol62003p,vol62004p,vol62005p,vol62006p,vol62007p,vol62008p,vol62009p,vol62010p,vol62011p,vol62012p)
+vol6 <- cbind(rep("Transportation",length(vol6[,1])),vol6)
+colnames(vol6)[1:6] <- c("Category","Budget code", "Fund code", "Account code", "Description", "Amount")
+
+Panel <- rbind(vol1,vol2,vol3,vol4,vol5,vol6)
+Panel[,5] <- as.character(Panel[,5])
+write.csv(Panel,file="Panel.csv")
