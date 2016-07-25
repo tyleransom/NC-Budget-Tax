@@ -1,4 +1,13 @@
 cd/ & cd C:/Users/Tom/Desktop/Data+
+
+md "1999_1"
+"C:\Program Files (x86)\GnuWin32\bin\wget.exe" http://ncosbm.s3.amazonaws.com/s3fs-public/documents/files/BD307_1999-2001_Vol1.pdf -O "1999_1\vol1.pdf"
+"C:\Program Files (x86)\GnuWin32\bin\wget.exe" http://ncosbm.s3.amazonaws.com/s3fs-public/documents/files/BD307_1999-2001_Vol2.pdf -O "1999_1\vol2.pdf"
+"C:\Program Files (x86)\GnuWin32\bin\wget.exe" http://ncosbm.s3.amazonaws.com/s3fs-public/documents/files/BD307_1999-2001_Vol3.pdf -O "1999_1\vol3.pdf"
+"C:\Program Files (x86)\GnuWin32\bin\wget.exe" http://ncosbm.s3.amazonaws.com/s3fs-public/documents/files/BD307_1999-2001_Vol4.pdf -O "1999_1\vol4.pdf"
+"C:\Program Files (x86)\GnuWin32\bin\wget.exe" http://ncosbm.s3.amazonaws.com/s3fs-public/documents/files/BD307_1999-2001_Vol5.pdf -O "1999_1\vol5.pdf"
+"C:\Program Files (x86)\GnuWin32\bin\wget.exe" http://ncosbm.s3.amazonaws.com/s3fs-public/documents/files/BD307_1999-2001_Vol6.pdf -O "1999_1\vol6.pdf"
+
 md "2003_5"
 "C:\Program Files (x86)\GnuWin32\bin\wget.exe" http://ncosbm.s3.amazonaws.com/s3fs-public/1200305_BD307_Vol1.pdf -O "2003_5\vol1.pdf"
 "C:\Program Files (x86)\GnuWin32\bin\wget.exe" http://ncosbm.s3.amazonaws.com/s3fs-public/2200305_BD307_Vol2.pdf -O "2003_5\vol2.pdf"
