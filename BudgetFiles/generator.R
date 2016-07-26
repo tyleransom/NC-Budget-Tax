@@ -1,3 +1,7 @@
+# This script was written by Artem Streltsov of Duke University (artem.streltsov@duke.edu) and
+# Vinod Ramakrishnan of IIT (vinod.ramakrishnan@iitgn.ac.in) for NC Justice Center.
+#-------------------------------------------------------------------------------------------------
+
 rm(list = ls())
 cat("\014")
 
@@ -9,7 +13,7 @@ require(rJava)
 require(tabulizer)
 
 # change to your location like: "C:/Users/BLAH/Desktop/Data+/downloader.bat"
-dloader <- read.csv("C:/Users/Tom/Desktop/Data+/downloader.bat")
+dloader <- read.csv("downloader.bat")
 
 # create a database of URLs for further extraction
 for (i in 1:100){
