@@ -42,19 +42,34 @@ generator <- function(file){# associate the file you want to process with a URL 
   # naturally, make sure the path is correct
   
   # calculate number of digits and assign years for column names
-  digits = floor(log10(as.numeric(substr(gsub("[^0-9]", "", file1),3,4)))) + 1
-  if (digits==1){
-    year1 <- paste(substr(gsub("[^0-9]", "", file1),1,4), as.numeric(substr(gsub("[^0-9]", "", file1),3,4))+1, sep = "0")
+  if(substr(gsub("[^0-9]", "", file1),1,2)=="19"){
+    year1 <- paste(substr(gsub("[^0-9]", "", file1),1,4), substr(as.numeric(substr(gsub("[^0-9]", "", file1),3,4))+1,2,3), sep = "")
     year1 <- paste("y",year1, sep = "")
-    year2 <- paste(substr(gsub("[^0-9]", "", file1),1,3), as.numeric(substr(gsub("[^0-9]", "", file1),3,4))+1, sep = "")
-    year2 <- paste(year2, as.numeric(substr(gsub("[^0-9]", "", file1),3,4))+2, sep = "0")
-    year2 <- paste("y",year2, sep = "")
-  } else {
-    year1 <- paste(substr(gsub("[^0-9]", "", file1),1,4), as.numeric(substr(gsub("[^0-9]", "", file1),3,4))+1, sep = "")
-    year1 <- paste("y",year1, sep = "")
-    year2 <- paste(substr(gsub("[^0-9]", "", file1),1,2), as.numeric(substr(gsub("[^0-9]", "", file1),3,4))+1, sep = "")
-    year2 <- paste(year2, as.numeric(substr(gsub("[^0-9]", "", file1),3,4))+2, sep = "")
-    year2 <- paste("y",year2, sep = "")
+    if (substr(as.numeric(substr(gsub("[^0-9]", "", file1),3,4))+1,2,3)=="00"){
+      a1 <- as.numeric(substr(as.numeric(substr(gsub("[^0-9]", "", file1),3,4))+1,2,3))+1
+      year2 <- paste("y2000",a1,sep="0")
+    }
+    else{
+      year2 <- paste(substr(gsub("[^0-9]", "", file1),1,2), as.numeric(substr(gsub("[^0-9]", "", file1),3,4))+1, sep = "")
+      year2 <- paste(year2, as.numeric(substr(gsub("[^0-9]", "", file1),3,4))+2, sep = "")
+      year2 <- paste("y",year2, sep = "")
+    }
+  }
+  else{
+    digits = floor(log10(as.numeric(substr(gsub("[^0-9]", "", file1),3,4)))) + 1
+    if (digits==1){
+      year1 <- paste(substr(gsub("[^0-9]", "", file1),1,4), as.numeric(substr(gsub("[^0-9]", "", file1),3,4))+1, sep = "0")
+      year1 <- paste("y",year1, sep = "")
+      year2 <- paste(substr(gsub("[^0-9]", "", file1),1,3), as.numeric(substr(gsub("[^0-9]", "", file1),3,4))+1, sep = "")
+      year2 <- paste(year2, as.numeric(substr(gsub("[^0-9]", "", file1),3,4))+2, sep = "0")
+      year2 <- paste("y",year2, sep = "")
+    } else {
+      year1 <- paste(substr(gsub("[^0-9]", "", file1),1,4), as.numeric(substr(gsub("[^0-9]", "", file1),3,4))+1, sep = "")
+      year1 <- paste("y",year1, sep = "")
+      year2 <- paste(substr(gsub("[^0-9]", "", file1),1,2), as.numeric(substr(gsub("[^0-9]", "", file1),3,4))+1, sep = "")
+      year2 <- paste(year2, as.numeric(substr(gsub("[^0-9]", "", file1),3,4))+2, sep = "")
+      year2 <- paste("y",year2, sep = "")
+    }
   }
   
   #-----------------------------------EVEN budgets (for instance, revised 2004-2005)
@@ -813,12 +828,12 @@ generator <- function(file){# associate the file you want to process with a URL 
   return(Genfin)
 }
 
-#vol11999 <- generator("1999_1/vol1.pdf")
-#vol21999 <- generator("1999_1/vol2.pdf")
-#vol31999 <- generator("1999_1/vol3.pdf")
-#vol41999 <- generator("1999_1/vol4.pdf")
-#vol51999 <- generator("1999_1/vol5.pdf")
-#vol61999 <- generator("1999_1/vol6.pdf")
+vol11999 <- generator("1999_01/vol1.pdf")
+vol21999 <- generator("1999_01/vol2.pdf")
+vol31999 <- generator("1999_01/vol3.pdf")
+vol41999 <- generator("1999_01/vol4.pdf")
+vol51999 <- generator("1999_01/vol5.pdf")
+vol61999 <- generator("1999_01/vol6.pdf")
 
 vol12003 <- generator("2003_5/vol1.pdf")
 vol12005 <- generator("2005_7/vol1.pdf")
