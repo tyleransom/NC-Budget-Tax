@@ -24,6 +24,8 @@
 
 # IMPORTANT! BEFORE PROCEEDING MAKE SURE YOU HAVE ALL THE VOLUMES PROCESSED BY GENERATOR FUNCTION
 # OR YOU HAVE THE OUTPUT LOADED INTO THE ENVIRONMENT
+# CHECK DIRECTORY!
+load("C:/Users/BLAH/Desktop/Data+/generator.RData")
 
 # MATCHER:
 # Supercode1 (budget code), operation and original are the only required variables to run the function
@@ -169,13 +171,13 @@ matcher <- function(basefile,Supercode1,Supercode2,SubsecID,Description,operatio
 
 #---------------------------------
 # conveniently store output from matcher in dataframes if operation==2
-for (t in seq(3,11,by = 2)){
-  index=(t+which(seq(3,11,by = 2)==t)-1)/3
-  if(t<10){nam <- paste("Match", t, sep = "0")
-  assign(nam, Match[[index]])}
-  else{nam <- paste("Match", t, sep = "")
-  assign(nam, Match[[index]])}
-}
+#for (t in seq(3,11,by = 2)){
+ # index=(t+which(seq(3,11,by = 2)==t)-1)/3
+#  if(t<10){nam <- paste("Match", t, sep = "0")
+#  assign(nam, Match[[index]])}
+#  else{nam <- paste("Match", t, sep = "")
+#  assign(nam, Match[[index]])}
+#}
 #---------------------------------
 
 
