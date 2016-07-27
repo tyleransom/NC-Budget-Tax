@@ -6,7 +6,7 @@ Inputs:
 
 •Outputs
 From generator.R:
-◦Panel.csv, which is the entire budget 1999-2015 in CSV format (long panel with original budget values for odd years and revised values for even years (easily changeable))
+◦Panel.csv, which is the entire budget 1999-2015 in CSV format (long panel with original budget values for odd years and revised values for even years (easily changeable: look at two random budgets - even and odd - and tweak columns for lines 911-1064 accordingly))
 ◦Panel.Rda, which is the same data in R data format
 
 Tableau workbook which contains analysis of the budget
