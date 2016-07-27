@@ -1,4 +1,6 @@
-# Instructions for reproducing NC Budget Files
+# Extracting and creating NC Budget Files from published PDFs
+This repository contains code to extract North Carolina state budget information from online-published PDFs and compile each year's budget into a master dataset.
+
 ## Inputs
 * downloader.bat, which contains links to all PDFs used (update it if the links have been changed)
 * generator.R, which is the R code used to extract the data from the PDFs and create a long panel for Tableau analysis
@@ -6,9 +8,10 @@
 
 ## Outputs
 ### From generator.R
-* Panel.csv, which is the entire budget 1999-2015 in CSV format (long panel with original budget values for odd years and revised values for even years (easily changeable: look at two random budgets - even and odd - and tweak columns for lines 912-1076 accordingly))
+* Panel.zip, which is a compressed version of the entire budget 1999-2015 in CSV format (long panel with original budget values for odd years and revised values for even years (easily changeable: look at two random budgets - even and odd - and tweak columns for lines 912-1076 accordingly))
 * Panel.Rda, which is the same data in R data format
-* Panel.csv can be read into a Tableau workbook which contains further analysis of the budget
+* Panel.zip can be decompressed and read into a Tableau workbook which contains further analysis of the budget
+* generator.RData is a copy of the workspace as of the end of generator.R. Load this into R if you would like to create alternate data structures (see additional.R below).
 
 ### From additional.R (these are stored in R environment):
 * outer merged wide panels that can be used to track the codes that have undergone some changes over time (Map_finale1-6)
