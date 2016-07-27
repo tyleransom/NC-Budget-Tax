@@ -11,6 +11,6 @@ From generator.R:
 
 Tableau workbook which contains analysis of the budget
 
-From additional.R:
+From additional.R (these are stored in R environment):
 ◦ outer merged wide panels that can be used to track the codes that have undergone some changes over time (Map_finale1-6)
 ◦ combined original budgets with the revised ones (for instance, vol12003comb)
