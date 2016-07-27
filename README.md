@@ -19,10 +19,12 @@ When it comes to converting pdf files in R, the crux of the matter is to find an
 
 The installation steps are highlighted on the webpage stipulated above. Make sure you have the latest version of Java and the following packages: devtools and rJava. To get those use the following commands in R: install.packages("devtools") and install.packages("rJava"). After that depending on the version of your Windows run:
 
+```
 if(!require("ghit")){
     install.packages("ghit")
 }
+```
 ## on 64-bit Windows
-ghit::install_github(c("leeper/tabulizerjars", "leeper/tabulizer"), INSTALL_opts = "--no-multiarch")
+`ghit::install_github(c("leeper/tabulizerjars", "leeper/tabulizer"), INSTALL_opts = "--no-multiarch")`
 ## elsewhere
-ghit::install_github(c("leeper/tabulizerjars", "leeper/tabulizer"))
+`ghit::install_github(c("leeper/tabulizerjars", "leeper/tabulizer"))`
