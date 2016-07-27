@@ -1119,3 +1119,4 @@ Panel <- rbind(Panel,new)
 
 write.csv(Panel,file="Panel.csv")
 save(Panel,file="Panel.RDa")
+save.image(file="generator.RData")
