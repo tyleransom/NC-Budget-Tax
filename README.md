@@ -1,6 +1,8 @@
 # Extracting and creating NC Budget Files from published PDFs
 This repository contains code to extract North Carolina state budget information from online-published PDFs and compile each year's budget into a master dataset. The repository also contains the resulting datasets after executing the code.
 
+The repository was created as part of Duke University's [Data+](http://bigdata.duke.edu/data) initiative and in partnership with the [Budget and Tax Center](http://www.ncjustice.org/?q=budget-and-tax) affiliated with the North Carolina Justice Center.
+
 ## Inputs
 * downloader.bat, which contains links to all PDFs used (update it if the links have been changed)
 * generator.R, which is the R code used to extract the data from the PDFs and create a long panel for Tableau analysis
@@ -13,14 +15,14 @@ This repository contains code to extract North Carolina state budget information
 * Panel.zip can be decompressed and read into a Tableau workbook which contains further analysis of the budget
 * generator.RData is a copy of the workspace as of the end of generator.R. Load this into R if you would like to create alternate data structures (see additional.R below).
 
-### From additional.R (these are stored in R environment):
+### From additional.R (these are stored in `R` environment):
 * outer merged wide panels that can be used to track the codes that have undergone some changes over time (Map_finale1-6)
 * combined original budgets including even-year revisions (for instance, vol12003comb)
 
 # Implementation notes
-When it comes to converting pdf files in R, the crux of the matter is to find and install the right packages. In our script we use tabulizer package (https://github.com/leeper/tabulizer) which is not yet on CRAN and hence its installation might be somewhat intricate.
+When it comes to converting pdf files in `R`, the crux of the matter is to find and install the right packages. In our script we use tabulizer package (https://github.com/leeper/tabulizer) which is not yet on CRAN and hence its installation might be somewhat intricate.
 
-The installation steps are highlighted on the webpage stipulated above. Make sure you have the latest version of Java and the following packages: devtools and rJava. To get those use the following commands in R: install.packages("devtools") and install.packages("rJava"). After that depending on the version of your Windows run:
+The installation steps are highlighted on the webpage stipulated above. Make sure you have the latest version of Java and the following packages: `devtools` and `rJava`. To get those use the following commands in `R`: `install.packages("devtools")` and `install.packages("rJava")`. After that depending on the version of your Windows run:
 
 ```
 if(!require("ghit")){
