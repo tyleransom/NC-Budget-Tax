@@ -26,6 +26,7 @@ From additional.R (these are stored in R environment):
 
 --------------------------------
 When it comes to converting pdf files in R, the crux of the matter is to find and install the right packages. In our script we use tabulizer package (https://github.com/leeper/tabulizer) which is not yet on CRAN and hence its installation might be somewhat intricate.
+
 The installation steps are highlighted on the webpage stipulted above. Make sure you have the latest version of Java and the following packages: devtools and rJava. To get those use the following commands in R: install.packages("devtools") and install.packages("rJava"). After that depending on the version of your Windows run:
 
 if(!require("ghit")){
