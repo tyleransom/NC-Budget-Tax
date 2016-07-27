@@ -1,5 +1,5 @@
 # NCBTC
-Inputs:
+•Inputs:
 ◦downloader.bat, which contains links to all PDFs used (update it if the links have been changed)
 ◦generator.R, which is the R code used to extract the data from the PDFs and create a long panel for Tableau analysis
 ◦additonal.R, which takes all of the annual budget files and concatenates them (method: outer merge-like) or combines original budgets with revised
