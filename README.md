@@ -1,5 +1,5 @@
 # Extracting and creating NC Budget Files from published PDFs
-This repository contains code to extract North Carolina state budget information from online-published PDFs and compile each year's budget into a master dataset.
+This repository contains code to extract North Carolina state budget information from online-published PDFs and compile each year's budget into a master dataset. The repository also contains the resulting datasets after executing the code.
 
 ## Inputs
 * downloader.bat, which contains links to all PDFs used (update it if the links have been changed)
