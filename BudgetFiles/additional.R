@@ -1,5 +1,5 @@
 # This script was written by Artem Streltsov of Duke University (artem.streltsov@duke.edu) and
-# Vinod Ramakrishnan of IIT (vinod.ramakrishnan@iitgn.ac.in) for NC Justice Center.
+# Vinod Ramakrishnan of IIT Gandhinagar (vinod.ramakrishnan@iitgn.ac.in) for NC Justice Center.
 #-------------------------------------------------------------------------------------------------
 
 # These additional functions can do the following:
