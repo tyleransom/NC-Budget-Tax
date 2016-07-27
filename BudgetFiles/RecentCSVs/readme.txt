@@ -1,1 +1,0 @@
-NOTE: these files were downloaded from http://www.nc.gov/government/open-budget/bulk-download
