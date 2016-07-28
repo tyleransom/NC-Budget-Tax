@@ -1079,10 +1079,16 @@ vol6 <- rbind(vol61999p,vol62003p,vol62004p,vol62005p,vol62006p,vol62007p,vol620
 vol6 <- cbind(rep("Transportation",length(vol6[,1])),vol6)
 colnames(vol6)[1:6] <- c("Category","Budget code", "Fund code", "Account code", "Description", "Amount")
 
-# call additional volumes for 2013-2015 in csv format
-data2013 <- read.csv(url("https://ncosbm.s3.amazonaws.com/s3fs-public/openbudget/NC_Budget_Data_FY2013.csv"), header=TRUE,stringsAsFactors=FALSE)
-data2014 <- read.csv(url("https://ncosbm.s3.amazonaws.com/s3fs-public/openbudget/NC_Budget_Data_FY2014.csv"), header=TRUE,stringsAsFactors=FALSE)
-data2015 <- read.csv(url("https://ncosbm.s3.amazonaws.com/s3fs-public/openbudget/NC_Budget_Data_FY2015.csv"), header=TRUE,stringsAsFactors=FALSE)
+# call additional volumes for 2013-2015 in csv format 
+temporaryFile <- tempfile()
+download.file("https://ncosbm.s3.amazonaws.com/s3fs-public/openbudget/NC_Budget_Data_FY2013.csv",destfile=temporaryFile, method="curl")
+data2013 <- read.csv(temporaryFile, header=TRUE,stringsAsFactors=FALSE)
+temporaryFile <- tempfile()
+download.file("https://ncosbm.s3.amazonaws.com/s3fs-public/openbudget/NC_Budget_Data_FY2014.csv",destfile=temporaryFile, method="curl")
+data2014 <- read.csv(temporaryFile, header=TRUE,stringsAsFactors=FALSE)
+temporaryFile <- tempfile()
+download.file("https://ncosbm.s3.amazonaws.com/s3fs-public/openbudget/NC_Budget_Data_FY2015.csv",destfile=temporaryFile, method="curl")
+data2015 <- read.csv(temporaryFile, header=TRUE,stringsAsFactors=FALSE)
 
 # alternatively if you have downloaded those manually (MAKE SURE DIRECTORY IS CORRECTLY SPECIFIED)
 #data2013 <- read.csv("C:/Users/BLAH/Desktop/Data+/NC_Budget_Data_FY2013.csv", header=TRUE,stringsAsFactors=FALSE)
@@ -1108,7 +1114,9 @@ data2015p <- unname(data.frame(data2015[,2],data2015[,4],data2015[,6],matrix(,le
 colnames(data2015p)[7] <- "Year"
 data2015p <- data2015p[which(data2015$budget_type=="Budget"),]
 
-new <- rbind(data2013p,data2014p,data2015p)
+#[NOTE: 2013 is actually redundant because what is labeled as 2012 in this code is actually 2013]
+#as a result, we exclude it from the final product
+new <- rbind(data2014p,data2015p)
 colnames(new)[1:6] <- c("Category","Budget code", "Fund code", "Account code", "Description", "Amount")
 
 # create a single long panel
@@ -1116,6 +1124,7 @@ Panel <- rbind(vol1,vol2,vol3,vol4,vol5,vol6)
 Panel[,2] <- as.character(Panel[,2])
 Panel[,5] <- as.character(Panel[,5])
 Panel <- rbind(Panel,new)
+Panel[,c("Year")] <- as.numeric(as.character(Panel[,c("Year")]))-1
 
 write.csv(Panel,file="Panel.csv")
 save(Panel,file="Panel.RDa")
