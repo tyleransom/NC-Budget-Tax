@@ -1118,14 +1118,13 @@ data2015p <- data2015p[which(data2015$budget_type=="Budget"),]
 #as a result, we exclude it from the final product
 new <- rbind(data2014p,data2015p)
 colnames(new)[1:6] <- c("Category","Budget code", "Fund code", "Account code", "Description", "Amount")
-new[,c("Year")] <- as.numeric(as.character(new[,c("Year")]))-1
 
 # create a single long panel
 Panel <- rbind(vol1,vol2,vol3,vol4,vol5,vol6)
 Panel[,2] <- as.character(Panel[,2])
 Panel[,5] <- as.character(Panel[,5])
-Panel <- rbind(Panel,new)
 Panel[,c("Year")] <- as.numeric(as.character(Panel[,c("Year")]))+1
+Panel <- rbind(Panel,new)
 
 write.csv(Panel,file="Panel.csv")
 save(Panel,file="Panel.RDa")
