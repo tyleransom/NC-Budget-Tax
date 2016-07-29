@@ -24,8 +24,6 @@
 
 # IMPORTANT! BEFORE PROCEEDING MAKE SURE YOU HAVE ALL THE VOLUMES PROCESSED BY GENERATOR FUNCTION
 # OR YOU HAVE THE OUTPUT LOADED INTO THE ENVIRONMENT
-# CHECK DIRECTORY!
-load("C:/Users/BLAH/Desktop/Data+/generator.RData")
 
 # MATCHER:
 # Supercode1 (budget code), operation and original are the only required variables to run the function
@@ -140,25 +138,25 @@ matcher <- function(basefile,Supercode1,Supercode2,SubsecID,Description,operatio
     if((as.numeric(substr(basefile,7,8)) %% 2)==0){
     digits = floor(log10(as.numeric(substr(basefile,7,8)))) + 1
     files_rev <- get(basefile)
-    rev <- files_rev[intersect(intersect(which(files_rev$Supercode1==Supercode1), intersect(grep(SubsecID,files_rev$SubsecID), intersect(agrep(Description, files_rev$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files_rev$Description)-nchar(Description))<2)))),which(files_rev[,5]==original)),]
+    rev <- files_rev[intersect(intersect(which(files_rev$Supercode1==Supercode1), intersect(grep(SubsecID,files_rev$SubsecID), intersect(agrep(Description, files_rev$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files_rev$Description)-nchar(Description))<2)))),which(files_rev[,7]==original)),]
     matcher[[1]]=rev
     if (digits==1){files <- get(paste(substr(basefile,1,6),as.numeric(substr(basefile,7,8))-1,sep = "0"))
     }
     else{files <- get(paste(substr(basefile,1,6),as.numeric(substr(basefile,7,8))-1,sep = ""))
     }
-    orig <- files[intersect(intersect(which(files$Supercode1==Supercode1), intersect(grep(SubsecID,files$SubsecID), intersect(agrep(Description, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Description))<2)))),which(files[,6]==original)),]
+    orig <- files[intersect(intersect(which(files$Supercode1==Supercode1), intersect(grep(SubsecID,files$SubsecID), intersect(agrep(Description, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Description))<2)))),which(files[,8]==original)),]
     matcher[[2]]=orig
   }
     else{
       digits = floor(log10(as.numeric(substr(basefile,7,8)))) + 1
       files <- get(basefile)
-      orig <- files[intersect(intersect(which(files$Supercode1==Supercode1), intersect(grep(SubsecID,files$SubsecID), intersect(agrep(Description, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Description))<2)))),which(files[,6]==original)),]
+      orig <- files[intersect(intersect(which(files$Supercode1==Supercode1), intersect(grep(SubsecID,files$SubsecID), intersect(agrep(Description, files$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files$Description)-nchar(Description))<2)))),which(files[,8]==original)),]
       matcher[[1]]=orig
       if (digits==1){files_rev <- get(paste(substr(basefile,1,6),as.numeric(substr(basefile,7,8))+1,sep = "0"))
       }
       else{files_rev <- get(paste(substr(basefile,1,6),as.numeric(substr(basefile,7,8))+1,sep = ""))
       }
-      rev <- files_rev[intersect(intersect(which(files_rev$Supercode1==Supercode1), intersect(grep(SubsecID,files_rev$SubsecID), intersect(agrep(Description, files_rev$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files_rev$Description)-nchar(Description))<2)))),which(files_rev[,5]==original)),]
+      rev <- files_rev[intersect(intersect(which(files_rev$Supercode1==Supercode1), intersect(grep(SubsecID,files_rev$SubsecID), intersect(agrep(Description, files_rev$Description, max=list(cost=1,all=1), ignore.case=TRUE),which(abs(nchar(files_rev$Description)-nchar(Description))<2)))),which(files_rev[,7]==original)),]
       matcher[[2]]=rev
     }
   }
@@ -167,17 +165,17 @@ matcher <- function(basefile,Supercode1,Supercode2,SubsecID,Description,operatio
 
 # Some examples of syntax:
 #Match <- matcher("vol62003", 84210, 0002,SubsecID=NULL, "SOCIAL SEC CONTRIB-APPRO",2,original=NULL)
-#Match <- matcher("vol62003", vol62004[i,1], vol62004[i,2],vol62004[i,3], vol62004[i,4], 1, vol62004[i,5])
+#Match <- matcher("vol62003", vol62004[i,1], vol62004[i,3],vol62004[i,5], vol62004[i,6], 1, vol62004[i,7])
 
 #---------------------------------
 # conveniently store output from matcher in dataframes if operation==2
-#for (t in seq(3,11,by = 2)){
- # index=(t+which(seq(3,11,by = 2)==t)-1)/3
-#  if(t<10){nam <- paste("Match", t, sep = "0")
-#  assign(nam, Match[[index]])}
-#  else{nam <- paste("Match", t, sep = "")
-#  assign(nam, Match[[index]])}
-#}
+for (t in seq(3,11,by = 2)){
+  index=(t+which(seq(3,11,by = 2)==t)-1)/3
+  if(t<10){nam <- paste("Match", t, sep = "0")
+  assign(nam, Match[[index]])}
+  else{nam <- paste("Match", t, sep = "")
+  assign(nam, Match[[index]])}
+}
 #---------------------------------
 
 
@@ -186,7 +184,7 @@ matcher <- function(basefile,Supercode1,Supercode2,SubsecID,Description,operatio
 mapping <- function(basefile, operation){
   # pull the data and create empty matrices to fill
   basedata <- get(basefile)
-  base_t <- as.numeric(substr(colnames(basedata)[5],4,5))
+  base_t <- as.numeric(substr(colnames(basedata)[7],4,5))
   base_index <- (base_t+which(seq(3,11,by = 2)==base_t)-1)/3
   if ((as.numeric(substr(basefile,7,8)) %% 2) == 0){
     base_index1 <- 2
@@ -195,10 +193,10 @@ mapping <- function(basefile, operation){
   base_index2 <- 2}
   cols=length(basedata[,5:length(basedata[1,])])
   test2 <- matrix(,nrow=length(basedata[,1]),ncol=cols*length(seq(3,11,by = 2)))
-  test2 <- cbind(basedata[,1:4],test2)
+  test2 <- cbind(basedata[,1:6],test2)
   test3 <- matrix(,nrow=length(basedata[,1]),ncol=5)
   weirdos1 <- matrix(0,length(basedata[,1]),5)
-  test3 <- cbind(basedata[,1:4],test3)
+  test3 <- cbind(basedata[,1:6],test3)
   weirdos <- matrix(0,length(basedata[,1]),length(seq(3,11,by = 2)))
   
   
@@ -207,7 +205,7 @@ mapping <- function(basefile, operation){
       DMatch <- matcher(basefile, basedata$Supercode1[i], basedata$Supercode2[i], basedata$SubsecID[i], basedata$Description[i], 2, original=NULL)
       for (t in seq(3,11,by = 2)){
         index <- (t+which(seq(3,11,by = 2)==t)-1)/3
-        l <- length((DMatch[[index]])[,5])
+        l <- length((DMatch[[index]])[,7])
         # if we have several matches for one identifier, introduce counting principle
         if (!(l == 0)){
           if(l > 1){
@@ -216,23 +214,23 @@ mapping <- function(basefile, operation){
             repeat{
               ialt <-which(row.names(DMatch[[base_index]][counter,])==row.names(basedata))
               if(t<10){nam1 <- paste("DMatch1", t, sep = "0")
-              assign(nam1, (DMatch[[index]])[counter,5:length(DMatch[[index]])])}
+              assign(nam1, (DMatch[[index]])[counter,7:length(DMatch[[index]])])}
               else{nam1 <- paste("DMatch1", t, sep = "")
-              assign(nam1, (DMatch[[index]])[counter,5:length(DMatch[[index]])])}
+              assign(nam1, (DMatch[[index]])[counter,7:length(DMatch[[index]])])}
               counter=counter-1
               outputw <- get(nam1)
-              test2[ialt,(5+cols*(index-1)):(5+cols*(index-1)+length(outputw)-1)] <- outputw
-              colnames(test2)[(5+cols*(index-1)):(5+cols*(index-1)+length(outputw)-1)] <- colnames(get(nam1))
+              test2[ialt,(7+cols*(index-1)):(7+cols*(index-1)+length(outputw)-1)] <- outputw
+              colnames(test2)[(7+cols*(index-1)):(7+cols*(index-1)+length(outputw)-1)] <- colnames(get(nam1))
               if (counter==0) {break} }
           }
           else{
             if(t<10){nam <- paste("DMatch", t, sep = "0")
-            assign(nam, (DMatch[[index]])[1,5:length(DMatch[[index]])])}
+            assign(nam, (DMatch[[index]])[1,7:length(DMatch[[index]])])}
             else{nam <- paste("DMatch", t, sep = "")
-            assign(nam, (DMatch[[index]])[1,5:length(DMatch[[index]])])}
+            assign(nam, (DMatch[[index]])[1,7:length(DMatch[[index]])])}
             output <- get(nam)
-            test2[i,(5+cols*(index-1)):(5+cols*(index-1)+length(output)-1)] <- output
-            colnames(test2)[(5+cols*(index-1)):(5+cols*(index-1)+length(output)-1)] <- colnames(get(nam))
+            test2[i,(7+cols*(index-1)):(7+cols*(index-1)+length(output)-1)] <- output
+            colnames(test2)[(7+cols*(index-1)):(7+cols*(index-1)+length(output)-1)] <- colnames(get(nam))
           }
         }
       }
@@ -242,30 +240,30 @@ mapping <- function(basefile, operation){
   else{
     for (i in 1:length(basedata[,1])){# to combine revised and original budgets
       if (base_index1==2){
-        DMatch <- matcher(basefile, basedata[i,1],basedata[i,2],basedata[i,3],basedata[i,4],1, basedata[i,5])
+        DMatch <- matcher(basefile, basedata[i,1],basedata[i,3],basedata[i,5],basedata[i,6],1, basedata[i,7])
       }
       else{
-        DMatch <- matcher(basefile, basedata[i,1],basedata[i,2],basedata[i,3],basedata[i,4],1, basedata[i,6])
+        DMatch <- matcher(basefile, basedata[i,1],basedata[i,3],basedata[i,5],basedata[i,6],1, basedata[i,7])
       }
-      l1 <- length((DMatch[[1]])[,5])
-      l2 <- length((DMatch[[2]])[,5])
+      l1 <- length((DMatch[[1]])[,7])
+      l2 <- length((DMatch[[2]])[,7])
       if (!(l1==0)){
         if(l1 > 1){
           weirdos1[i,1] <- l1 
           counter1 <- l1
           repeat{
             ialt1 <-which(row.names(DMatch[[1]][counter1,])==row.names(basedata))
-            nam1=(DMatch[[1]])[counter1,5:length(DMatch[[1]])]
+            nam1=(DMatch[[1]])[counter1,7:length(DMatch[[1]])]
             counter1=counter1-1
             outputw <- nam1
-            test3[ialt1,(3+2*base_index1):(3+2*base_index1+length(outputw)-1)] <- outputw
-            colnames(test3)[(3+2*base_index1):(3+2*base_index1+length(outputw)-1)] <- colnames(nam1)
+            test3[ialt1,(5+2*base_index1):(5+2*base_index1+length(outputw)-1)] <- outputw
+            colnames(test3)[(5+2*base_index1):(5+2*base_index1+length(outputw)-1)] <- colnames(nam1)
             if (counter1==0) {break} }
         }
         else{
-          DMatch1=DMatch[[1]][,5:length(DMatch[[1]])]
-          test3[i,(3+2*base_index1):(3+2*base_index1+length(DMatch1)-1)] <- DMatch1
-          colnames(test3)[(3+2*base_index1):(3+2*base_index1+length(DMatch1)-1)] <- colnames(DMatch1)
+          DMatch1=DMatch[[1]][,7:length(DMatch[[1]])]
+          test3[i,(5+2*base_index1):(5+2*base_index1+length(DMatch1)-1)] <- DMatch1
+          colnames(test3)[(5+2*base_index1):(5+2*base_index1+length(DMatch1)-1)] <- colnames(DMatch1)
         }
       }
       if(!(l2==0)){
@@ -273,17 +271,17 @@ mapping <- function(basefile, operation){
           weirdos1[i,2] <- l2 
           counter2 <- l2
           repeat{ialt2 <-which(row.names(DMatch[[base_index2]][counter2,])==row.names(basedata))
-            nam2=(DMatch[[2]])[counter2,5:length(DMatch[[2]])]
+            nam2=(DMatch[[2]])[counter2,7:length(DMatch[[2]])]
             counter2=counter2-1
             outputw <- nam2
-            test3[ialt2,(3+2*base_index2):(3+2*base_index2+length(outputw)-1)] <- outputw
-            colnames(test3)[(3+2*base_index2):(3+2*base_index2+length(outputw)-1)] <- colnames(outputw)
+            test3[ialt2,(5+2*base_index2):(5+2*base_index2+length(outputw)-1)] <- outputw
+            colnames(test3)[(5+2*base_index2):(5+2*base_index2+length(outputw)-1)] <- colnames(outputw)
             if (counter2==0) {break} }
         }
         else{
-          DMatch2=DMatch[[2]][,5:length(DMatch[[2]])]
-          test3[i,(3+2*base_index2):(3+2*base_index2+length(DMatch2)-1)] <- DMatch2
-          colnames(test3)[(3+2*base_index2):(3+2*base_index2+length(DMatch2)-1)] <- colnames(DMatch2)
+          DMatch2=DMatch[[2]][,7:length(DMatch[[2]])]
+          test3[i,(5+2*base_index2):(5+2*base_index2+length(DMatch2)-1)] <- DMatch2
+          colnames(test3)[(5+2*base_index2):(5+2*base_index2+length(DMatch2)-1)] <- colnames(DMatch2)
         }
       }
     }
@@ -340,51 +338,51 @@ Map <- rbind(Map03, Map05, Map07, Map09, Map11)
 Map_finale <- Map[!duplicated(Map),]
 Map_finale6 <- Map_finale
 
-Map03vol1 <- mapping("vol12003")
-Map05vol1 <- mapping("vol12005")
-Map07vol1 <- mapping("vol12007")
-Map09vol1 <- mapping("vol12009")
-Map11vol1 <- mapping("vol12011")
+Map03vol1 <- mapping("vol12003",2)
+Map05vol1 <- mapping("vol12005",2)
+Map07vol1 <- mapping("vol12007",2)
+Map09vol1 <- mapping("vol12009",2)
+Map11vol1 <- mapping("vol12011",2)
 
 Mapvol1 <- rbind(Map03vol1, Map05vol1, Map07vol1, Map09vol1, Map11vol1)
 Map_finale <- Mapvol1[!duplicated(Mapvol1),]
 Map_finale1 <- Map_finale
 
-Map03vol2 <- mapping("vol22003")
-Map05vol2 <- mapping("vol22005")
-Map07vol2 <- mapping("vol22007")
-Map09vol2 <- mapping("vol22009")
-Map11vol2 <- mapping("vol22011")
+Map03vol2 <- mapping("vol22003",2)
+Map05vol2 <- mapping("vol22005",2)
+Map07vol2 <- mapping("vol22007",2)
+Map09vol2 <- mapping("vol22009",2)
+Map11vol2 <- mapping("vol22011",2)
 
 Mapvol2 <- rbind(Map03vol2, Map05vol2, Map07vol2, Map09vol2, Map11vol2)
 Map_finale <- Mapvol2[!duplicated(Mapvol2),]
 Map_finale2 <- Map_finale
 
-Map03vol3 <- mapping("vol32003")
-Map05vol3 <- mapping("vol32005")
-Map07vol3 <- mapping("vol32007")
-Map09vol3 <- mapping("vol32009")
-Map11vol3 <- mapping("vol32011")
+Map03vol3 <- mapping("vol32003",2)
+Map05vol3 <- mapping("vol32005",2)
+Map07vol3 <- mapping("vol32007",2)
+Map09vol3 <- mapping("vol32009",2)
+Map11vol3 <- mapping("vol32011",2)
 
 Mapvol3 <- rbind(Map03vol3, Map05vol3, Map07vol3, Map09vol3, Map11vol3)
 Map_finale <- Mapvol3[!duplicated(Mapvol3),]
 Map_finale3 <- Map_finale
 
-Map03vol4 <- mapping("vol42003")
-Map05vol4 <- mapping("vol42005")
-Map07vol4 <- mapping("vol42007")
-Map09vol4 <- mapping("vol42009")
-Map11vol4 <- mapping("vol42011")
+Map03vol4 <- mapping("vol42003",2)
+Map05vol4 <- mapping("vol42005",2)
+Map07vol4 <- mapping("vol42007",2)
+Map09vol4 <- mapping("vol42009",2)
+Map11vol4 <- mapping("vol42011",2)
 
 Mapvol4 <- rbind(Map03vol4, Map05vol4, Map07vol4, Map09vol4, Map11vol4)
 Map_finale <- Mapvol4[!duplicated(Mapvol4),]
 Map_finale4 <- Map_finale
 
-Map03vol5 <- mapping("vol52003")
-Map05vol5 <- mapping("vol52005")
-Map07vol5 <- mapping("vol52007")
-Map09vol5 <- mapping("vol52009")
-Map11vol5 <- mapping("vol52011")
+Map03vol5 <- mapping("vol52003",2)
+Map05vol5 <- mapping("vol52005",2)
+Map07vol5 <- mapping("vol52007",2)
+Map09vol5 <- mapping("vol52009",2)
+Map11vol5 <- mapping("vol52011",2)
 
 Mapvol5 <- rbind(Map03vol5, Map05vol5, Map07vol5, Map09vol5, Map11vol5)
 Map_finale <- Mapvol5[!duplicated(Mapvol5),]
