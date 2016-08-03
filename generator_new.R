@@ -1093,15 +1093,27 @@ vol6 <- rbind(vol61999p,vol62003p,vol62004p,vol62005p,vol62006p,vol62007p,vol620
 vol6 <- cbind(rep("Transportation",length(vol6[,1])),vol6)
 colnames(vol6)[1:8] <- c("Category","Budget code", "Budget code name","Fund code", "Fund code name", "Account code", "Description", "Amount")
 
-# call additional volumes for 2013-2015 in csv format
-data2013 <- read.csv(url("https://ncosbm.s3.amazonaws.com/s3fs-public/openbudget/NC_Budget_Data_FY2013.csv"), header=TRUE,stringsAsFactors=FALSE)
-data2014 <- read.csv(url("https://ncosbm.s3.amazonaws.com/s3fs-public/openbudget/NC_Budget_Data_FY2014.csv"), header=TRUE,stringsAsFactors=FALSE)
-data2015 <- read.csv(url("https://ncosbm.s3.amazonaws.com/s3fs-public/openbudget/NC_Budget_Data_FY2015.csv"), header=TRUE,stringsAsFactors=FALSE)
+# call additional volumes for 2013-2015 in csv format 
+# data2013 <- read.csv(url("https://ncosbm.s3.amazonaws.com/s3fs-public/openbudget/NC_Budget_Data_FY2013.csv"), header=TRUE,stringsAsFactors=FALSE)  
+# data2014 <- read.csv(url("https://ncosbm.s3.amazonaws.com/s3fs-public/openbudget/NC_Budget_Data_FY2014.csv"), header=TRUE,stringsAsFactors=FALSE)
+# data2015 <- read.csv(url("https://ncosbm.s3.amazonaws.com/s3fs-public/openbudget/NC_Budget_Data_FY2015.csv"), header=TRUE,stringsAsFactors=FALSE)  
+
+# if those did not work (on Linux, for instance) 
+temporaryFile <- tempfile()
+download.file("https://ncosbm.s3.amazonaws.com/s3fs-public/openbudget/NC_Budget_Data_FY2013.csv",destfile=temporaryFile, method="curl")
+data2013 <- read.csv(temporaryFile, header=TRUE,stringsAsFactors=FALSE)
+temporaryFile <- tempfile()
+download.file("https://ncosbm.s3.amazonaws.com/s3fs-public/openbudget/NC_Budget_Data_FY2014.csv",destfile=temporaryFile, method="curl")
+data2014 <- read.csv(temporaryFile, header=TRUE,stringsAsFactors=FALSE)
+temporaryFile <- tempfile()
+download.file("https://ncosbm.s3.amazonaws.com/s3fs-public/openbudget/NC_Budget_Data_FY2015.csv",destfile=temporaryFile, method="curl")
+data2015 <- read.csv(temporaryFile, header=TRUE,stringsAsFactors=FALSE)
+
 
 # alternatively if you have downloaded those manually (MAKE SURE DIRECTORY IS CORRECTLY SPECIFIED)
-#data2013 <- read.csv("C:/Users/BLAH/Desktop/Data+/NC_Budget_Data_FY2013.csv", header=TRUE,stringsAsFactors=FALSE)
-#data2014 <- read.csv("C:/Users/BLAH/Desktop/Data+/NC_Budget_Data_FY2014.csv", header=TRUE,stringsAsFactors=FALSE)
-#data2015 <- read.csv("C:/Users/BLAH/Desktop/Data+/NC_Budget_Data_FY2015.csv", header=TRUE,stringsAsFactors=FALSE)
+# data2013 <- read.csv("C:/Users/BLAH/Desktop/Data+/NC_Budget_Data_FY2013.csv", header=TRUE,stringsAsFactors=FALSE)
+# data2014 <- read.csv("C:/Users/BLAH/Desktop/Data+/NC_Budget_Data_FY2014.csv", header=TRUE,stringsAsFactors=FALSE)
+# data2015 <- read.csv("C:/Users/BLAH/Desktop/Data+/NC_Budget_Data_FY2015.csv", header=TRUE,stringsAsFactors=FALSE)
 
 
 R1 <-gsub("\\$","",data2013[,length(data2013[1,])])
